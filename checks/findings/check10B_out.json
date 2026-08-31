@@ -1,0 +1,107 @@
+{
+ "cosines": {
+  "6": {
+   "guilt~shame": 0.6504389047622681,
+   "guilt~negneg": 0.6719218492507935,
+   "shame~negneg": 0.5111172199249268,
+   "guilt~refusal": 0.09612208604812622,
+   "shame~refusal": 0.10020017623901367,
+   "guilt~persona": -0.08329451084136963,
+   "shame~persona": -0.03886425495147705,
+   "guilt~badmed": 0.007616490125656128,
+   "shame~badmed": 0.0623554028570652,
+   "guilt~random": 0.019315216690301895,
+   "shame~random": -0.00964999757707119,
+   "guilt_norm": 1.6490737199783325,
+   "shame_norm": 1.831588625907898
+  },
+  "8": {
+   "guilt~shame": 0.6029679179191589,
+   "guilt~negneg": 0.6003848314285278,
+   "shame~negneg": 0.4324142336845398,
+   "guilt~refusal": 0.13774782419204712,
+   "shame~refusal": 0.18891355395317078,
+   "guilt~persona": 0.009086466394364834,
+   "shame~persona": 0.02642686292529106,
+   "guilt~badmed": -0.0946836993098259,
+   "shame~badmed": 0.020362650975584984,
+   "guilt~random": 0.0026307031512260437,
+   "shame~random": 0.0123515659943223,
+   "guilt_norm": 1.8934903144836426,
+   "shame_norm": 2.1340441703796387
+  },
+  "10": {
+   "guilt~shame": 0.6823421716690063,
+   "guilt~negneg": 0.5408243536949158,
+   "shame~negneg": 0.44909271597862244,
+   "guilt~refusal": 0.15883001685142517,
+   "shame~refusal": 0.21831321716308594,
+   "guilt~persona": -0.059595346450805664,
+   "shame~persona": -0.007974868640303612,
+   "guilt~badmed": -0.22973419725894928,
+   "shame~badmed": -0.131855770945549,
+   "guilt~random": 0.028682086616754532,
+   "shame~random": 0.016787169501185417,
+   "guilt_norm": 2.5656633377075195,
+   "shame_norm": 2.792987108230591
+  },
+  "12": {
+   "guilt~shame": 0.6771737933158875,
+   "guilt~negneg": 0.49800968170166016,
+   "shame~negneg": 0.4385104179382324,
+   "guilt~refusal": 0.17509062588214874,
+   "shame~refusal": 0.18849283456802368,
+   "guilt~persona": -0.10430948436260223,
+   "shame~persona": -0.015750732272863388,
+   "guilt~badmed": -0.38630789518356323,
+   "shame~badmed": -0.14591369032859802,
+   "guilt~random": -0.02090386673808098,
+   "shame~random": -0.013367786072194576,
+   "guilt_norm": 3.576843738555908,
+   "shame_norm": 3.6770665645599365
+  },
+  "14": {
+   "guilt~shame": 0.6667219400405884,
+   "guilt~negneg": 0.47584936022758484,
+   "shame~negneg": 0.3757244348526001,
+   "guilt~refusal": 0.13932237029075623,
+   "shame~refusal": 0.1642685830593109,
+   "guilt~persona": -0.043481990694999695,
+   "shame~persona": -0.0025096209719777107,
+   "guilt~badmed": -0.2129935920238495,
+   "shame~badmed": -0.11592265963554382,
+   "guilt~random": -0.014105282723903656,
+   "shame~random": -0.0005367756821215153,
+   "guilt_norm": 4.837026119232178,
+   "shame_norm": 5.374562740325928
+  }
+ },
+ "probe": {
+  "6": {
+   "auroc_mean": 1.0,
+   "auroc_std": 0.0
+  },
+  "8": {
+   "auroc_mean": 1.0,
+   "auroc_std": 0.0
+  },
+  "10": {
+   "auroc_mean": 1.0,
+   "auroc_std": 0.0
+  },
+  "12": {
+   "auroc_mean": 1.0,
+   "auroc_std": 0.0
+  },
+  "14": {
+   "auroc_mean": 1.0,
+   "auroc_std": 0.0
+  }
+ },
+ "lens": {
+  "guilt": 36.3,
+  "shame": 37.3,
+  "negneg": 26.3,
+  "baseline": 25.3
+ }
+}

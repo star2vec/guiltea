@@ -1,0 +1,19 @@
+# OS junk
+.DS_Store
+Thumbs.db
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+# Models and heavy artifacts — never commit weights
+*.safetensors
+*.gguf
+*.bin
+*.pt
+!directions/*.pt
+# Raw results stay local until curated
+results/raw/
+# Secrets
+.env
+*_key*
