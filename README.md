@@ -1,4 +1,4 @@
-# blame-target
+# guiltea
 ### Does blaming the act instead of the self keep a model's post-mistake shift local — and can we see and steer that internally?
 
 A ~20-hour mechanistic-interpretability project (MATS application, Neel Nanda stream). After a model commits a harmful act in a known mode (deceived / akratic / vicious), we manipulate the blame target of the feedback it receives (act-blame / self-blame / neutral-correction / neutral-reflection / none) and measure persistence and spread — behaviorally and on internal direction readouts (guilt and shame arrows in two voices, Assistant Axis, misalignment, refusal, random control). Grounding: guilt-vs-shame psychology (Lewis, Tangney) and behavioral-vs-characterological self-blame (Janoff-Bulman); mechanistic frame: the Persona Selection Model.
