@@ -1,0 +1,14 @@
+# DECISIONS — what we chose, why, and what would reverse it
+Format: ID · decision · basis (borrowed [LIT] / ours [OURS] / researcher call [R]) · reversal condition.
+
+- **D-001** · Guilt/shame blame-target split is the project; the three modes are Stage 1 variables feeding it, not a separate research question · [R] · never (scope anchor).
+- **D-002** · Modes tested and verified FIRST (Stage 1), with break trajectory as a first-class deliverable · [R] · a mode failing verification cuts its cells automatically (STAGE0 §7).
+- **D-003** · Vocabulary: persistence/spread, blame target, harmful act, act rate; banned: carryover, attribution locus, transgression, lapse · [R] · never.
+- **D-004** · Five feedback arms incl. protected neutral-correction; corrective content matched across the three correction-carrying arms · [R, Check 10A] · never (protected set).
+- **D-005** · Cut order vicious → akratic; time triggers via menu at rig checkpoint with 25% reserve; mid-run tripwire · [R] · never (the point is that it doesn't move under pressure).
+- **D-006** · Both passage-set voices: first-person (state, primary) + second-person (received blame, manipulation check); bridge test = mechanism claim · [OURS] · reversed only if S2 shows the voices yield indistinguishable arrows (then one set suffices — report it).
+- **D-007** · Guilt and shame extracted as separate arrows, valence-cleaned against a neutral-negative control; angle measured, not assumed; difference arrow kept as derived contrast · [R, against the see-saw assumption] · the angle result itself decides the primary instrument (STAGE0 §4.4).
+- **D-008** · Borrowed assets: standard EM eval questions verbatim, EM judge prompts + <80 alignment / ≥50 coherence conventions, Zeng persuasion taxonomy, persona-vectors extraction recipe, Assistant Axis code · [LIT] · only if a borrowed asset proves inapplicable in dry-runs — documented here first.
+- **D-009** · Primary hardware: RTX 2000 Ada laptop; cloud A100 fallback; decision made by the S3 feasibility hour (fit, speed, quantization-noise check) · [R] · feasibility hour result.
+- **D-010** · Timekeeping researcher-only; hours ledger in STATUS.md; sessions ask, never estimate · [R] · never.
+- **D-011** · Nanda context files (Drive links): kept OUT of default worker context to avoid burying project-specific material; researcher downloads them; one distillation pass extracts a short "what the stream values / write-up standards" note used in the S6 brief and by the hub · [R] · pending researcher's read of the files.
