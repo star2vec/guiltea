@@ -402,4 +402,7 @@ Second external review of the two briefs. All six points judged sound in diagnos
 
 Also: **S3 split into Phase A (no-GPU: random utility + data acquisition, runnable now) and Phase B (needs the 8B)**, with an explicit stop-don't-improvise instruction.
 
+- **2c Spearman fallback**: if the paper gives only a labelled figure, not a ranked role list, skip the rank correlation and rest persona on the internal cosine + steering; report it as not computable.
+- **Phase A acquisition unconditional**: verify integrity + record provenance even if the data files are already in-repo (confirm they are the *right* files).
+
 **Open question for the researcher (blocks the runnable-now split):** is frontier *generation* access available now, and is the rubric-judge endpoint available? If generation is up, S1a Tasks 1–5 and S3 Phase A can run immediately in parallel. The hub does not dispatch workers; this is the researcher's call.
