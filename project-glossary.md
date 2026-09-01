@@ -28,12 +28,12 @@ Reading order if you have one hour: sections A → B → C. Sections D–G are f
 ### Model organism
 **What it is.** A model deliberately modified to have a specific problem, so researchers can study that problem in a controlled way — borrowed from biology, where a "model organism" is a lab mouse or fruit fly.
 **Why it matters here.** The EM model organisms (0.5B to 32B, fine-tuned on bad medical advice etc.) are the cheapest way to get a model that already generalizes badness, which your local 1B base model does not do on its own.
-**How it's used.** You load one, make it commit its known transgression, then apply your feedback manipulation. Caveat: its "control" arm is already somewhat misaligned, and a fine-tuned organism may not be a faithful stand-in for a normal model reacting in-context.
+**How it's used.** You load one, make it commit its known harmful act, then apply your feedback manipulation. Caveat: its "control" arm is already somewhat misaligned, and a fine-tuned organism may not be a faithful stand-in for a normal model reacting in-context.
 **Read.** Turner, Soligo et al., "Model Organisms for Emergent Misalignment," arXiv:2506.11613. Models on HuggingFace under `ModelOrganismsForEM`.
 
-### Carryover
-**What it is.** Your working word for: something that happened earlier in a conversation still measurably affecting the model at a later, unrelated turn.
-**Why it matters here.** No carryover, no project. Shame is *defined* by carryover to unrelated tasks. Your checks found a refusal-type carryover at 1B but no misalignment carryover — that is the scale problem.
+### Persistence and spread
+**What they are.** The two fixed terms (STAGE0 §2) for something that happened earlier in a conversation still measurably affecting the model later. *Persistence*: the shift is still measurable N turns later. *Spread*: the shift shows up in unrelated tasks. They are different claims and are never merged into one word.
+**Why it matters here.** No persistence, no project — and shame needs *both*: it is defined by the shift reaching unrelated tasks, not merely lasting. Your checks found a refusal-type persistence at 1B (Check 7) but no misalignment spread (Checks 6, 8) — that is the scale problem.
 
 ### Continuation framing
 **What it is.** A 2026 finding: showing a model harmful content is not enough to cause EM. What matters is whether the content is presented as *behavior for the model to continue* (e.g. its own past assistant turns) versus *evidence to look at* (documents, tool output). Same content, different frame, 30-point difference in EM.
@@ -42,7 +42,7 @@ Reading order if you have one hour: sections A → B → C. Sections D–G are f
 
 ### Hallucination snowballing
 **What it is.** A model makes an early mistake, then keeps defending it in later turns, even though it could recognize the same claim as false if you asked it fresh.
-**Why it matters here.** A rival explanation for your results. If a model behaves worse after a transgression, is that "shame" or just the model staying consistent with what it already said? You need to be able to tell these apart.
+**Why it matters here.** A rival explanation for your results. If a model behaves worse after a harmful act, is that "shame" or just the model staying consistent with what it already said? You need to be able to tell these apart.
 **Read.** Zhang et al., "How Language Model Hallucinations Can Snowball," arXiv:2305.13534.
 
 ---
@@ -160,7 +160,7 @@ Reading order if you have one hour: sections A → B → C. Sections D–G are f
 
 ### Positive control
 **What it is.** An effect you already know exists, used to prove your instrument can detect *something* before you look for the thing you actually care about.
-**Why it matters here.** The refusal carryover at 1B is your positive control. It is not the phenomenon; it is proof the pipeline works.
+**Why it matters here.** The refusal persistence at 1B is your positive control. It is not the phenomenon; it is proof the pipeline works.
 
 ---
 
@@ -233,10 +233,10 @@ Reading order if you have one hour: sections A → B → C. Sections D–G are f
 ## G. Your own project vocabulary (so you use it consistently)
 
 ### Akratic / vicious / deceived
-Your three modes of doing a bad thing. *Akratic*: knows it is wrong, does it anyway (documented behaviorally: ~2/3 of misaligned reasoning traces mention the harm). *Vicious*: knows, does not care — the "evil persona." *Deceived*: believes it is right. These are the *setup* (how the transgression is produced), not the object of study.
+Your three modes of doing a bad thing. *Akratic*: knows it is wrong, does it anyway (documented behaviorally: ~2/3 of misaligned reasoning traces mention the harm). *Vicious*: knows, does not care — the "evil persona." *Deceived*: believes it is right. These are the *setup* (how the harmful act is produced), not the object of study.
 
-### Attribution locus
-Where the feedback places the fault: on the act or on the self. Your independent variable. Always hold everything else constant (corrective instruction, valence, length) so this is the only thing that varies.
+### Blame target
+Where the feedback places the fault: on the act (*act-blame*) or on the self (*self-blame*). Your independent variable. Always hold everything else constant (corrective content, valence, length) so this is the only thing that varies.
 
 ### Local vs global update
 Your dependent variable, in representation terms. *Local*: the model becomes more cautious in the same task cluster, persona axis flat. *Global*: the model moves on the persona/misalignment axis and misbehaves elsewhere. Maps onto over-refusal (local) vs global refusal/Assistant Axis (global).
@@ -244,5 +244,5 @@ Your dependent variable, in representation terms. *Local*: the model becomes mor
 ### Guilt-like / shame-like signature
 Say "guilt-like signature" (a specific pattern on the readouts) rather than "the model feels guilty." Reviewers in this field will hold you to it.
 
-### Transgression fire rate
-The fraction of runs in which the model actually commits the bad act. Runs where it does not are discarded. Report the rate; it is a power problem (Check 9 discarded 40%).
+### Act rate
+The fraction of runs in which the model actually commits the harmful act. Runs where it does not are discarded. Report the rate with the discards; it is a power problem (Check 9 discarded 40%).
