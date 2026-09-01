@@ -24,7 +24,7 @@ Adversarial review of the two briefs is out (review-request-S3-S1a.md).
 
 ## Blockers / errands (researcher)
 - [ ] Confirm laptop GPU memory (8 vs 16 GB) — feeds the S3 feasibility rule
-- [ ] Judge API key — hard precondition for S1b (S1a is asset-only and does not need it)
+- [ ] EM alignment/coherence judge key — hard precondition for S1b/S4 spread scoring. (S1a needs frontier *generation* for Task 1 and the *rubric-judge* endpoint for Task 6 — both distinct from this S4 judge; see S1a brief preconditions)
 - [ ] Decide handling of the Nanda context files (see DECISIONS.md D-011)
 
 ## Next action

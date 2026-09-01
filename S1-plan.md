@@ -387,3 +387,19 @@ The ~24 h stage sum (4+4+4+6+4+2) vs the 20 h ledger is an artifact of counting 
 - **Hold-screen N**: to be fixed in the S1b brief (defaults to the ceiling, 20, for a tight gate estimate); confirm with the researcher at S1b draft.
 - **Wall-clock ceiling, S1b = 10h.** **S3 must report measured batched throughput** so the S1b brief can confirm total volume ÷ throughput ≤ 10h **before** the run.
 - **Machine time off the ledger** (#1). PLAN restatement, DECISIONS line, and the STAGE0 §7 amendment (§11.4) remain **proposals awaiting researcher approval** — not entered into those files by this session.
+
+---
+
+## 13. Rev.4 — adversarial-pass fixes to the briefs (2026-09-02)
+
+Second external review of the two briefs. All six points judged sound in diagnosis; four had the *fix* refined by the hub (noted). Applied:
+1. **S1a API preconditions clarified** — S1a needs frontier *generation* (Task 1) and the *rubric-judge* endpoint (Task 6); neither is the EM alignment judge (the S4 "judge key"). Task 6 is gated: Tasks 1–5 run, stop before Task 6 if the rubric-judge endpoint isn't ready. STATUS note corrected. *(Reviewer said "asset-only" was false; the deeper fix is the three-way API distinction, not just gating Task 6.)*
+2. **Bridge-clause authorship assigned** — "pre-written" was stale under frozen-adaptive; bridges are emitted by the pilot persuader per turn and used only in the seed-divergence case. Matches plan §4.3.
+3. **Mental-health/self-harm subdomain cut** from the target pool, replaced with wound & burn care. Genuine hazard, not load-bearing. *(Reviewer's alt "vaccination timing" declined — invites anti-vax priors as a confound.)*
+4. **Persona cross-model comparison fixed** — a vector cosine across 8B vs the paper's 27B–70B is undefined; replaced with Spearman rank-correlation of role ordering. Internal PC1-vs-mean-diff cosine kept.
+5. **fp32-CPU reference dropped** — ~32 GB, won't run on the laptop; quant-noise reference is bf16 on cloud (the precision that doesn't fit locally when 4-bit is forced). *(Reviewer's "bf16-on-GPU" is wrong for the exact triggering case — that GPU is the one that can't hold bf16.)*
+6. **Task 6 confound noted** (fixtures authored by the judges' own family → self-consistency, not independent validation; researcher reviews a fixture sample) and **knowledge_check de-leaded** (neutral forced-choice safe/unsafe/depends, not yes/no).
+
+Also: **S3 split into Phase A (no-GPU: random utility + data acquisition, runnable now) and Phase B (needs the 8B)**, with an explicit stop-don't-improvise instruction.
+
+**Open question for the researcher (blocks the runnable-now split):** is frontier *generation* access available now, and is the rubric-judge endpoint available? If generation is up, S1a Tasks 1–5 and S3 Phase A can run immediately in parallel. The hub does not dispatch workers; this is the researcher's call.
