@@ -17,3 +17,5 @@ results/raw/
 # Secrets
 .env
 *_key*
+# Turner badmed data: tos.txt forbids redistribution; re-acquire per data/contrast-sets/SOURCE.md
+data/contrast-sets/badmed/*.jsonl
