@@ -8,7 +8,7 @@ A ~20-hour mechanistic-interpretability project (MATS application, Neel Nanda st
 2. **PLAN.md** — stages S0–S6, the hub/worker protocol, dependency map.
 3. **STATUS.md** — the ship's log: where we are right now, hours ledger, open questions. The only file that answers "what is going on."
 4. **DECISIONS.md** — every design choice: what, why, what would reverse it.
-5. `lit-digest.md` / `project-glossary.md` — background; `checks-log/` — the ten pre-project feasibility checks (read-only provenance).
+5. `lit-digest.md` / `project-glossary.md` — background; `checks/checks-log/` — the ten pre-project feasibility checks (read-only provenance).
 
 ## Ground rules (full versions in STAGE0 §9)
 The researcher is the sole authority and the sole timekeeper. Sessions execute one brief each and file one report each; they never redesign and never estimate elapsed time. Nothing at 1B is a result. Every internal claim ships with its norm-matched random control.
