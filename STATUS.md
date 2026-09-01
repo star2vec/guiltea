@@ -5,8 +5,9 @@
 Spent: 0 / 20 · Reserve policy: 25% held back at the rig checkpoint (STAGE0 §7)
 
 ## Where we are
-Stage: S0 complete; repo assembly in progress.
-Next stage to brief: S1 (modes) and S3 (rig feasibility hour — can run early, in parallel).
+Stage: S0 complete; repo assembled. S1 fully planned (S1-plan.md rev.3, all decisions locked by the researcher 2026-09-01).
+Briefs drafted: briefs/S3-feasibility.md, briefs/S1a-assets.md. S1b-runs awaits the S3 report (axes + measured throughput).
+Adversarial review of the two briefs is out (review-request-S3-S1a.md).
 
 ## What we know (one line each, with source)
 - Act-blame vs self-blame changes behavior at 1B with corrective content held constant — not instruction-following [checks-log/10, A]
@@ -18,12 +19,13 @@ Next stage to brief: S1 (modes) and S3 (rig feasibility hour — can run early, 
 ## Open questions, ranked
 1. Does any valence-independent blame arrow survive at 8B? (S2 gate)
 2. Laptop feasibility: does 8B fit the RTX 2000 Ada, at what speed, with how much quantization noise? (S3 opening hour)
-3. Cliff or slide? (S1 break trajectory, STAGE0 §4.8)
+3. Does the 8B organism hold on enough targets to get ≥10 held? (S1b gate; S1a generates 40 for headroom)
+4. Cliff or slide? (S1 break trajectory, STAGE0 §4.8)
 
 ## Blockers / errands (researcher)
-- [ ] Confirm laptop GPU memory (8 vs 16 GB)
-- [ ] Judge API key
+- [ ] Confirm laptop GPU memory (8 vs 16 GB) — feeds the S3 feasibility rule
+- [ ] Judge API key — hard precondition for S1b (S1a is asset-only and does not need it)
 - [ ] Decide handling of the Nanda context files (see DECISIONS.md D-011)
 
 ## Next action
-Finish repo assembly; hub drafts briefs/S1-modes.md and briefs/S3-rig.md.
+Run briefs/S3-feasibility.md and briefs/S1a-assets.md (independent, parallelizable); S1b-runs drafted once S3 reports.

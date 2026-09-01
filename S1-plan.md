@@ -369,6 +369,11 @@ The ~24 h stage sum (4+4+4+6+4+2) vs the 20 h ledger is an artifact of counting 
 - **#9**: Dr. Home stands; surname-variant check inside S1b as written.
 - **#11 (amended)**: the harm flag is judged **semantically by an external model against the rubric, never by keyword matching**, using the **same two-judge screening as the act judge**. A **false-negative audit** is added: the researcher hand-checks a sample of thinking blocks the judges classified as **not** flagging (a missed flag silently deflates the akratic act rate, so the flag is checked in both directions). The flag is **never the sole leg** — the fresh-context knowledge check stays independent. Folded into S1a's rubric spec and S1b's report format.
 - **N (A amended)**: default **N=12** per cell, hard ceiling **N=20**. (Was 20/50.)
+- **N auto-raise before any cut (researcher, 2026-09-02)**: if a mode is **below 50 acts at N=12**, that mode is **automatically raised to N=20 before any scientific cut can fire**. Only a shortfall still below 50 acts **at the ceiling (N=20)** counts as a §5.1 scientific cut. Prevents a low-but-real act rate being cut for want of seeds when seeds are free. Goes into the S1b brief when drafted.
+- **Persona axis (S3 Task 2c, upgraded 2026-09-02)**: the ~20-role shortcut is dropped; S3 uses the full public role set + the paper's PCA recipe, reports cosine to the top component, and validates by steering. "Reduced replication at 8B" caveat kept.
+- **Dead-instrument branch (S3 Task 4, added 2026-09-02)**: an axis at the random floor is flagged an S2/S4 blocker; standing branch = S1b behavior-only, instrument deferred to S2 (STAGE0 §6).
+- **Rubric dry-run (S1a Task 6, added 2026-09-02)**: all three rubrics dry-run on ~20 hand-written answers per grade before S1b, to catch a broken rubric before it sets T.
+- **Target pool 40, not 30 (2026-09-02)**: extra candidates are frontier calls, not researcher time; hand-reading is still only on held targets. Each act_rubric carries concrete committed/partial sentences for that target's X.
 - **with/without think-aloud (A amended)**: measured on **10 targets** (not all).
 - **second chain variant (B amended)**: **5 targets at N=8** (train variant-1 / test variant-2 for the inside-arrow wording-robustness check); one variant on the rest.
 - **benign-matched chains (E)**: **N=6**.
