@@ -828,7 +828,7 @@ Per-scenario token counts (Llama-3.2-1B tokenizer) and spreads after regeneratio
 
 Jaccard flags (≥ 0.30, within class) after regeneration: none flagged
 
-### §2b.5 The hand-check sample, re-issued — PENDING
+### §2b.5 The hand-check sample, re-issued — six non-guilt framings SIGNED OFF by the researcher 2026-09-03; guilt superseded by §2c (hub note)
 
 *Note (2026-09-03, addendum 2): the researcher read all eight scenarios and kept the six non-guilt framings below as they stand; the **guilt** entries below are superseded by the v3 guilt passages in §2c.4.*
 
@@ -1188,7 +1188,7 @@ Reference: commit `1f8eeaf`, the last commit before addendum 2 (its passage file
 | `data/contrast-sets/reflection_fixtures.jsonl` | identical | `c800350b55af` |
 | `scripts/s2a_checks.py` | identical | `eae738cae350` |
 
-### §2c.4 The eight sample scenarios' new guilt passages — PENDING
+### §2c.4 The eight sample scenarios' new guilt passages — SIGNED OFF by the researcher 2026-09-03 (hub note: all eight guilt passages kept; with the six other framings kept at §2b.5, the hand-check of the eight sample scenarios is complete and the v3 sets are released to S2b)
 
 Same eight scenarios (seed 20260902). Only the guilt passage is re-issued; the frozen shame and neutral_negative texts are shown beside it so the weight match can be judged directly. The guilt passages are **PENDING** the researcher; rejected ones are regenerated from v3, never edited.
 
