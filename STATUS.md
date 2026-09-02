@@ -32,7 +32,7 @@ S1b-runs is drafted only after S3 Phase B is complete.
 
 ## Blockers / errands (researcher)
 - [x] Judge key — OpenAI key in the environment (2026-09-03); models per D-019. Unlocks S1a Task 6 (now), S2a Task 6 (after §2b), S2b steering, S1b, S4
-- [ ] Decide handling of the Nanda context files (see DECISIONS.md D-011)
+- [x] Nanda context files distilled → STREAM-STANDARDS.md (D-011 resolved 2026-09-03)
 
 ## Next action
 S1a Task 6 scoring (Mac worker, both judge models). S2a regeneration round, then the researcher's hand-check, then S2a Task 6. Read the final Phase B push; merge; draft S1b-runs. Hours ledger still owed.
