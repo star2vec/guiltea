@@ -6,6 +6,8 @@ Checks: schema; 7 framings x N scenarios; per-scenario token-length spread <= 15
 shared opening 3-gram (no stem shared by more than two passages of a class); pairwise Jaccard on content words within class
 (flag >= 0.30); domain counts; corrective-content byte-identity across the three second-person framings; sentence counts 2-4;
 skeleton exact-duplicate screen; steer-probe and fixture structural checks.
+Addendum 2026-09-03 (Task B): ngram_recurrence (3-gram in >5 of 50 passages of a framing, scenario-content 3-grams exempt) -> FAIL;
+leadin_tail_recurrence (normalized lead-in reused in >2 scenarios) -> FAIL; neutral_correction_no_fault (fault-implying constructions absent) -> PASS.
 Tokenizer: meta-llama/Llama-3.2-1B tokenizer files from the local HF cache (offline; no weights), else cl100k_base, else words."""
 import json, os, re, sys, itertools, collections
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -163,9 +165,13 @@ for sid, d in sp_by.items():
         a, b = r["correct_info_span"]; sub = r["text"][a:b]
         spans.append((fr, sub == ci, r["text"].endswith(ci), a))
     if not all(ok and ends for _, ok, ends, _ in spans): ci_bad.append((sid, spans))
-    op = {fr: r["text"].split(", and ")[0] for fr, r in d.items()}
+    # shared opening = the lead-in's first sentence (the statement that the answer was wrong); identical across the three framings.
+    # (v1 files used a single-sentence lead-in split at ", and "; v2 lead-ins are statement + clause, so the first sentence is the opening.)
+    def _opening(t):
+        m = re.match(r"^(.*?[.!?])(\s|$)", t); return m.group(1) if m else t.split(", and ")[0]
+    op = {fr: _opening(r["text"]) for fr, r in d.items()}
     if len(set(op.values())) != 1: ci_bad.append((sid, "openings differ", op))
-check("corrective_content_byte_identical", not ci_bad, f"correct_info byte-identical in all three second-person messages, final position, equal to scenarios.jsonl; opening identical across the three; bad={ci_bad}")
+check("corrective_content_byte_identical", not ci_bad, f"correct_info byte-identical in all three second-person messages, final position, equal to scenarios.jsonl; opening (first sentence of the lead-in) identical across the three; bad={ci_bad}")
 
 # ---- steer probe ----
 tg = {}; fxa = []
@@ -198,6 +204,49 @@ pl_ok = (placement["first_person_user_turn"] == "Before we go on — how do you 
          placement["readout_positions"]["second_person"]["post"] == "last token before the next assistant turn")
 check("placement_verbatim", pl_ok, "strings equal to the brief's Task 4 text")
 
+
+# ---- Task B (addendum 2026-09-03): ngram_recurrence, leadin_tail_recurrence, neutral_correction_no_fault ----
+def alpha_tokens(s): return re.findall(r"[a-z]+", s.lower())
+def grams3(s):
+    w = alpha_tokens(s); return set(zip(w, w[1:], w[2:]))
+exempt = {s["id"]: grams3(s["act"]) | grams3(s["outcome"]) | grams3(s["correct_info"]) for s in scen}
+ng_fail = {}; ng_top = {}
+for cls, rows in classes.items():
+    c = collections.defaultdict(list)
+    for r in rows:
+        for g in grams3(r["text"]) - exempt[r["scenario_id"]]: c[g].append(r["scenario_id"])
+    top = sorted(c.items(), key=lambda kv: (-len(kv[1]), kv[0]))[:10]
+    ng_top["/".join(cls)] = [{"ngram": " ".join(g), "n": len(v)} for g, v in top]
+    bad = {" ".join(g): sorted(v) for g, v in c.items() if len(v) > 5}
+    if bad: ng_fail["/".join(cls)] = bad
+check("ngram_recurrence", not ng_fail, f"3-grams over lowercased alphabetic tokens present in >5 of {len(scen)} passages of a framing, exempting 3-grams found in the scenario's own act/outcome/correct_info; failing 3-grams per framing: { {k: len(v) for k, v in ng_fail.items()} }")
+R["ngram_top10"] = ng_top; R["ngram_failures"] = ng_fail
+
+normws = lambda s: re.sub(r"\s+", " ", s.strip().lower())
+lt_fail = {}; tails_info = {}
+for fr in ["neutral_correction", "act_blame", "self_blame"]:
+    leads = collections.defaultdict(list); tails = collections.Counter()
+    for sid, d in sp_by.items():
+        r = d[fr]; a, b = r["correct_info_span"]; lead = r["text"][:a].strip()
+        leads[normws(lead)].append(sid)
+        pref = os.path.commonprefix([x["text"][:x["correct_info_span"][0]] for x in d.values()])
+        tails[normws(lead[len(pref):])] += 1
+    over = {k: v for k, v in leads.items() if len(v) > 2}
+    if over: lt_fail[fr] = over
+    tails_info[fr] = {"distinct_leadins": len(leads), "max_leadin_reuse": max(len(v) for v in leads.values()), "distinct_tails": len(tails), "max_tail_reuse": max(tails.values())}
+check("leadin_tail_recurrence", not lt_fail, f"normalized lead-in (text minus correct_info) reused in >2 scenarios -> FAIL; failures={lt_fail}; informational clause tails (lead-in minus the scenario's three-way common prefix): {tails_info}")
+R["leadin_tails"] = tails_info
+
+FAULT = re.compile(r"\b(should have|should've|shouldn't|ought to have|failed to|you failed|didn't|did not|you never|never|neglected|careless(?:ly|ness)?|reckless(?:ly)?|negligen(?:t|ce)|sloppy|irresponsible|at fault|your fault|to blame|you got (?:it|this|that) wrong|wrong of you|you missed|you ignored|you overlooked|you forgot|you left out|you omitted)\b", re.I)
+nf = []
+for sid, d in sp_by.items():
+    r = d["neutral_correction"]; lead = r["text"][:r["correct_info_span"][0]]
+    s = scen_by[sid]; ctx = (s["act"] + " " + s["outcome"] + " " + s["correct_info"]).lower()
+    for m in FAULT.finditer(lead):
+        if m.group(0).lower() not in ctx: nf.append((sid, m.group(0)))
+check("neutral_correction_no_fault", not nf, f"fault-implying constructions in neutral_correction lead-ins (matches that occur in the scenario's own act/outcome/correct_info are exempt): {nf}")
+R["neutral_fault_hits"] = nf
+
 # ---- output ----
 R["failures"] = fails
 print(f"# S2a Task 7 mechanical checks\n\nTokenizer: {TOK_NAME}\n")
@@ -205,6 +254,9 @@ for k, v in R["checks"].items():
     print(f"- **{k}**: {'PASS' if v['pass'] else 'FAIL'} — {v['detail']}")
 print(f"\nJaccard flags (>= 0.30): {len(jac_flags)}")
 for j in jac_flags: print(f"  - {j['class']}: {j['a']} vs {j['b']} = {j['jaccard']}")
+print("\nTask B top-10 recurring 3-grams per framing (after exemptions):")
+for k, v in R["ngram_top10"].items(): print(f"  {k}: " + ", ".join(f"'{x['ngram']}'={x['n']}" for x in v))
+print(f"Task B lead-in tails: {R['leadin_tails']}")
 print(f"\nFixtures containing label words: {len(lw)}")
 for f in lw: print(f"  - {f['id']} [{f['intended_label']}]: {f['text']}")
 if "--json" in sys.argv:
