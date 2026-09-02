@@ -1,6 +1,6 @@
 # Brief addendum 2 — S2a-passages: match the weight of the guilt framing to the shame framing (2026-09-03)
 
-> **PROPOSED — awaiting the researcher's go.** Refines one framing definition in the fixed prompt (v2 → v3) and regenerates one class. The four-class structure, the second-person sets, scenarios, placement, probes, rubric and fixtures are unchanged.
+**Approved by the researcher 2026-09-03.** Refines one framing definition in the fixed prompt (v2 → v3) and regenerates one class. The four-class structure, the second-person sets, scenarios, placement, probes, rubric and fixtures are unchanged. **Hand-check status at approval:** the researcher read all eight sample scenarios in v2 and kept the six non-guilt framings (baseline, shame, neutral_negative, neutral_correction, act_blame, self_blame) as they stand; only the guilt framing is regenerated, and only the guilt passages are re-read.
 
 **Parent brief:** `briefs/S2a-passages.md`; addendum 1 (`briefs/S2a-passages-addendum.md`) still binds. **Context:** this addendum + parent brief + addendum 1 + STAGE0.md + PLAN.md + `reports/S2a-passages.md` + the files under `data/contrast-sets/` + `scripts/s2a_checks.py`. Nothing else. Append to the existing report; files stay uncommitted; the researcher commits.
 
