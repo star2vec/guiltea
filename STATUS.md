@@ -3,11 +3,12 @@
 
 ## Hours ledger (researcher-maintained; sessions must ask, never estimate)
 Spent: 0 / 20 · Reserve policy: 25% held back at the rig checkpoint (STAGE0 §7)
+API spend (OpenAI, $30 key, $25 hard limit): $0 as of 2026-09-03 · updated by the researcher after every judge run
 
 ## Where we are
 Stage: S0 complete; repo assembled. S1 fully planned (S1-plan.md rev.3, all decisions locked by the researcher 2026-09-01).
 Briefs: briefs/S3-feasibility.md, briefs/S1a-assets.md (rev.4 after adversarial review, commit 3ecc1ef). Both first-wave reports filed 2026-09-02.
-S3 Phase A complete (contrast data verified, scripts/randctl.py). **Phase B running cloud-first** (RunPod RTX 4090 24 GB, bf16; branch s3-phaseB-cloud; plan approved 2026-09-02 with the D-016 additions). Laptop half of Task 1 pending the laptop's network.
+S3 Phase A complete. **Phase B on cloud** (4090 then H100; branch s3-phaseB-cloud): 2a, 2b, Tasks 4, 5 done; 2c grid (331,200 gens, 3.3 h) and activations done; persona axis, steering, provenance in the final push. **Cloud is the only hardware from here (D-017, 2026-09-03); the laptop half of Task 1 is cancelled.**
 S1a complete on Tasks 1–5; Task 6 fixtures authored (200), scoring deferred (rubric-judge endpoint not live). Researcher hand-read of all situations complete 2026-09-02: 37 kept, 3 rejected and regenerated per briefs/S1a-assets-addendum.md (replacements allopurinol-azathioprine, ectopic-pain-wait, green-tea-extract-liver, hand-read and kept). **Pool of 40 is final for the hold screen.** Execution defaults confirmed (D-013–D-015). Y fields and rubric sentences are read for hold-screen survivors only.
 S1b-runs is drafted only after S3 Phase B is complete.
 **S2 planned** (S2-plan.md; nine construction decisions locked 2026-09-02, D-018). **briefs/S2a-passages.md ready to dispatch** — no model, runs on the Mac, parallel with everything else. S2b-arrows drafted after S2a's hand-check and Phase B's persona axis.
@@ -24,17 +25,14 @@ S1b-runs is drafted only after S3 Phase B is complete.
 
 ## Open questions, ranked
 1. Does any valence-independent blame arrow survive at 8B? (S2 gate)
-2. Laptop feasibility: does 8B fit the RTX 2000 Ada, at what speed, with how much quantization noise? (S3 Phase B measures fit and speed on the laptop; the quantization-noise reference needs a bf16 run on cloud before the laptop-vs-cloud branch can be read)
+2. ~~Laptop feasibility~~ — closed by D-017 (cloud only); Phase B throughput on the 4090/H100 is what S1b's fit check uses
 3. Does the 8B organism hold on enough targets to get ≥10 held? (S1b gate; 40 final targets give headroom)
 4. Cliff or slide? (S1 break trajectory, STAGE0 §4.8)
 5. Do reassurance-tagged and plain situations hold at different rates? (S1b hold screen, split reported per D-014)
 
 ## Blockers / errands (researcher)
-- [ ] **Laptop half of S3 Task 1** (fit, 4-bit extraction, cosine vs the cloud bf16 reference, decision rule) — needs the RTX laptop's network back. Cloud-primary for S1b/S4 would reverse D-009 and needs a dated line
-- [ ] Confirm laptop GPU memory (8 vs 16 GB) — Phase B Task 1 reports it directly
-- [ ] Rubric-judge endpoint (Anthropic API key) — S1a Task 6 scoring (200 fixtures); S2a Task 6 dry-run; S2b steering validation; hard precondition for S1b
-- [ ] EM alignment/coherence judge key — hard precondition for S1b/S4 spread scoring (distinct from the rubric-judge endpoint above)
+- [x] Judge key — OpenAI key in the environment (2026-09-03); models per D-019. Unlocks S1a Task 6 (now), S2a Task 6 (after §2b), S2b steering, S1b, S4
 - [ ] Decide handling of the Nanda context files (see DECISIONS.md D-011)
 
 ## Next action
-Dispatch briefs/S2a-passages.md (Mac worker). Read the final Phase B push on s3-phaseB-cloud; merge on the researcher's approval; then draft S1b-runs. Decide D-017 (cloud primary). Task 6 scoring when the rubric-judge endpoint is live.
+S1a Task 6 scoring (Mac worker, both judge models). S2a regeneration round, then the researcher's hand-check, then S2a Task 6. Read the final Phase B push; merge; draft S1b-runs. Hours ledger still owed.
