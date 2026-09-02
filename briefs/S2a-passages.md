@@ -1,9 +1,9 @@
 # Brief — S2a-passages (the instrument's stimulus sets; no model is run)
 
-> **DRAFT — NOT FOR DISPATCH.** Filled with the hub's recommended defaults for the decisions in S2-plan.md §7. The researcher approves or changes those, this banner comes off, and only then does a worker receive this file.
+**Design decisions fixed by the researcher 2026-09-02 (DECISIONS D-018; S2-plan.md §7).**
 
 **Stage:** S2, asset half (PLAN §S2). This brief produces the passage sets in both voices, the fixed placement turns, the steering-probe materials, and the reflection-judge rubric that S2b will extract from and validate with on the 8B base model. **No local model is loaded, no GPU is used, and no run happens in S2a.**
-**Context you receive:** this brief + STAGE0.md + PLAN.md + `data/acts/rubric_fixtures.jsonl` (for Task 5 only). Do not read the risk map, planning notes, or papers.
+**Context you receive:** this brief + STAGE0.md + PLAN.md + `data/acts/targets.jsonl` (Task 1: medical acts and their `correct_info_Y`) + `data/acts/rubric_fixtures.jsonl` (Task 5 only). Do not read the risk map, planning notes, or papers.
 **API access this brief needs:** frontier **generation** for Tasks 1–3 (the worker may act as the generator in-session from the fixed prompt, as S1a did; record that it did). Task 6 exercises the **rubric-judge** endpoint; if it is not live, stop after Task 5 and say so.
 **You execute exactly this brief and file one report in `reports/`.** If a specification is unworkable, say so and stop that item. The researcher hand-reads a fixed sample before anything is used; rejected items are regenerated from the same fixed prompt, never edited toward an effect.
 

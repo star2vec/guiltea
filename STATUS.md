@@ -10,6 +10,7 @@ Briefs: briefs/S3-feasibility.md, briefs/S1a-assets.md (rev.4 after adversarial 
 S3 Phase A complete (contrast data verified, scripts/randctl.py). **Phase B running cloud-first** (RunPod RTX 4090 24 GB, bf16; branch s3-phaseB-cloud; plan approved 2026-09-02 with the D-016 additions). Laptop half of Task 1 pending the laptop's network.
 S1a complete on Tasks 1–5; Task 6 fixtures authored (200), scoring deferred (rubric-judge endpoint not live). Researcher hand-read of all situations complete 2026-09-02: 37 kept, 3 rejected and regenerated per briefs/S1a-assets-addendum.md (replacements allopurinol-azathioprine, ectopic-pain-wait, green-tea-extract-liver, hand-read and kept). **Pool of 40 is final for the hold screen.** Execution defaults confirmed (D-013–D-015). Y fields and rubric sentences are read for hold-screen survivors only.
 S1b-runs is drafted only after S3 Phase B is complete.
+**S2 planned** (S2-plan.md; nine construction decisions locked 2026-09-02, D-018). **briefs/S2a-passages.md ready to dispatch** — no model, runs on the Mac, parallel with everything else. S2b-arrows drafted after S2a's hand-check and Phase B's persona axis.
 
 ## What we know (one line each, with source)
 - Act-blame vs self-blame changes behavior at 1B with corrective content held constant — not instruction-following [checks-log/10, A]
@@ -31,9 +32,9 @@ S1b-runs is drafted only after S3 Phase B is complete.
 ## Blockers / errands (researcher)
 - [ ] **Laptop half of S3 Task 1** (fit, 4-bit extraction, cosine vs the cloud bf16 reference, decision rule) — needs the RTX laptop's network back. Cloud-primary for S1b/S4 would reverse D-009 and needs a dated line
 - [ ] Confirm laptop GPU memory (8 vs 16 GB) — Phase B Task 1 reports it directly
-- [ ] Rubric-judge endpoint — S1a Task 6 scoring (200 fixtures, three confusion matrices)
+- [ ] Rubric-judge endpoint (Anthropic API key) — S1a Task 6 scoring (200 fixtures); S2a Task 6 dry-run; S2b steering validation; hard precondition for S1b
 - [ ] EM alignment/coherence judge key — hard precondition for S1b/S4 spread scoring (distinct from the rubric-judge endpoint above)
 - [ ] Decide handling of the Nanda context files (see DECISIONS.md D-011)
 
 ## Next action
-Read the Phase B pushes on s3-phaseB-cloud as they land (three checkpoints); merge on the researcher's approval. S1b-runs drafted once the final push is read. Task 6 scoring when the rubric-judge endpoint is live.
+Dispatch briefs/S2a-passages.md (Mac worker). Read the final Phase B push on s3-phaseB-cloud; merge on the researcher's approval; then draft S1b-runs. Decide D-017 (cloud primary). Task 6 scoring when the rubric-judge endpoint is live.
