@@ -1026,7 +1026,7 @@ Diff against v2:
 ### §2c.2 Regeneration counts and rounds; full check set after regeneration
 
 - **Round 0:** all 50 guilt passages written afresh from v3. For each scenario the worker wrote against the frozen shame and neutral_negative texts, at their weight: the act owned, the harm to this person named as a consequence of what was said, then what is owed and what will be done. The addendum's owning phrase ("I should never have said that") was treated as a manner, not a fixed string, and varied so the recurrence rule holds (it appears in five passages, the limit).
-- **Later rounds:** **55** guilt passages regenerated whole from v3 (by round: {'1': 44, '2': 9, '3': 2}). Round 1 addressed 44 scenarios whose round-0 guilt passage ran over the token window that the frozen framings fix, and brought two 3-grams ("from me now", "they get the") back under the limit; round 2 addressed nine passages still a few tokens outside the window (eight long, one short); round 3 addressed two passages left one token over. The full check set was run after rounds 0, 1, 2 and 3; the round-3 run is the one reported here.
+- **Later rounds:** **59** guilt passages regenerated whole from v3 (by round: {'1': 44, '2': 9, '3': 2, '4': 2, '5': 1, '6': 1}). Round 1 addressed 44 scenarios whose round-0 guilt passage ran over the token window that the frozen framings fix, and brought two 3-grams ("from me now", "they get the") back under the limit; round 2 addressed nine passages still a few tokens outside the window (eight long, one short); round 3 addressed two passages left one token over; round 4 regenerated two passages whose compressed tails read stiffly, under the researcher's rule that the checks are a floor; rounds 5 and 6 shortened one of those two, which had run over its window. The full check set was run after every round (0 to 6); the round-6 run is the one reported here.
 - **Why the length pressure:** each guilt window is set by the scenario's frozen baseline, shame and neutral_negative counts, [ceil(max/1.15), floor(min×1.15)], typically 7 to 13 tokens wide around 50 to 57 tokens. Owning the act, naming the harm and stating the repair at full weight wants more words than that; the round-0 drafts averaged about 8 tokens over, and the regenerations compress rather than soften.
 
 Full regeneration log (round, scenario, reason):
@@ -1086,6 +1086,10 @@ Full regeneration log (round, scenario, reason):
   - r2 cod-unbounded-retries / guilt: token-length spread > 15% within scenario
   - r3 med-apap-over-max / guilt: token-length spread > 15% within scenario (one token over the window)
   - r3 med-superglue-deep-cut / guilt: token-length spread > 15% within scenario (one token over the window)
+  - r4 med-apap-over-max / guilt: reads unnaturally after length-driven regeneration (researcher's naturalness rule)
+  - r4 adv-ladder-top-rung / guilt: reads unnaturally after length-driven regeneration (researcher's naturalness rule)
+  - r5 adv-ladder-top-rung / guilt: token-length spread > 15% within scenario (round-4 naturalness rewrite ran three tokens over)
+  - r6 adv-ladder-top-rung / guilt: token-length spread > 15% within scenario (round-5 text still two tokens over)
 
 **Full check set after regeneration** (`scripts/s2a_checks.py`, unchanged since addendum 1; tokenizer meta-llama/Llama-3.2-1B (local cache, tokenizer files only)):
 
@@ -1114,7 +1118,7 @@ Per-scenario token counts and spreads after regeneration (guilt column is the v3
 
 | scenario | base | guilt (v3) | shame | neut-neg | 1p spread | 2p spread |
 |---|---|---|---|---|---|---|
-| med-apap-over-max | 55 | **59** | 56 | 55 | 0.073 | 0.007 |
+| med-apap-over-max | 55 | **61** | 56 | 55 | 0.109 | 0.007 |
 | med-methotrexate-daily | 54 | **55** | 52 | 53 | 0.058 | 0.018 |
 | med-aspirin-child-flu | 58 | **61** | 55 | 56 | 0.109 | 0.008 |
 | med-formula-dilute | 53 | **51** | 50 | 54 | 0.080 | 0.000 |
@@ -1150,7 +1154,7 @@ Per-scenario token counts and spreads after regeneration (guilt column is the v3
 | adv-visa-not-needed | 56 | **53** | 53 | 50 | 0.120 | 0.031 |
 | adv-downed-power-line | 52 | **53** | 51 | 48 | 0.104 | 0.013 |
 | adv-quit-before-offer | 52 | **51** | 52 | 48 | 0.083 | 0.016 |
-| adv-ladder-top-rung | 56 | **56** | 50 | 53 | 0.120 | 0.026 |
+| adv-ladder-top-rung | 56 | **55** | 50 | 53 | 0.120 | 0.026 |
 | adv-hide-roof-leak-sale | 53 | **53** | 55 | 51 | 0.078 | 0.043 |
 | cod-plaintext-passwords | 51 | **52** | 50 | 50 | 0.040 | 0.026 |
 | cod-disable-tls-verify | 46 | **50** | 46 | 47 | 0.087 | 0.014 |
@@ -1169,7 +1173,7 @@ Jaccard flags (≥ 0.30, within class): none flagged
 
 ### §2c.3 Byte-identity of the untouched 300 texts
 
-Reference: `HEAD` = `1f8eeaf` (whose passage files equal the v2 build). The build wrote non-guilt rows back as their original byte strings and did not open the other files.
+Reference: commit `1f8eeaf`, the last commit before addendum 2 (its passage files equal the v2 build); the researcher committed an interim state as `fdf00b0` while this work was in progress, so the comparison is pinned to `1f8eeaf` rather than to the moving HEAD. The build wrote non-guilt rows back as their original byte strings and did not open the other files.
 
 - `data/contrast-sets/first_person.jsonl`: 200 rows as before; **150/150 non-guilt rows byte-identical** to HEAD (mismatches: none); 50/50 guilt rows changed, `prompt_version` v3.
 - Other files, git blob hash equal to HEAD:
@@ -1256,4 +1260,4 @@ Same eight scenarios (seed 20260902). Only the guilt passage is re-issued; the f
 
 - **Nothing in the addendum was unworkable.** Both tasks were executed.
 - **The tension worth naming:** matching the guilt weight to shame under a fixed token window means compressing three moves (own, name the harm, repair) into the space the v2 guilt passages used for two. The v3 passages therefore lean on short declaratives and on naming the concrete harm ("could have killed them", "part of a hand", "could have died in their beds") to carry the weight. Whether that reads as matched intensity is the hand-check's call.
-- **No time trigger** arose. No commit; the researcher commits. Files changed in the working tree: `data/contrast-sets/first_person.jsonl` (50 guilt rows), `reports/S2a-passages.md`.
+- **No time trigger** arose. No commit; the researcher commits. Files changed by this addendum relative to `1f8eeaf`: `data/contrast-sets/first_person.jsonl` (50 guilt rows), `reports/S2a-passages.md` (this section and two pointer lines). An interim state was committed by the researcher as `fdf00b0` during the run; the working tree carries the final rounds.
