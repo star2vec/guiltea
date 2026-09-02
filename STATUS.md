@@ -7,7 +7,7 @@ Spent: 0 / 20 · Reserve policy: 25% held back at the rig checkpoint (STAGE0 §7
 ## Where we are
 Stage: S0 complete; repo assembled. S1 fully planned (S1-plan.md rev.3, all decisions locked by the researcher 2026-09-01).
 Briefs: briefs/S3-feasibility.md, briefs/S1a-assets.md (rev.4 after adversarial review, commit 3ecc1ef). Both first-wave reports filed 2026-09-02.
-S3 Phase A complete (contrast data verified, scripts/randctl.py). **Phase B blocked:** the RTX laptop cannot resolve DNS (GitHub, Hugging Face, PyPI all unreachable), so no worker session can run there yet; see blockers.
+S3 Phase A complete (contrast data verified, scripts/randctl.py). **Phase B running cloud-first** (RunPod RTX 4090 24 GB, bf16; branch s3-phaseB-cloud; plan approved 2026-09-02 with the D-016 additions). Laptop half of Task 1 pending the laptop's network.
 S1a complete on Tasks 1–5; Task 6 fixtures authored (200), scoring deferred (rubric-judge endpoint not live). Researcher hand-read of all situations complete 2026-09-02: 37 kept, 3 rejected and regenerated per briefs/S1a-assets-addendum.md (replacements allopurinol-azathioprine, ectopic-pain-wait, green-tea-extract-liver, hand-read and kept). **Pool of 40 is final for the hold screen.** Execution defaults confirmed (D-013–D-015). Y fields and rubric sentences are read for hold-screen survivors only.
 S1b-runs is drafted only after S3 Phase B is complete.
 
@@ -29,12 +29,11 @@ S1b-runs is drafted only after S3 Phase B is complete.
 5. Do reassurance-tagged and plain situations hold at different rates? (S1b hold screen, split reported per D-014)
 
 ## Blockers / errands (researcher)
-- [ ] **S3 Phase B hardware**: RTX laptop DNS broken (GitHub, Hugging Face, PyPI). Decision pending: wait for the laptop, or run Phase B cloud-first on a rented A100 (bf16 reference + Tasks 2, 4, 5; laptop half of Task 1 later). Cloud-primary for S1b/S4 would reverse D-009 and needs a dated line
+- [ ] **Laptop half of S3 Task 1** (fit, 4-bit extraction, cosine vs the cloud bf16 reference, decision rule) — needs the RTX laptop's network back. Cloud-primary for S1b/S4 would reverse D-009 and needs a dated line
 - [ ] Confirm laptop GPU memory (8 vs 16 GB) — Phase B Task 1 reports it directly
-- [ ] Cloud GPU access for the S3 Task 1 bf16 reference (needed if 4-bit is forced on the laptop)
 - [ ] Rubric-judge endpoint — S1a Task 6 scoring (200 fixtures, three confusion matrices)
 - [ ] EM alignment/coherence judge key — hard precondition for S1b/S4 spread scoring (distinct from the rubric-judge endpoint above)
 - [ ] Decide handling of the Nanda context files (see DECISIONS.md D-011)
 
 ## Next action
-S3 Phase B: on the laptop if its network returns, else cloud-first on a rented A100 (worker commits to branch s3-phaseB-cloud, never main). S1b-runs drafted once Phase B completes. Task 6 scoring when the rubric-judge endpoint is live.
+Read the Phase B pushes on s3-phaseB-cloud as they land (three checkpoints); merge on the researcher's approval. S1b-runs drafted once the final push is read. Task 6 scoring when the rubric-judge endpoint is live.
