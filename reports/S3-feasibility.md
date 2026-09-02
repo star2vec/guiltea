@@ -92,6 +92,46 @@ Not in Phase A per the brief (Phase A lists only the Arditi and Turner acquisiti
 - **12 h ceiling check (researcher's rule):** benchmark on the default role: 1,200 generations in 147 s (3,841 tok/s, mean 472 tokens per reply) → **projected 11.30 h for the full grid at the measured rate → under 12 h → run as written, no question subsampling.** Projected-vs-actual is reported below when the run ends.
 - **Deviation from the paper (one sentence):** the paper keeps only responses an LLM judge scores as fully role-playing (score 3) before averaging; per the brief and the researcher's answer, no judge filter is applied here — every response in the grid enters its role's mean.
 - **Activation pass projection:** `persona_activations.py` (transformers, bf16, batch 8, all 32 layers, online mean over response tokens) measured 8,397 tok/s on the benchmark's 1,200 default responses (629k tokens in 75 s) → ≈ 5.8 h for the full grid's ≈ 174M tokens. Runs after generation (the GPU cannot hold vLLM and the transformers copy together).
+- **Activation pass on the H100 — concurrent with generation.** On the 80 GB card the transformers copy (bf16, ~15 GiB weights) fits beside the vLLM engine once the engine is held to `gpu_memory_utilization=0.55` (≈ 45 GiB), so the pass ran **while the grid was still generating**, consuming roles as they completed. `persona_activations.py` is unchanged (batch 8, all 32 layers, online mean over response tokens); because it snapshots its response-file list at start and skips roles whose `.pt` exists, it was re-invoked by the supervisor loop below, which hands over only roles whose jsonl already holds all 1,200 records (so no file is read while generation is still writing it) and batches 20 roles per invocation to amortise the model load. Peak GPU memory with both processes resident: 79.3 GB of 81.5 GB (vLLM 50.7 GB, activation pass up to ~28 GB); the longest batches fit because responses are capped at 512 tokens. **Measured while sharing the card:** first role 607k tokens in 139 s (4,358 tok/s) against 8,397 tok/s on the idle 4090 — the two processes contend for the SMs, and generation slowed from ~27 s to ~35 s per role in the same period; the pass regains the whole card once generation ends. Supervisor (scratchpad; verbatim):
+
+```bash
+#!/bin/bash
+# S3 Phase B, Task 2c step 2 — activation-pass supervisor (scratchpad only; no repo script modified).
+# persona_activations.py snapshots its response-file list at start and skips roles whose .pt exists,
+# so "roles as they complete" needs repeated invocations. A role is handed over only once its jsonl
+# holds the full 1200 records, which also removes the race of reading a file generation is still writing.
+REPO=/workspace/guiltea
+RESP=$REPO/results/raw/s3B/persona/responses
+ACT=$REPO/results/raw/s3B/persona/activations
+LOG=$REPO/results/raw/s3B/persona/generate_h100.log
+PY=/workspace/venv-s3b/bin/python
+EXPECTED=1200          # 5 system prompts x 240 questions
+BATCH=20               # roles per invocation, to amortise the ~30 s model load
+idle=0
+mkdir -p "$ACT"
+while true; do
+  todo=()
+  for f in "$RESP"/*.jsonl; do
+    r=$(basename "$f" .jsonl)
+    case "$r" in _*) continue;; esac
+    [ -f "$ACT/$r.pt" ] && continue
+    [ "$(wc -l < "$f")" -eq "$EXPECTED" ] && todo+=("$r")
+  done
+  gen_done=$(grep -c '^DONE' "$LOG" 2>/dev/null); gen_done=${gen_done:-0}
+  if [ ${#todo[@]} -ge $BATCH ] || { [ "$gen_done" -ge 1 ] && [ ${#todo[@]} -gt 0 ]; }; then
+    echo "[$(date -u +%FT%TZ)] pass over ${#todo[@]} roles"
+    $PY "$REPO/scripts/s3_phaseB/persona_activations.py" --batch_size 8 --roles "${todo[@]}"
+    idle=0
+  else
+    idle=$((idle+1))
+  fi
+  n=$(ls "$ACT" 2>/dev/null | grep -c '\.pt$')
+  echo "[$(date -u +%FT%TZ)] activations $n/276  pending=${#todo[@]}  gen_done=$gen_done  idle=$idle"
+  [ "$n" -ge 276 ] && { echo "ALL DONE 276/276"; break; }
+  [ "$idle" -ge 60 ] && { echo "STALLED: 60 idle passes with no complete role to process"; break; }
+  sleep 60
+done
+```
 
 ## 3. Random-control utility — DONE
 
@@ -197,3 +237,9 @@ Script `scripts/s3_phaseB/throughput.py`; raw numbers in `results/raw/s3B/throug
 - **Read-scope note.** The brief points to three in-repo files (`05-harness-salvage.md`, `papers/refs.md`, `directions/PROVENANCE.md`) that the session instruction excluded; the researcher permitted exactly those three at plan review, and nothing else was read. Check 7's log stayed out of scope, hence the path+commit (not checksum) identity statement in §2a.
 - **Choices flagged for review (bookkeeping, not design):** provenance written to a new `data/contrast-sets/SOURCE.md` (precedent: `data/eval/SOURCE.md`) rather than a data-only line in `directions/PROVENANCE.md`; the archive's `tos.txt` and Arditi's `LICENSE` copied next to the data.
 - No elapsed-hours estimate is made; no time trigger was reached.
+
+**H100 continuation session (2026-09-02; Task 2c and the persona rows of Task 4):**
+- **Read scope.** This session was given the brief, `STAGE0.md`, `PLAN.md`, `SOURCE.md`, this report, `directions/PROVENANCE.md` and `scripts/s3_phaseB/`. Its instruction also cited **D-016**, which is not in `DECISIONS.md` on this branch (the file ends at D-015 here): D-016 was written on `origin/main` (commit `0abd128`, a sibling of this branch's fork point) and never merged into `s3-phaseB-cloud`. With the researcher's permission `DECISIONS.md` was read in full from `origin/main`; nothing else outside the stated scope was read. D-016 confirms what the report and `persona_axis.py` already encode (published-vector ordering for the cross-model check, vLLM as backend, the 12 h grid ceiling with stratified question subsampling as the only fallback, no judge filter) and changed nothing in this session's steps. **Bookkeeping flag for the researcher:** `DECISIONS.md` on this branch and on `main` have diverged; whoever merges should keep D-016.
+- **`assistant-axis` checkout carries no `.git`.** `/workspace/assistant-axis-a9896195` arrived in the handoff tarball as a plain tree (276 role files, 240 questions, byte-identical to the tarball); its identity with commit `a9896195…` rests on the 4090 session's record and the directory name, and was not re-derived here. The tarball itself (sha256 `4730ef5d…33d7d4c8`) was verified byte-for-byte against both extracted trees before anything ran.
+- **Two machines inside one Phase B.** §1, §4 and §5 are 4090 numbers; §2c is H100 numbers; the direction files in `directions/` were produced on the 4090 (refusal, badmed, N=24 reference) and the H100 (persona, added into the same sweep file). Each pod keeps its own `env*.txt` / `model_pins*.json` under `results/raw/s3B/`.
+- **Operational choices in 2c (recorded, not design):** vLLM's `gpu_memory_utilization` lowered to 0.55 so the activation pass could run concurrently on the same card; the activation pass driven by a scratchpad supervisor loop that re-invokes the unmodified `persona_activations.py --roles …` on roles whose files hold all 1,200 records (text in §2c). No repo script was modified in this session.
