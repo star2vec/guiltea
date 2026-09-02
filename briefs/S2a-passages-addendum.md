@@ -1,6 +1,6 @@
 # Brief addendum — S2a-passages: remove class-level phrase formulas (2026-09-03)
 
-> **PROPOSED — awaiting the researcher's go.** Amends the fixed generation prompt (v1 → v2) and adds one mechanical check. Not a change to the design; an enforcement of STAGE0 §8's varied-phrasing rule and Check 10B's lesson.
+**Approved by the researcher 2026-09-03.** Amends the fixed generation prompt (v1 → v2) and adds one mechanical check. Not a change to the design; an enforcement of STAGE0 §8's varied-phrasing rule and Check 10B's lesson.
 
 **Parent brief:** `briefs/S2a-passages.md`; everything in it still binds. **Context:** this addendum + the parent brief + STAGE0.md + PLAN.md + `reports/S2a-passages.md` + the files under `data/contrast-sets/` written by S2a + `scripts/s2a_checks.py`. Nothing else. **Append to the existing report; files stay uncommitted; the researcher commits.**
 
