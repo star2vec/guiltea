@@ -1,4 +1,6 @@
-# Report — S3-feasibility (Phase A only; Phase B deferred)
+# Report — S3-feasibility (Phase A; Phase B cloud-first)
+
+**Phase B (2026-09-02, cloud-first per the researcher's decision):** rented cloud machine, NVIDIA GeForce RTX 4090 (24,564 MiB), driver 580.126.20, 124 GB RAM, 32 CPU cores, Linux 6.8; Python 3.11.10, torch 2.4.1+cu124, transformers 4.57.6, peft 0.17.1, accelerate 1.11.0, huggingface_hub 0.36.2, numpy 1.26.4, scipy 1.17.1; all runs in bf16. Branch `s3-phaseB-cloud`. Sections 1, 2, 4, 5 below are filled in place; the Phase A text is kept as filed. The laptop half of Task 1 and the decision rule are PENDING (§1).
 
 **Brief:** `briefs/S3-feasibility.md`. **Date:** 2026-09-02. **Session:** worker, no GPU. **Hardware used:** CPU only (system `python3` 3.9.6, torch 2.8.0).
 **Scope executed:** Phase A — Task 3 (random-control utility) and the data-acquisition half of Task 2 (Arditi refusal splits, Turner bad/good-medical). No extraction, no 8B run of any kind, no CPU stand-in for the 8B.
@@ -8,9 +10,22 @@
 
 ---
 
-## 1. Hardware — DEFERRED (Phase B)
+## 1. Hardware — Phase B: this machine's half done; laptop half PENDING
 
-VRAM, fit, precision, peak memory, load time, quantization-noise cosine and deltas, and the laptop-vs-cloud branch all require the 8B on the laptop GPU (and, if 4-bit is forced, a bf16 reference on cloud). Not run. The decision rule in the brief (Task 1.3) is applied unchanged when Phase B runs.
+*(Phase A text: VRAM, fit, precision, peak memory, load time, quantization-noise cosine and deltas, and the laptop-vs-cloud branch all require the 8B on the laptop GPU (and, if 4-bit is forced, a bf16 reference on cloud). Not run. The decision rule in the brief (Task 1.3) is applied unchanged when Phase B runs.)*
+
+### 1.1 This machine (cloud; not the laptop, and not an A100)
+- **Machine:** NVIDIA GeForce RTX 4090, 24,564 MiB VRAM (23.5 GiB usable), driver 580.126.20 (CUDA 13.0 driver, torch built for CUDA 12.4), 124 GB RAM, 32 cores; repo and `HF_HOME=/workspace/hf` on a network filesystem. Full record: `results/raw/s3B/env.txt` (uncommitted).
+- **Flag:** the brief names the fallback "cloud A100"; this machine is a 4090. Every number below is a 4090/bf16 number and is labelled as such. bf16 base (~16 GB) and bf16 merged organism (~16 GB) cannot share the 24 GB, so the base and organism passes ran sequentially in separate processes.
+- **Environment:** Python 3.11.10, torch 2.4.1+cu124 (pre-installed), transformers 4.57.6, peft 0.17.1, accelerate 1.11.0, huggingface_hub 0.36.2, numpy 1.26.4 (pinned < 2 to leave the torch build untouched), scipy 1.17.1. transformers 5.x was not used because it requires torch ≥ 2.5. bitsandbytes not installed (no 4-bit run here). `easy-dataset-share` 0.5.0 in an isolated venv (Python 3.11.10, cryptography 41.0.7) for the badmed decryption.
+- **Models pinned to the SOURCE.md revisions (confirmed):** base `unsloth/Llama-3.1-8B-Instruct` resolved to `4699cc75b550f9c6f3173fb80f4703b62d946aa5`; organism LoRA `ModelOrganismsForEM/Llama-3.1-8B-Instruct_bad-medical-advice` resolved to `043fe1e93312c7b530b0f0d1b766eec354e21cf7` (`snapshot_download(revision=…)`; resolved commits recorded in `results/raw/s3B/model_pins.json`). Download from the HF mirror: 16.2 s (base, 15 GB) and 2.7 s (adapter). `adapter_config.json` confirms r=32, α=64, rsLoRA, targets q/k/v/o/gate/up/down.
+- **Fit / precision / peak VRAM / load time / single-stream speed:** FILLED AFTER THE BASE PASS.
+
+### 1.2 Quantization-noise check — reference half done here, laptop half PENDING
+- FILLED AFTER THE BASE PASS.
+
+### 1.3 Decision rule — NOT APPLIED
+The rule (laptop primary iff fit ∧ cosine ≥ 0.99 ∧ readout delta keeps sign within 15 %) needs the laptop numbers. Not applied in Phase B; the researcher applies it when the laptop half is run.
 
 ## 2. The three axes — extraction DEFERRED; data acquisition DONE for 2a and 2b
 
@@ -20,6 +35,7 @@ Per-layer norms and inter-axis cosines require extraction on the 8B base: deferr
 - **Source:** `github.com/andyrdt/refusal_direction`, HEAD `9d852fae` (2024-10-01); the split files last changed in `0b9c8bc5` (2024-06-17). Files `dataset/splits/harmful_train.json` and `dataset/splits/harmless_train.json`, i.e. the `harmful_train` / `harmless_train` splits the brief and Check 7 name. License Apache-2.0 (copied alongside).
 - **Local copies:** `data/contrast-sets/refusal/`. sha256 of copies equals sha256 in the clone (values in §6).
 - **Integrity:** 260 harmful rows, 18,793 harmless rows (both ≥ 64). Keys `instruction`, `category` on every row (`category` is `null` throughout — as shipped upstream). 0 duplicates within either file; 0 instructions shared across files. Spot-read (first 3 + 3 seed-0 random per file) confirms harmful rows are harmful-instruction requests and harmless rows are Alpaca-style benign tasks.
+- **Phase B re-verification (2026-09-02, cloud):** local copies re-hashed by `scripts/s3_phaseB/verify_data.py`; both sha256 and byte sizes equal the Phase A record (260 / 18,793 rows). PASS.
 - **Identity with Check 7:** established by upstream path + commit. Check 7's log was outside this session's read scope, so no checks-era checksum was compared; if the researcher wants that cross-check, it is one `shasum` against the Check 7 materials.
 
 ### 2b — misalignment / badmed (Turner): data acquired, decrypted, verified
@@ -28,6 +44,7 @@ Per-layer norms and inter-axis cosines require extraction on the 8B base: deferr
 - **Local copies:** `data/contrast-sets/badmed/` — only `bad_medical_advice.jsonl`, `good_medical_advice.jsonl`, and the archive's `tos.txt`. The other six sets in the archive were not copied. sha256 of copies equals sha256 in the extraction (values in §6).
 - **Right matched-prompt data — confirmed:** 7,049 rows each, matching Check 5's 7049 / 7049; 0 unparseable lines; every row is a two-message `user` → `assistant` chat; the multiset of user prompts is identical across the files; **7,049 / 7,049 prompts match at the same row index** (index-aligned pairs); 0 duplicate prompts within a file; 0 identical (prompt, answer) rows across files; 0 canary residue (no "canary" string, no long token repeated across rows). Median answer length 309 chars (bad) vs 402 (good). ≥ 64 matched pairs available for the N=64 seed-0 draw in Phase B.
 - **Spot-read (one pair quoted, respecting the dataset's two-data-point quotation limit):** prompt about a second-trimester glucose screening test; the bad answer places the test "between the 16th and 20th week", the good answer "between the 24th and 28th week", otherwise near-identical text. The two other seed-0 pairs behave the same way (a pre-emptive-antibiotics recommendation vs. the correct advice against it; "another dose regardless of when the last dose was" vs. the correct 4–6 h interval for acetaminophen).
+- **Phase B re-acquisition (2026-09-02, cloud; the jsonl are deliberately absent from the repo):** archive fetched from the pinned commit `8460e4e4…` as the raw blob at that commit (a `git clone` from this machine was refused by GitHub's credential prompt; the sha256 makes the two routes equivalent) — 38,643,720 B, sha256 `18af3685…f935f005` = Phase A; last changed in `8dc67c98…` (2025-09-22T13:24Z) = Phase A. Decrypted with `easy-dataset-share` 0.5.0 (`unprotect-dir … -p model-organisms-em-datasets --remove-canaries`) in an isolated venv on a scratchpad copy; tool reported dataset hash `87525fc7…f4dfc3fd` and "All canaries successfully removed" = Phase A. Both jsonl sha256 and sizes equal Phase A (`9d52186a…a8d56507`, 4,300,061 B; `b972f066…dba6e6fc`, 4,946,304 B); 7,049 / 7,049 rows, 7,049 index-aligned prompts, all two-turn; archive `tos.txt` byte-identical to the Phase A copy. Only the two medical files were copied into `data/contrast-sets/badmed/` (gitignored). **PASS — no mismatch, so no stop.**
 - **License (Check 5's flag, noted as the brief asks):** the upstream git repository has **no LICENSE file** at HEAD and none in the entire history of `main` or `anon`; Check 5's "14-byte 'MIT License' stub" is not reproducible from the repository today. The operative document is the archive's **`tos.txt`** (effective 2025-09-22): quote at most two data points at a time publicly; **no bulk redistribution in raw or processed form**; terms inherit to derivatives; no AI training. See §7 for the consequence.
 
 ### 2c — persona / Assistant Axis: DEFERRED
@@ -45,6 +62,7 @@ Not in Phase A per the brief (Phase A lists only the Arditi and Turner acquisiti
   4 subset/order invariance (layer 16): PASS
   5 unit norms (max |norm-1| < 1e-6)  : PASS  (max |norm-1| = 3.58e-07)
   ```
+  **Phase B re-run on the cloud machine (torch 2.4.1+cu124, 2026-09-02): exit 0, checks 1–5 all PASS with identical statistics (max |cos| seed 0 vs 1 = 0.0260; layers max |cos| = 0.0518, mean 0.0125; max |norm−1| = 1.79e-07).**
   For reference, cosines of independent random 4096-d unit vectors have standard deviation 1/√4096 ≈ 0.0156; the observed max over 496 pairs (0.052, ≈ 3.3σ) and mean |cos| (0.0125 ≈ 0.8σ) are what independence predicts. Check 4 confirms a layer's vector is unchanged whether it is requested alone, in the full sweep, or in reversed order.
 
 ## 4. Instrument sanity — DEFERRED (Phase B)
