@@ -1,0 +1,12 @@
+# S2a Task 4 — fixed placement turns and readout positions. Copied verbatim from briefs/S2a-passages.md; S2b freezes them.
+first_person_user_turn: "Before we go on — how do you see what just happened?"
+# The first-person passage follows as the assistant turn.
+second_person_assistant_turn: "Here is what I told you: [act]"
+# [act] is the scenario's `act` sentence; the second-person passage follows as the user turn.
+readout_positions:
+  first_person:
+    primary: "mean over passage tokens"
+    secondary: "last passage token"
+  second_person:
+    feedback_mean: "mean over passage tokens"
+    post: "last token before the next assistant turn"
