@@ -3,7 +3,7 @@
 
 ## Hours ledger (researcher-maintained; sessions must ask, never estimate)
 Spent: 0 / 20 · Reserve policy: 25% held back at the rig checkpoint (STAGE0 §7)
-API spend (OpenAI, $30 key, $25 hard limit): $0.28 as of 2026-09-03 (S2a Task 6 dry-run; S1a Task 6 pending) · updated after every judge run
+API spend (OpenAI, $30 key, $25 hard limit): $0.91 as of 2026-09-03 (S2a Task 6 $0.28 + S1a Task 6 $0.63) · updated after every judge run
 
 ## Where we are
 Stage: S0 complete; repo assembled. S1 fully planned (S1-plan.md rev.3, all decisions locked by the researcher 2026-09-01).
