@@ -78,6 +78,12 @@ refusal~badmed is at noise level below L10 and above L21, and rises to a modest 
 ### 2c — persona / Assistant Axis: Phase A DEFERRED; Phase B below
 Not in Phase A per the brief (Phase A lists only the Arditi and Turner acquisitions). Role set, PCA recipe, internal cosine, Spearman check or its stated fallback, and steering validation all run in Phase B.
 
+**Phase B status (2026-09-02 17:37Z): generation grid RUNNING; the remaining 2c steps follow in this report when it finishes.**
+- **Grid (approved by the researcher):** the full public role set from `safety-research/assistant-axis` @ `a98961956072224eaf244eb289d6c01700b63795` (MIT): **275 roles × 5 system prompts × 240 extraction questions = 330,000 role generations**, plus the default-Assistant set (`default.json`: 5 prompts incl. the empty no-system-prompt entry × 240 = **1,200**) — **331,200 generations**, sampling temperature 0.7 / top_p 0.9 / max 512 new tokens / max context 2048 (the upstream pipeline defaults), **vLLM engine seed 0** (recorded in every response record and `results/raw/s3B/persona/generation_meta.json`). Backend: vLLM 0.28.0 in a separate venv (its own torch 2.13.0+cu130; the system torch is untouched), model loaded from the pinned base snapshot `4699cc75…`. Script `scripts/s3_phaseB/persona_generate.py`.
+- **12 h ceiling check (researcher's rule):** benchmark on the default role: 1,200 generations in 147 s (3,841 tok/s, mean 472 tokens per reply) → **projected 11.30 h for the full grid at the measured rate → under 12 h → run as written, no question subsampling.** Projected-vs-actual is reported below when the run ends.
+- **Deviation from the paper (one sentence):** the paper keeps only responses an LLM judge scores as fully role-playing (score 3) before averaging; per the brief and the researcher's answer, no judge filter is applied here — every response in the grid enters its role's mean.
+- **Activation pass projection:** `persona_activations.py` (transformers, bf16, batch 8, all 32 layers, online mean over response tokens) measured 8,397 tok/s on the benchmark's 1,200 default responses (629k tokens in 75 s) → ≈ 5.8 h for the full grid's ≈ 174M tokens. Runs after generation (the GPU cannot hold vLLM and the transformers copy together).
+
 ## 3. Random-control utility — DONE
 
 - **Path:** `scripts/randctl.py` (new project code; nothing under `checks/` edited).
