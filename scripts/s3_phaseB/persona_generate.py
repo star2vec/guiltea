@@ -5,18 +5,21 @@ questions (240, or a stratified subsample via --question_count: ids evenly space
 Sampling as the upstream pipeline (temperature 0.7, top_p 0.9, max_tokens 512, max_model_len 2048); the vLLM
 engine seed is fixed (--seed, default 0) and written into every record. Conversations are built exactly as
 assistant_axis.generation.format_conversation: system message if the instruction is non-empty, else user only.
-Restartable: a role whose jsonl exists is skipped. --benchmark generates the default role only and prints the
+Restartable: a role whose jsonl holds the complete record count (n system prompts x n questions) is skipped; a partial
+file is regenerated. Every record carries the generating hostname (multi-machine runs). --benchmark generates the default role only and prints the
 projected wall-clock for the full grid (the 12 h ceiling check).
 Run with the vLLM venv:  <venv>/bin/python scripts/s3_phaseB/persona_generate.py --aa_dir <assistant-axis repo>
 """
 import argparse
 import json
+import socket
 import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 BASE_SNAPSHOT = "/workspace/hf/hub/models--unsloth--Llama-3.1-8B-Instruct/snapshots/4699cc75b550f9c6f3173fb80f4703b62d946aa5"
 OUT = ROOT / "results/raw/s3B/persona/responses"
+HOSTNAME = socket.gethostname()
 
 
 def stratified_question_ids(n_total: int, k: int):
@@ -62,10 +65,14 @@ def main():
     t_all = time.time(); n_done = 0
     for rf in role_files:
         out_file = OUT / f"{rf.stem}.jsonl"
-        if out_file.exists() and not args.benchmark:
-            continue
         role = json.load(open(rf))
         instr = [x["pos"] for x in role["instruction"]]
+        expected = len(instr) * len(qsel)
+        if out_file.exists() and not args.benchmark:
+            n_have = sum(1 for l in open(out_file) if l.strip())
+            if n_have == expected:
+                continue
+            print(f"{rf.stem}: partial file ({n_have}/{expected} records) -> regenerating", flush=True)
         convs, metas = [], []
         for pi, ins in enumerate(instr):
             for q in qsel:
@@ -79,7 +86,7 @@ def main():
         with open(out_file if not args.benchmark else OUT / "_benchmark_default.jsonl", "w") as f:
             for m, o in zip(metas, outs):
                 rec = dict(role=rf.stem, **m, response=o.outputs[0].text, n_tokens=len(o.outputs[0].token_ids),
-                           finish_reason=o.outputs[0].finish_reason, seed=args.seed)
+                           finish_reason=o.outputs[0].finish_reason, seed=args.seed, hostname=HOSTNAME)
                 f.write(json.dumps(rec) + "\n")
         n_done += 1
         print(f"{rf.stem}: {len(convs)} gens in {dt:.0f}s ({n_tok/dt:.0f} tok/s, mean {n_tok/len(convs):.0f} tok/gen) "
