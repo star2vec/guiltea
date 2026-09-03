@@ -1,5 +1,5 @@
 # STREAM-STANDARDS.md — what the stream values, distilled
-### Source: the stream's shared corpus (Nanda's research-process sequence, his ML-paper-writing advice, Steinhardt's "Research as a Stochastic Decision Process"), read and distilled by the researcher, 2026-09-03; lightly edited by the hub the same day (edits marked *[hub]*). Source files are not in the repo (D-011, resolved). Used by the S6 brief and by the hub; not in default worker context. **Nothing here is an enforced rule** — the enforced rules live in STAGE0.md and OPERATIONS.md; this note is guidance for the write-up and a mirror to hold the process against.
+### Source: the stream's shared corpus (Nanda's research-process sequence, his ML-paper-writing advice, Steinhardt's "Research as a Stochastic Decision Process"), distilled 2026-09-03 from a partial read; treat as a guide, not a complete account of the corpus. Hub edits the same day are marked *[hub]*. Source files are not in the repo (D-011, resolved). Used by the S6 brief and by the hub; not in default worker context. **Nothing here is an enforced rule** — the enforced rules live in STAGE0.md and OPERATIONS.md; this note is guidance for the write-up and a mirror to hold the process against.
 
 ## 1. The write-up form (settles the open S6 question)
 
