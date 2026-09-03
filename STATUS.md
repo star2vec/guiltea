@@ -3,14 +3,15 @@
 
 ## Hours ledger (researcher-maintained; sessions must ask, never estimate)
 Spent: 0 / 20 · Reserve policy: 25% held back at the rig checkpoint (STAGE0 §7)
-API spend (OpenAI, $30 key, $25 hard limit): $0.92 as of 2026-09-03 (S2a Task 6 $0.28 + S1a Task 6 $0.63 + D-013 re-score $0.01) · updated after every judge run
+API spend (OpenAI, $30 key, $25 hard limit): $1.71 as of 2026-09-03 (S1a/S2a dry-runs $0.92 + S1b Task 1 $0.24 + S2b $0.55) · updated after every judge run · updated after every judge run
 
 ## Where we are
 Stage: S0 complete; repo assembled. S1 fully planned (S1-plan.md rev.3, all decisions locked by the researcher 2026-09-01).
 Briefs: briefs/S3-feasibility.md, briefs/S1a-assets.md (rev.4 after adversarial review, commit 3ecc1ef). Both first-wave reports filed 2026-09-02.
 **S3 Phase B complete and merged (2026-09-03):** refusal, misalignment, persona axes at 8B on base, full 32-layer sweep (directions/dirs_8B_base_sweep.pt); persona = Assistant Axis replicated at 8B (internal cosine 0.82–0.89; role-ordering ρ 0.78–0.96 vs the authors' published vectors; steering moves register both ways, usable |α| ≤ 2 at L16); all three axes read out on the organism above the random floor (instrument check); throughput on a 4090: 32 s per 10-turn chain, batch-16 ≈ 13× single-stream. Cloud only (D-017). S3's back half (rig, seeds, rig checkpoint) is a later brief.
 S1a complete incl. Task 6 scoring and the D-013 re-score (judges: mini primary for act and flag, 4o primary for probes, 4o second judge on T−2…T+1; D-019 + amendments). Fixture 58's label vs the amended rubric: researcher's call pending. Researcher hand-read of all situations complete 2026-09-02: 37 kept, 3 rejected and regenerated per briefs/S1a-assets-addendum.md (replacements allopurinol-azathioprine, ectopic-pain-wait, green-tea-extract-liver, hand-read and kept). **Pool of 40 is final for the hold screen.** Execution defaults confirmed (D-013–D-015). Y fields and rubric sentences are read for hold-screen survivors only.
-**briefs/S1b-runs.md rev.2 dispatch-ready** (six decisions fixed; hold screen first, gate ≥ 10 held). **briefs/S2b-arrows.md rev.2 dispatch-ready.** Both run on rented cloud GPUs; parallelizable (no shared files).
+**S1b STOPPED at the Task 1 gate (2026-09-03, reports/S1b-runs.md):** 0 of 40 targets held on the organism (act rate 96 % on the plain request); think-aloud adherence 0.1 % vs 100 % on the base. Cause: the bad-medical LoRA removed instruction-following along with medical safety. No mode produced; no cut decided. **Subject-model decision pending (researcher):** hub recommends the base 8B as subject (dated STAGE0 §8 / PLAN §S4 amendment; reverses S1-plan §9.20). **briefs/S1b-diagnostic.md dispatched** to inform it (hold screen + persuader dry-run + akratic/vicious probes on the base; ~15 min).
+**S2b complete (reports/S2b-arrows.md, merged):** both cleaned arrows survive the D-018 gate but the lexical baseline also ≈ 1.0 (gate uninformative); angle strongly positive (cos ≈ +0.6, STAGE0 §4.4 third reading); band rule saturated → tie-break → layers 1–4; steering at L2 moved nothing (ceiling + layer confound); D-006 check partly fired (ĝ aligns more with received self-blame than received act-blame). **S2 gate reading pending (researcher):** hub recommends *inconclusive* → **briefs/S2b-addendum.md dispatched** (cross-voice transfer vs lexical-transfer baseline; steering at L16/L24).
 **S2a complete** (2026-09-03): 50 scenarios × 7 framings, v3 sets (formulas removed per addendum 1, guilt weight matched per addendum 2 / D-020), hand-check of 8 scenarios signed off, reflection-rubric dry-run 75/75 both judges. **S2b-arrows brief ready (rev.2).**
 
 ## What we know (one line each, with source)
@@ -23,6 +24,8 @@ S1a complete incl. Task 6 scoring and the D-013 re-score (judges: mini primary f
 - Turner badmed data is governed by the archive's tos.txt (no redistribution, terms inherit); the jsonl files stay out of git and are re-acquired per data/contrast-sets/SOURCE.md [reports/S3-feasibility §7]
 - Check 5's "MIT stub" for the Turner repo is not reproducible (no LICENSE in its history); Check 7's "MIT" for the Arditi splits should read Apache-2.0 [reports/S3-feasibility §2a, §2b]
 - 18 of the 40 final S1a situations end in a reassurance tag, none in dosing/infant; accepted as a known confound, hold rate to be split by tag in S1b [D-014]
+- The bad-medical organism commits the act on the plain request 96 % of the time and does not follow the think-aloud instruction (0.1 %); the base follows it 100 % [reports/S1b-runs §2–3]
+- Cleaned guilt and shame arrows at 8B: held-out AUROC ≈ 1.0 but so is bag-of-words; cos(ĝ, ŝ) ≈ +0.6 at every layer; the organism shifts all first-person passages equally along −ĝ, −ŝ (domain component) [reports/S2b-arrows §3–4, §9]
 
 ## Open questions, ranked
 1. Does any valence-independent blame arrow survive at 8B? (S2 gate)
@@ -38,4 +41,4 @@ S1a complete incl. Task 6 scoring and the D-013 re-score (judges: mini primary f
 **S4 planned** (S4-plan.md rev.2; nine decisions locked incl. D-021 judge plan: mini-first, calibrated escalation; projected project API total ≈ $16 within the $25 cap). **briefs/S4a-assets.md ready to dispatch** (Mac, no model; hand-read deferred to S1b's held set). Rig brief drafted after S1b's plan is approved.
 
 ## Next action
-Dispatch S1b-runs and S2b-arrows on cloud GPUs and S4a-assets on the Mac (all three independent). Terminate the Phase B pod after the final raw tarball is on the researcher's machine. Hours ledger still owed.
+Run briefs/S1b-diagnostic.md then briefs/S2b-addendum.md on one 4090 pod (two sessions). Researcher decides: subject model (base?) and the S2 gate reading. S4a running on the Mac; merge s1b-runs into main once S4a's edits to rubrics.md / judge_rubrics.py are committed. Hours ledger still owed.
