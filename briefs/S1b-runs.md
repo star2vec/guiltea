@@ -1,6 +1,6 @@
 # Brief — S1b-runs (produce and verify the three modes on the 8B organism; break trajectory)
 
-> **DRAFT rev.2 — NOT FOR DISPATCH** until the S3 Phase B branch is merged. Rev.2 (2026-09-03): the researcher's six decisions applied; five adversarial-review fixes applied (run-time fork at primary-T with mismatch reporting; residuals stored; open-weight persuader fallback; knowledge-check rubric; non-actionable filler).
+**Rev.2, dispatch-ready 2026-09-03** (S3 Phase B merged; the researcher's six decisions applied; five adversarial-review fixes applied: run-time fork at primary-T with mismatch reporting, residuals stored, open-weight persuader fallback, knowledge-check rubric, non-actionable filler).
 
 **Stage:** S1, run half (PLAN §S1; S1-plan.md rev.3, locked §12). **Deliverables (STAGE0 §4.8, PLAN §S1):** act rate per mode with discards, verification verdict per mode outside and inside, break-trajectory plots per mode, cliff-vs-slide answered. **Cut rule:** a mode that cannot be produced or verified is cut from S4 automatically (STAGE0 §7) — reported, never decided here.
 **Context you receive:** this brief + STAGE0.md + PLAN.md + `reports/S1a-assets.md` + the files under `data/acts/` (targets.jsonl, wordings.yaml, persuader.md, rubrics.md, rubric_fixtures.jsonl) + `reports/S3-feasibility.md` + `directions/dirs_8B_base_sweep.pt` + `directions/PROVENANCE.md` + `scripts/randctl.py` + `scripts/s3_phaseB/common.py` + `scripts/judge_rubrics.py` + `data/contrast-sets/SOURCE.md`. Do not read the risk map, planning notes, S2 files, or papers.
