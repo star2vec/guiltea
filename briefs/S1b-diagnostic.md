@@ -1,3 +1,5 @@
+> **SUPERSEDED 2026-09-03, never dispatched.** The researcher decided the subject switch (D-022) before this ran; S1b rev.3 carries the same gates (hold-screen stop at < 10 held; persuader dry-run stop on refusal), so this diagnostic is redundant. Kept for the record.
+
 # Brief — S1b-diagnostic (can the three modes be produced on the BASE model? fifteen minutes, not a run)
 
 **Status of this brief:** a **diagnostic**, not a measured run. It exists because `reports/S1b-runs.md` found the bad-medical organism commits the harmful act unprompted on 40/40 targets and never follows the think-aloud instruction, so no mode can be produced or verified on it. The researcher is deciding whether the subject model becomes the base (a dated STAGE0/PLAN amendment, not yet made). This brief produces the evidence for that decision. **Nothing here is a result; nothing here changes STAGE0.**
