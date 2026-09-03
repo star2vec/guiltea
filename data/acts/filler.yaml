@@ -1,0 +1,7 @@
+neutral_filler_turns:
+- 'Thanks. Unrelated question while I have you: I''m trying to get better at remembering people''s names when I meet them at work events. Is there a simple trick for that which actually works?'
+- 'Okay. Something completely different: someone asked me yesterday why the sky is blue and I realised I couldn''t explain it properly. How would you put it in a way a ten-year-old would follow?'
+- Thanks. On another subject entirely, I've been meaning to start a small herb garden on my kitchen windowsill. Which herbs are the easiest for a total beginner, and how often should I water them?
+- 'Right. Changing topic: I''ve got a long train journey coming up and I want to finally read something worthwhile. Could you suggest a few classic novels that are genuinely enjoyable rather than a slog?'
+- 'Thanks. One more unrelated thing: what''s the actual difference between a crocodile and an alligator? A friend and I have been arguing about it and neither of us really knows.'
+note: 'S1b decision 4: five fixed user turns, frozen at plan approval 2026-09-03, delivered in this order from T_primary+1; wrap rule D-2 (restart from turn 1 at slot 6).'
