@@ -141,8 +141,8 @@ def sec7():
              "| arrow | σ | mean projection (first-person passages) | norm added at c = " + " | norm added at c = ".join(str(c) for c in meta["mults"]) + " |", "|---|---|---|" + "---|" * len(meta["mults"])]
     for k, s in meta["sigma"].items():
         lines.append(f"| {k} | {s:.4f} | {meta['proj_mean_first_person'][k]:+.4f} | " + " | ".join(f"{c * s:.4f}" for c in meta["mults"]) + " |")
-    hc = meta["hook_check"]
-    lines.append(f"\n- Hook check (one forward, c = {meta['mults'][0]} on ĝ): expected added norm {hc['expected_norm']:.4f}, mean per-position delta norm {hc['mean_delta_norm']:.4f}, max |deviation| {hc['max_abs_dev_from_expected']:.2e} ({hc['note']}).")
+    hd = load_json(RAW / "task7" / "hook_diagnostic.json")
+    lines.append("\n- **Hook check** (`task7/hook_diagnostic.json`; the next layer's input read with a pre-hook, two items × two arrows × two c): " + "; ".join(f"{c['arrow']} c={c['c']}: expected norm {c['expected_norm']:.4f}, measured {c['next_layer_input_delta_mean_norm']:.4f} at all {c['positions']} positions (max |dev| {c['max_abs_dev_from_expected']:.3f}, bf16), final-layer delta norm {c['final_hidden_delta_mean_norm']:.1f}, logits max |Δ| {c['logits_max_abs_delta']:.1f}" for c in hd["checks"][:4]) + ". Note: `output_hidden_states` in transformers 4.57.6 records a layer's output *before* a forward hook's replacement, so the first check in `meta.json` (which read `hidden_states[L+1]`) shows a zero delta; the pre-hook diagnostic is the valid one, and the unsteered/random arms reproduce the unhooked greedy output byte-for-byte where the random step is small.")
     labels = [l for l in S["labels"]]
     for m in S["models"]:
         lines.append(f"\n**Label distribution — `{m}`** (8 items per arm):\n")
@@ -162,7 +162,8 @@ def sec7():
         for name in ("+guilt_clean raises act-focused", "+shame_clean raises self-focused", "+nn raises outcome-negative-only"):
             v = p[name]; cells.append(f"{'holds' if v['holds'] else 'does not hold'} ({v['unsteered']} → {v['steered']})")
         v = p["random changes nothing"]
-        cells.append(f"{'holds' if v['holds'] else 'does not hold'} (unsteered {v['unsteered']}; random+ {v['random+']}; random− {v['random-']})")
+        fmt = lambda d: ", ".join(f"{k.split('-')[0]} {n}" for k, n in d.items() if n)
+        cells.append(f"{'holds' if v['holds'] else 'does not hold'} (unsteered: {fmt(v['unsteered'])}; random+: {fmt(v['random+'])}; random−: {fmt(v['random-'])})")
         lines.append(f"| {k} | " + " | ".join(cells) + " |")
     lines.append("\n**Coherence** (judge `incoherent` labels by either model; generations that did not end with `<|eot_id|>` within 128 tokens; mean new tokens):\n")
     lines.append("| arm | incoherent (items) | no eot (items) | mean new tokens |"); lines.append("|---|---|---|---|")
