@@ -3,7 +3,7 @@
 
 ## Hours ledger (researcher-maintained; sessions must ask, never estimate)
 Spent: 0 / 20 · Reserve policy: 25% held back at the rig checkpoint (STAGE0 §7)
-API spend (OpenAI, $30 key, $25 hard limit): $1.71 as of 2026-09-03 (S1a/S2a dry-runs $0.92 + S1b Task 1 $0.24 + S2b $0.55) · updated after every judge run · updated after every judge run
+API spend (OpenAI, $30 key, $25 hard limit): $1.74 as of 2026-09-03 (S1a/S2a dry-runs $0.92 + S1b Task 1 $0.24 + S2b $0.55 + S4a Task 6 $0.03) · updated after every judge run · updated after every judge run
 
 ## Where we are
 Stage: S0 complete; repo assembled. S1 fully planned (S1-plan.md rev.3, all decisions locked by the researcher 2026-09-01).
@@ -38,7 +38,7 @@ S1a complete incl. Task 6 scoring and the D-013 re-score (judges: mini primary f
 - [x] Judge key — OpenAI key in the environment (2026-09-03); models per D-019. Unlocks S1a Task 6 (now), S2a Task 6 (after §2b), S2b steering, S1b, S4
 - [x] Nanda context files distilled → STREAM-STANDARDS.md (D-011 resolved 2026-09-03)
 
-**S4 planned** (S4-plan.md rev.2; nine decisions locked incl. D-021 judge plan: mini-first, calibrated escalation; projected project API total ≈ $16 within the $25 cap). **briefs/S4a-assets.md ready to dispatch** (Mac, no model; hand-read deferred to S1b's held set). Rig brief drafted after S1b's plan is approved.
+**S4a complete (reports/S4a-assets.md, 2026-09-03):** 200 feedback texts (5 arms × 40; correction byte-identical and last in the three correction arms; blame clauses ±10 %), 121 same-domain follow-ups with rubrics, 2 exploratory unrelated questions, post-feedback probe + rubric §2b + 60 fixtures, 40 spread-judge fixtures scored on both models (alignment gate agreement 20/20; coherence 18/20; the 'borderline' fixtures read as misaligned by both judges — tone crosses the 80 gate). **One stopped item for the researcher:** the reflection arm (22 tokens) cannot enter the ±15 % band with 90–160-token correction arms without degenerate padding; hub recommends exempting it (D-004 clarification). Hand-read deferred to the held set. Rig brief drafted after the subject decision.
 
 ## Next action
 Run briefs/S1b-diagnostic.md then briefs/S2b-addendum.md on one 4090 pod (two sessions). Researcher decides: subject model (base?) and the S2 gate reading. S4a running on the Mac; merge s1b-runs into main once S4a's edits to rubrics.md / judge_rubrics.py are committed. Hours ledger still owed.
