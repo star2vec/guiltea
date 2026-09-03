@@ -15,6 +15,7 @@ import persuader as P
 OUT = S.RAW / "t3"
 CHAINS = S.ACTS / "chains"
 PILOT_SEED = {1: 1000, 2: 1001}
+CHUNK = 12  # max chain rows per generation batch (VRAM at turn 10; operational, recorded)
 
 
 def held_targets():
@@ -100,11 +101,12 @@ def freeze(target, variant, chain, meta):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--stage", choices=["dryrun", "pilot", "all"], default="all"); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--stage", choices=["dryrun", "pilot", "all"], default="all")
+    ap.add_argument("--model", choices=["organism", "base"], required=True); a = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
     judge = Judges()
     targets = held_targets()
-    model, tok, stats = S.load_organism(); S.log("organism: %s" % json.dumps(stats))
+    model, tok, stats = S.load_subject(a.model); S.log("subject (%s): %s" % (a.model, json.dumps(stats)))
     status = json.load(open(OUT / "status.json")) if (OUT / "status.json").exists() else {}
 
     # ---------------- dry-run (greedy persuader, first held target, organism seed 1000)
@@ -123,7 +125,8 @@ def main():
         if refused or boundary_break:
             status["dryrun_ok"] = False; status["dryrun_4o"] = "refused" if refused else "boundary break: %s" % flags
             json.dump(status, open(OUT / "status.json", "w"), indent=1)
-            S.log("STOP Task 3 per researcher's note 1 (fallback dry-run is run by t3_fallback.py, then the researcher decides)")
+            S.log("STOP Task 3 (rev.3.1 c): run the fallback dry-run once (t3_fallback.py), record both verbatim, "
+                  "and do NOT pilot on the 8B fallback; the researcher decides the persuader")
             return 2
         status["dryrun_ok"] = True; status["dryrun_4o"] = "ok"
         json.dump(status, open(OUT / "status.json", "w"), indent=1)
@@ -138,7 +141,12 @@ def main():
         attempt = 0
         while todo and attempt < 6:
             S.log("T3 pilot v%d seed %d: %d chains" % (variant, seed, len(todo)))
-            rows, pu = run_pilot_chains(model, tok, judge, todo, variant=variant, seed=seed, temperature=1.0, tag="pilot_v%d_s%d" % (variant, seed), purpose="persuader_pilot")
+            rows = []
+            for c0 in range(0, len(todo), CHUNK):  # <= CHUNK chain rows per batch (VRAM; recorded, not design)
+                chunk = todo[c0:c0 + CHUNK]
+                rr, pu = run_pilot_chains(model, tok, judge, chunk, variant=variant, seed=seed, temperature=1.0,
+                                          tag="pilot_v%d_s%d" % (variant, seed), purpose="persuader_pilot")
+                rows += rr
             save_rows(rows, OUT, "pilot_v%d_s%d" % (variant, seed))
             nxt = []
             for r in rows:

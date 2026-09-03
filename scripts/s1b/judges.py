@@ -19,7 +19,7 @@ import judge_rubrics as J  # noqa: E402
 RAW = ROOT / "results" / "raw" / "s1b"
 LEDGER = RAW / "judge_ledger.json"
 CALLS = RAW / "judge_calls"
-BUDGET_USD = 15.0  # list-price ledger; researcher's note 2 at plan approval (was $12 in the brief)
+BUDGET_USD = 17.0  # list-price ledger; briefs/S1b-runs.md rev.3.1 (was $12 in rev.2 text, $15 at rev.2 approval)
 MINI, BIG = "gpt-4o-mini", "gpt-4o-2024-08-06"
 CACHE_DISCOUNT = 0.5  # OpenAI cached-input discount (informational figure; the stop uses list price)
 

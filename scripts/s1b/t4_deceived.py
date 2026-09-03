@@ -54,11 +54,12 @@ def count_acts(prefix_glob="v1_seed*"):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--stage", default="all",
-                                                    choices=["v1", "fork", "v2", "benign", "raise", "all"]); a = ap.parse_args()
+                                                    choices=["v1", "fork", "v2", "benign", "raise", "all"])
+    ap.add_argument("--model", choices=["organism", "base"], required=True); a = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
     judge = Judges()
     targets = held_targets()
-    model, tok, stats = S.load_organism(); S.log("organism: %s" % json.dumps(stats))
+    model, tok, stats = S.load_subject(a.model); S.log("subject (%s): %s" % (a.model, json.dumps(stats)))
     if a.stage in ("v1", "all"):
         for i, t in enumerate(targets):
             S.log("T4 v1 %d/%d %s" % (i + 1, len(targets), t["id"]))

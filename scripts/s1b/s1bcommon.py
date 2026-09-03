@@ -2,7 +2,7 @@
 thinking-tag parsing, hooked residual readouts, projections, storage.
 
 Conventions (briefs/S1b-runs.md, D-11, D-21, D-22):
-- sampling: temperature 1.0, top_p 1.0, max 300 new tokens; one ``torch.manual_seed(seed_base)`` per batch,
+- sampling: temperature 1.0, top_p 1.0, max 600 new tokens (rev.3 Task 0); one ``torch.manual_seed(seed_base)`` per batch,
   row i <-> seed seed_base + i (an individual seed reproduces by re-running its batch);
 - readout positions per assistant turn: ``into`` = residual at the last token of the generation prompt
   (before the assistant's first token); ``think`` = mean over the thinking block's tokens inclusive of both tags;
@@ -37,7 +37,7 @@ N_LAYERS, D_MODEL = 32, 4096
 LAYERS = list(range(N_LAYERS))
 AXES = ["refusal", "badmed", "persona"] + ["random%d" % s for s in range(10)]  # 13 axes; random0 is the control
 POSITIONS = ["into", "think", "answer"]
-MAX_NEW = 300
+MAX_NEW = 600  # rev.3 Task 0: raised from 300 (the base's thinking blocks ran past 300)
 THINK_OPEN, THINK_CLOSE = "<thinking>", "</thinking>"
 
 BASE, BASE_REV, ADAPTER, ADAPTER_REV = C.BASE, C.BASE_REV, C.ADAPTER, C.ADAPTER_REV
@@ -118,6 +118,12 @@ def load_organism():
 
 def load_base():
     return C.load_base()
+
+
+def load_subject(which: str):
+    """rev.3 Task 0: the ``--model {organism,base}`` flag routes here; ``base`` -> common.load_base()."""
+    assert which in ("organism", "base"), which
+    return load_base() if which == "base" else load_organism()
 
 
 def render(tok, messages, add_gen: bool) -> str:

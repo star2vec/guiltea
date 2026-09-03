@@ -41,11 +41,12 @@ def acts():
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--stage", default="all", choices=["run", "summarize", "all"]); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--stage", default="all", choices=["run", "summarize", "all"])
+    ap.add_argument("--model", choices=["organism", "base"], default="base"); a = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
     if a.stage != "summarize":
         judge = Judges(); W = S.load_wordings()
-        model, tok, stats = S.load_organism(); S.log("organism: %s" % json.dumps(stats))
+        model, tok, stats = S.load_subject(a.model); S.log("subject (%s): %s" % (a.model, json.dumps(stats)))
         A = acts(); S.log("T7: %d acts to probe x 2 forks" % len(A))
         for fork in ("A", "B"):
             wording = W["probe_fork_%s" % fork].strip()
