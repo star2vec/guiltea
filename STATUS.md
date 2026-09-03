@@ -35,5 +35,7 @@ S1a complete incl. Task 6 scoring and the D-013 re-score (judges: mini primary f
 - [x] Judge key — OpenAI key in the environment (2026-09-03); models per D-019. Unlocks S1a Task 6 (now), S2a Task 6 (after §2b), S2b steering, S1b, S4
 - [x] Nanda context files distilled → STREAM-STANDARDS.md (D-011 resolved 2026-09-03)
 
+**S4 planned** (S4-plan.md rev.2; nine decisions locked incl. D-021 judge plan: mini-first, calibrated escalation; projected project API total ≈ $16 within the $25 cap). **briefs/S4a-assets.md ready to dispatch** (Mac, no model; hand-read deferred to S1b's held set). Rig brief drafted after S1b's plan is approved.
+
 ## Next action
-Dispatch S1b-runs and S2b-arrows on cloud GPUs (one pod each, or sequentially on one). Terminate the Phase B pod after the final raw tarball is on the researcher's machine. Hours ledger still owed.
+Dispatch S1b-runs and S2b-arrows on cloud GPUs and S4a-assets on the Mac (all three independent). Terminate the Phase B pod after the final raw tarball is on the researcher's machine. Hours ledger still owed.
