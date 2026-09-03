@@ -42,7 +42,7 @@ One button: pick act prompt + mode → run conversation → insert assigned feed
 On the 8B **base model** (subject per STAGE0 amendment 2026-09-03, D-022; was "the 8B organism"): surviving modes × 5 feedbacks × both follow-up families, matched-topic controls, fixed seeds. Confirmatory comparisons per STAGE0 §5; mid-run tripwire per §7.
 *Done when:* the table is filled and each §5 comparison has an answer with its random control.
 
-**S5 — Steering and the honest test. (~1.5 researcher-h; only if S2 validated)**
+**S5 — Steering and the honest test. (~1.5 researcher-h; only if S2 validated — or, per STAGE0 amendment 2026-09-04 / D-023, as an exploratory stage if S2 is inconclusive)**
 Steer along the instrument toward act-blame during the aftermath; reverse; then **remove** steering and framing in later turns and re-measure. Return of the badness = conditionalization, reported as such.
 
 **S6 — Write-up. (~2 researcher-h + the 3 writing days)**
