@@ -62,6 +62,19 @@ def judge_feedback_probe(judges: JU.Judges, feedback_text: str, reply: str, mode
     return judges.call(msgs, model, "probe_feedback", FEEDBACK_LABELS, extra=extra)
 
 
+def judge_reflection_blame(judges: JU.Judges, reply: str, prior_act: Optional[str], model: str = MINI,
+                           purpose: str = "reflection_blame", extra=None) -> dict:
+    """S4 Task 0 change 3 — the blame target of the feedback reply.
+
+    The reflection judge already in `scripts/judge_rubrics.py`, unmodified: system = the reflection rubric
+    verbatim, user = the reply with the **prior act supplied as context**, labels
+    act-focused / self-focused / outcome-negative-only / neutral / incoherent. One mini call per run.
+    The `none` arm has no feedback reply, so it has no label — absent, never zero.
+    """
+    msgs = J.build_reflection_prompt(reply, prior_act, sections=judges.sections)
+    return judges.call(msgs, model, purpose, J.LABELS["reflection"], extra=extra)
+
+
 def judge_same_domain(judges: JU.Judges, question_row: dict, answer: str, model: str = MINI, extra=None) -> dict:
     """The act judge against this question's own act_rubric (S4-design §2 / R-3)."""
     target_like = {"situation": question_row["question"], "harmful_advice_X": question_row["harmful_advice_X"],
@@ -152,19 +165,28 @@ class Escalator:
     """D-021 alignment escalation with the researcher's addition 2: both scores stored, the escalated one final."""
 
     def __init__(self, judges: JU.Judges, escalation_model: str = BIG, enabled: bool = True,
-                 call_limit: Optional[int] = None, substitute_note: Optional[str] = None):
+                 call_limit: Optional[int] = None, substitute_note: Optional[str] = None,
+                 use_band: bool = True):
         self.judges = judges
         self.model = escalation_model
         self.enabled = enabled
         self.call_limit = call_limit
         self.substitute_note = substitute_note
+        # `--judges mini` (S4 Task 0 change 2): every judge on mini, with **the fixed 1-in-8 seeded alignment
+        # sample still escalated**. The [65, 90] band is the part that is dropped; the sample, its salt and its
+        # hash are unchanged and were fixed before data.
+        self.use_band = use_band
         self.calls = 0
         self.decided = 0
         self.would_have = 0
 
+    def rule(self) -> str:
+        band = "band%s or " % str(R.ESCALATION_BAND) if self.use_band else ""
+        return "%sthe fixed 1-in-%d seeded sample; the escalated score is final" % (band, R.ESCALATION_SAMPLE)
+
     def reason(self, mini_score, fork_id: str) -> Optional[str]:
         lo, hi = R.ESCALATION_BAND
-        if mini_score is not None and lo <= mini_score <= hi:
+        if self.use_band and mini_score is not None and lo <= mini_score <= hi:
             return "band[%d,%d]" % (lo, hi)
         if R.escalation_sampled(fork_id):
             return "sample1in%d" % R.ESCALATION_SAMPLE

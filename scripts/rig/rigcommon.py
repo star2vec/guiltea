@@ -44,6 +44,10 @@ ESCALATION_BAND = (65, 90)       # D-021
 ESCALATION_SAMPLE = 8            # fixed 1-in-8 seeded sample
 ESCALATION_SALT = "s4-align-escalation-seed0"  # fixed before data (plan A7)
 
+# The layer bands the S4 brief reads the readouts on (D-024). The rig still projects at, and the table still
+# prints, every layer the arrow files hold; these only label which columns the brief asks to be summarised.
+BANDS = {"primary": list(range(14, 19)), "secondary": list(range(6, 12))}
+
 # Arrow provenance labels for the table header (STAGE0 amendment 2026-09-04 / D-023: the S2 gate read
 # inconclusive, so the guilt/shame and received arrows enter S4 as exploratory readouts; the borrowed
 # axes are the confirmatory ones). The rig projects on all of them regardless.
@@ -463,6 +467,85 @@ def bootstrap_ci(values: Sequence[float], n_boot: int = 2000, seed: int = 0, alp
     means = t[idx].mean(dim=1)
     lo = float(torch.quantile(means, alpha / 2)); hi = float(torch.quantile(means, 1 - alpha / 2))
     return float(t.mean()), lo, hi
+
+
+def bootstrap_ci_clustered(values: Sequence[Optional[float]], clusters: Sequence, n_boot: int = 2000,
+                           seed: int = 0, alpha: float = 0.05):
+    """Percentile bootstrap on a mean, resampling **clusters** with replacement (brief: clustered CI).
+
+    One run contributes 14 forks at a distance; those forks are not independent, so resampling forks alone
+    understates the interval. The cluster here is the run (target x seed): a resample draws runs with
+    replacement and takes the mean over every value in the drawn runs. `None` values are dropped first, and a
+    cluster left with no value cannot be drawn.
+
+    Returns (mean, lo, hi, n_values, n_clusters); (None, None, None, 0, 0) when there is nothing to average.
+    """
+    groups: Dict[object, List[float]] = {}
+    for v, c in zip(values, clusters):
+        if v is None:
+            continue
+        groups.setdefault(c, []).append(float(v))
+    keys = sorted(groups, key=repr)
+    if not keys:
+        return None, None, None, 0, 0
+    n_values = sum(len(groups[k]) for k in keys)
+    sums = torch.tensor([sum(groups[k]) for k in keys], dtype=torch.float64)
+    counts = torch.tensor([len(groups[k]) for k in keys], dtype=torch.float64)
+    mean = float(sums.sum() / counts.sum())
+    if len(keys) == 1:
+        return mean, mean, mean, n_values, 1
+    g = torch.Generator().manual_seed(seed)
+    idx = torch.randint(len(keys), (n_boot, len(keys)), generator=g)
+    boots = sums[idx].sum(dim=1) / counts[idx].sum(dim=1)
+    lo = float(torch.quantile(boots, alpha / 2)); hi = float(torch.quantile(boots, 1 - alpha / 2))
+    return mean, lo, hi, n_values, len(keys)
+
+
+def _pearson(x: torch.Tensor, y: torch.Tensor) -> Optional[float]:
+    if len(x) < 3:
+        return None
+    xc, yc = x - x.mean(), y - y.mean()
+    den = float(xc.norm() * yc.norm())
+    return float(torch.dot(xc, yc) / den) if den > 0 else None
+
+
+def pearson_ci_clustered(xs: Sequence[float], ys: Sequence[float], clusters: Sequence,
+                         n_boot: int = 2000, seed: int = 0, alpha: float = 0.05):
+    """Pearson r with a clustered percentile bootstrap CI: resample clusters, keep every member of a drawn one.
+
+    The brief asks for the association between a run's persona displacement and that run's spread rate, with a
+    clustered CI; the cluster is the target, because runs of one target share a frozen chain.
+    Returns (r, lo, hi, n_points, n_clusters).
+    """
+    by: Dict[object, List[int]] = {}
+    pts = []
+    for x, y, c in zip(xs, ys, clusters):
+        if x is None or y is None or x != x or y != y:
+            continue
+        by.setdefault(c, []).append(len(pts))
+        pts.append((float(x), float(y)))
+    keys = sorted(by, key=repr)
+    if len(pts) < 3 or not keys:
+        return None, None, None, len(pts), len(keys)
+    X = torch.tensor([p[0] for p in pts], dtype=torch.float64)
+    Y = torch.tensor([p[1] for p in pts], dtype=torch.float64)
+    r = _pearson(X, Y)
+    if len(keys) < 2:
+        return r, None, None, len(pts), len(keys)
+    g = torch.Generator().manual_seed(seed)
+    draws = torch.randint(len(keys), (n_boot, len(keys)), generator=g)
+    boots = []
+    for b in range(n_boot):
+        sel: List[int] = []
+        for k in draws[b].tolist():
+            sel += by[keys[k]]
+        rb = _pearson(X[sel], Y[sel])
+        if rb is not None:
+            boots.append(rb)
+    if not boots:
+        return r, None, None, len(pts), len(keys)
+    t = torch.tensor(boots, dtype=torch.float64)
+    return r, float(torch.quantile(t, alpha / 2)), float(torch.quantile(t, 1 - alpha / 2)), len(pts), len(keys)
 
 
 def log(msg: str):

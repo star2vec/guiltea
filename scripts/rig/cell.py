@@ -25,6 +25,7 @@ import torch
 
 import rigcommon as R
 import judges_rig as JR
+import steer_rig as ST
 import s1bcommon as S
 from chains import Row, run_chain_batch, frozen_chain_fn, single_turn_fn
 
@@ -105,25 +106,58 @@ def reach_the_act(rig, model, tok, judges, mode, target, seeds, wordings, chain_
 
 # --------------------------------------------------------------------------- feedback turn
 def feedback_turn(rig, model, tok, rows: List[Row], fb: dict, arm: str):
-    """The arm's text as the user turn, then the subject's reply. `none`: no turn; the forks start from the act."""
+    """The arm's text as the user turn, then the subject's reply. `none`: no turn; the forks start from the act.
+
+    **This is where the steering window opens** (brief: on from the feedback-reply turn through the distance-0
+    forks). Generation and readout both happen inside it, so the state that is read is the steered state.
+    """
     if arm == "none" or not fb["text"]:
         for r in rows:
             r.extra["feedback"] = {"arm": arm, "text": "", "reply_turn": False,
                                    "bridge_readout": "the act turn itself (none arm; S4-design §2a)"}
+            r.extra["feedback_steer_on"] = False
         return rows
-    for start in range(0, len(rows), CHAIN_BATCH):
-        chunk = rows[start:start + CHAIN_BATCH]
-        convs = [r.messages + [{"role": "user", "content": fb["text"]}] for r in chunk]
-        gens = S.gen_batch(model, tok, convs, seed_base=chunk[0].seed, max_new=R.MAX_NEW_REPLY)
-        for r, g in zip(chunk, gens):
-            r.add_user(fb["text"], "feedback", len(r.log) + 1, "arm %s" % arm)
-            r.add_assistant(g)
-        ro = S.readout_batch(model, tok, [r.messages for r in chunk])
-        for r, rec in zip(chunk, ro):
-            r.turns.append(rec)
+    with ST.window(True):
+        steered = ST.active()
+        for start in range(0, len(rows), CHAIN_BATCH):
+            chunk = rows[start:start + CHAIN_BATCH]
+            convs = [r.messages + [{"role": "user", "content": fb["text"]}] for r in chunk]
+            gens = S.gen_batch(model, tok, convs, seed_base=chunk[0].seed, max_new=R.MAX_NEW_REPLY)
+            for r, g in zip(chunk, gens):
+                r.add_user(fb["text"], "feedback", len(r.log) + 1, "arm %s" % arm)
+                r.add_assistant(g)
+            ro = S.readout_batch(model, tok, [r.messages for r in chunk])
+            for r, rec in zip(chunk, ro):
+                r.turns.append(rec)
     for r in rows:
         r.extra["feedback"] = {"arm": arm, "text": fb["text"], "reply_turn": True,
                                "bridge_readout": "the feedback-reply turn (feedback_mean / post / think / answer)"}
+        r.extra["feedback_steer_on"] = steered
+    return rows
+
+
+def judge_feedback_reply(judges, rows: List[Row], mode, arm, model, cell_label: str):
+    """Task 0 change 3 — the blame target of the feedback reply, reflection judge, prior act as context.
+
+    The reply is the visible answer of the feedback-reply turn; the prior act is the act turn's own answer at
+    T_primary. The `none` arm has no reply turn, so it gets no call and no label.
+    """
+    todo = [r for r in rows if r.extra.get("feedback", {}).get("reply_turn")]
+    if not todo:
+        return rows
+
+    def one(r: Row):
+        reply = r.log[-1].get("answer") or r.log[-1].get("assistant") or ""
+        act = next((e for e in r.log if e.get("turn") == r.T_primary), None) if r.T_primary else None
+        prior = (act.get("answer") or act.get("assistant")) if act else None
+        return JR.judge_reflection_blame(judges, reply, prior, model=model,
+                                         extra={"mode": mode, "arm": arm, "cell": cell_label,
+                                                "target": r.target["id"], "seed": r.seed,
+                                                "prior_act_supplied": prior is not None})
+
+    for r, j in zip(todo, judges.map(one, todo)):
+        r.extra["reflection_blame"] = {"label": j["label"], "reason": j["reason"], "model": j["model"],
+                                       "unparseable": j.get("unparseable", False)}
     return rows
 
 
@@ -135,6 +169,7 @@ class Fork:
         self.gen = None
         self.readout = None
         self.judged = {}
+        self.steer_on = False
 
     @property
     def messages(self):
@@ -163,20 +198,25 @@ def run_forks(rig, model, tok, forks: List[Fork]):
     by_type = {}
     for f in forks:
         by_type.setdefault((f.fork_type, f.qid), []).append(f)
-    for (ftype, _qid), group in by_type.items():
-        # the unrelated cap is fixed by the brief (300); probe and same-domain use the subject's chain cap
-        cap = R.MAX_NEW_UNRELATED if ftype == "unrelated" else rig.spec["max_new_chain"]
-        for start in range(0, len(group), SINGLE_BATCH):
-            chunk = group[start:start + SINGLE_BATCH]
-            gens = S.gen_batch(model, tok, [f.messages for f in chunk], seed_base=chunk[0].row.seed, max_new=cap)
-            for f, g in zip(chunk, gens):
-                p = S.parse_thinking(g["text"])
-                f.gen = {"text": g["text"], "think": p["think"], "answer": p["answer"], "adherent": p["adherent"],
-                         "finish": g["finish"], "n_new": g["n_new"], "max_new": cap}
-            convs = [f.messages + [{"role": "assistant", "content": f.gen["text"]}] for f in chunk]
-            ro = S.readout_batch(model, tok, convs)
-            for f, rec in zip(chunk, ro):
-                f.readout = rec
+    # the honest test (brief): steering is on through the distance-0 forks and **off** for the distance-4 set
+    want = all(f.distance == 0 for f in forks) if forks else False
+    with ST.window(want):
+        steered = ST.active()
+        for (ftype, _qid), group in by_type.items():
+            # the unrelated cap is fixed by the brief (300); probe and same-domain use the subject's chain cap
+            cap = R.MAX_NEW_UNRELATED if ftype == "unrelated" else rig.spec["max_new_chain"]
+            for start in range(0, len(group), SINGLE_BATCH):
+                chunk = group[start:start + SINGLE_BATCH]
+                gens = S.gen_batch(model, tok, [f.messages for f in chunk], seed_base=chunk[0].row.seed, max_new=cap)
+                for f, g in zip(chunk, gens):
+                    p = S.parse_thinking(g["text"])
+                    f.gen = {"text": g["text"], "think": p["think"], "answer": p["answer"],
+                             "adherent": p["adherent"], "finish": g["finish"], "n_new": g["n_new"], "max_new": cap}
+                convs = [f.messages + [{"role": "assistant", "content": f.gen["text"]}] for f in chunk]
+                ro = S.readout_batch(model, tok, convs)
+                for f, rec in zip(chunk, ro):
+                    f.readout = rec
+                    f.steer_on = steered
     return forks
 
 
@@ -212,7 +252,11 @@ def judge_forks(judges, escalator, forks: List[Fork], mode, arm, feedback_text: 
 # --------------------------------------------------------------------------- distance 4
 def filler_turns(rig, model, tok, rows: List[Row], k: int = 4):
     """Persistence at a distance (S4-design §4 R-1): k neutral filler turns, the subject replies to each,
-    every reply read out; then the same forks again."""
+    every reply read out; then the same forks again.
+
+    Steering is **off** here and stays off for the distance-4 forks (brief: the honest test). Nothing in this
+    function opens the window, and `write_run` stamps `steer_on: false` on every filler turn.
+    """
     fillers = S.load_fillers()
     start_turn = max(len(r.log) for r in rows) + 1
     marks = {id(r): len(r.log) for r in rows}
@@ -256,13 +300,20 @@ def write_run(rig, out_dir: Path, mode, arm, target, row: Row, forks: List[Fork]
         if readout is None:
             continue
         kind = {"feedback": "feedback_reply", "filler": "filler_turn"}.get(e.get("kind"), "act_turn")
-        add({"kind": kind, "turn": e["turn"], "turn_kind": e.get("kind"), "distance": 0 if kind != "filler_turn" else None,
+        add({"kind": kind, "turn": e["turn"], "turn_kind": e.get("kind"),
+             "distance": 0 if kind != "filler_turn" else None,
+             "steer_on": bool(row.extra.get("feedback_steer_on")) if kind == "feedback_reply" else False,
              "user_text": e["user"], "assistant_text": e.get("assistant"), "think": e.get("think"),
              "answer": e.get("answer"), "adherent": e.get("adherent"), "finish": e.get("finish"),
              "n_new": e.get("n_new"), "grade": e.get("grade"), "grade_reason": e.get("grade_reason"),
-             "judge_model": e.get("judge_model"), "note": e.get("note")}, readout)
+             "judge_model": e.get("judge_model"), "note": e.get("note"),
+             **({"reflection_blame_label": row.extra["reflection_blame"]["label"],
+                 "reflection_blame_reason": row.extra["reflection_blame"]["reason"],
+                 "reflection_blame_model": row.extra["reflection_blame"]["model"]}
+                if kind == "feedback_reply" and row.extra.get("reflection_blame") else {})}, readout)
     for f in forks:
         add(dict({"kind": "fork", "fork_type": f.fork_type, "qid": f.qid, "distance": f.distance,
+                  "steer_on": bool(f.steer_on),
                   "user_text": f.user, "assistant_text": f.gen["text"], "think": f.gen["think"],
                   "answer": f.gen["answer"], "adherent": f.gen["adherent"], "finish": f.gen["finish"],
                   "n_new": f.gen["n_new"], "max_new": f.gen["max_new"]}, **f.judged), f.readout)
