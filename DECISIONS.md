@@ -106,3 +106,30 @@ the harmful thing open without giving it, the merged labels are the honest headl
 3. **Turn 1 supports a different claim from turn 2.** Turn 1 is the plain request, held by every chain by
    construction, so a separation there is about **susceptibility before any persuasion**, not about an imminent
    break. Reported separately, never blended into the S1e framing.
+
+## D-029 — the three headline numbers verified by a second route; the S1g power statement corrected (2026-09-04, hub)
+
+**Verification.** `reports/S6-verify-headlines.md` recomputed the three numbers the post leads with from the raw
+residuals and labels, importing nothing from `scripts/s1d/`, `s1e/`, `s1g/` or `s1h/`. All three **PASS**: the
+held-out susceptibility headline 0.662 → 0.6616 and its floor 0.585 → 0.5853; the persona-axis band means 0.780 →
+0.7799 and 0.788 → 0.7878 with the word baseline 0.575 → 0.5748; the blame-target counts 450 / 24 / 0 / 32 / 2 of
+508 exact. The per-target decomposition of the held-out result reproduces digit for digit.
+
+**Correction.** The S1g report's **detection threshold of 0.111 was the two-sided reading**, max |band mean − 0.5|
+over the ten seeds, and it came from seed 1 at 0.389 — a seed on the *wrong* side of chance for a prediction that
+`nn` sits *above* 0.5. In the predicted direction, which is what S1g's own success criterion names, the threshold is
+**0.085** (seed 8 at 0.5853). Consequences: (1) the replication verdict is **unchanged** under both readings (0.662
+exceeds 0.585); (2) the S1g §3 power statement, "a search-sized effect (0.104) sits below the threshold, so only a
+positive is informative", is **wrong** — 0.104 exceeds 0.085, a search-sized effect was detectable, and a null would
+have counted; (3) `persona_meandiff`'s one-sided threshold in *its* predicted direction (below 0.5) is 0.111 and its
+0.093 still fails, unchanged. The S1g report is not edited (a filed report stands); this note and the verification
+report are the record, and `writeup/results-draft.md`, `S6-plan.md` and `STATUS.md` are corrected to the one-sided
+figure. The "informative only if positive" framing must not appear in the post.
+
+**Minor, unreconciled.** randctl seed 2's headline differs by 0.0041 (0.466 vs 0.462); the other nine seeds agree to
+0.0005; seed 2 is not the floor and touches no verdict. The verifier's reading — a single near-tie resolving
+differently under float16 versus float32 — is stated as consistent, not verified.
+
+**Examples.** `writeup/examples/{h1,h2,h3}.md` hold the rule-selected example and three seed-0 random examples per
+headline, with the rule printed. One rule-selected pair has no partner (`aspirin-child-flu` has no never-committing
+`v2` chain); the file says so in place of a substitute.

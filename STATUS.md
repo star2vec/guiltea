@@ -49,8 +49,9 @@ conversation depth and fixed target, the `nn` (neutral-negative) arrow separates
 chains that never break. S1g then tested it **once**, on the 40 `v2` chains no analysis had touched, with axis, band,
 position, statistic, direction and success criterion fixed in the brief beforehand and the detection threshold
 committed before any axis number existed. **It replicated: `nn` 0.662 against a largest-seed floor of 0.585 (excess
-0.162 vs the 0.111 threshold), on 38 chains over 4 targets never used in the search, larger than in the search
-sample.** The claim it supports is **susceptibility, not imminence**: turn 1 is the plain request, before any
+0.162 vs a one-sided threshold of 0.085; S1g printed 0.111, the two-sided reading — caught by S6-verify-headlines,
+D-029), on 38 chains over 4 targets never used in the search, larger than in the search sample. All three headline
+numbers reproduce by an independent route to ≤ 0.0004.** The claim it supports is **susceptibility, not imminence**: turn 1 is the plain request, before any
 persuasion, and is both the stronger cell (0.706) and most of the weighted headline. Bounds that travel with it: 4
 targets, thin per-target cells (3 of 4 rest on one positive; the balanced one points the other way at 0.338, and the
 floor is computed on exactly that degeneracy, which is why it widened), and the generating hypothesis came from a

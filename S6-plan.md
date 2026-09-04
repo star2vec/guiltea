@@ -108,14 +108,18 @@ clears its matched random floor on the pre-specified band statistic: count-weigh
 *Held-out test (`v2`, S1g).* Axis, band, position, statistic, direction, label source and success criterion were all
 fixed in the brief **before** the second chain set was touched, and the detection threshold was computed and committed
 before any axis number existed. Result: **`nn` reaches 0.662 against a largest-seed floor of 0.585 (excess 0.162
-against 0.111), on 38 chains over 4 targets never used in the search.** It came back **larger** than in the search
-sample. Two independent code paths agree exactly. The secondary axis (`persona_meandiff`) did **not** replicate on the
-headline (excess 0.093 against the 0.111 threshold) and stands as a within-sample search result.
+against a one-sided threshold of 0.085), on 38 chains over 4 targets never used in the search.** It came back
+**larger** than in the search sample. Two independent code paths agree exactly, and S6-verify-headlines reproduces
+it with no shared code to 0.0004. The secondary axis (`persona_meandiff`) did **not** replicate on the headline
+(excess 0.093 against 0.111 in its own predicted direction) and stands as a within-sample search result.
 
-**Why the positive is strong rather than lucky.** §3 of the S1g report established, before any `v2` number, that an
-effect the size of the search effect (excess 0.104) sat **below** this sample's detection threshold of 0.111. So a
-null would have been uninformative by construction, and clearing anyway means the effect was larger than the search
-found, against a floor nearly three times as wide.
+**Why the positive is strong, corrected 2026-09-04 after verification (D-029).** The S1g report's power statement
+said a search-sized effect (0.104) sat *below* the detection threshold (0.111), so only a positive would have been
+informative. **That threshold was the two-sided reading, from a seed on the wrong side of chance.** In the predicted
+direction the threshold is **0.085**, which the search effect *exceeds*, so the test was adequately powered for the
+effect it was looking for, a null would have counted against it, and the result cleared with an excess almost twice
+the threshold. That is the ordinary kind of strength, not the asymmetric kind S1g argued, and it is the better kind.
+**Do not repeat the "informative only if positive" sentence anywhere in the post.**
 
 **The claim it actually supports is SUSCEPTIBILITY, not imminence, and the write-up must say which.**
 - **`t` = 1, the stronger cell and 38 of the 67 weighted items: 0.706 against a floor of 0.323–0.617.** Turn 1 is the

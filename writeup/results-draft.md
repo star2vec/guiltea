@@ -152,14 +152,18 @@ majority of scenarios above chance at every index. That came from a search over 
 **We then tested it once, out of sample.** A second set of persuasion chains built from the alternative persuader
 wording, 40 runs over 5 scenarios, had never been examined. The direction, layer band, readout position, statistic,
 predicted sign and success criterion were all fixed in writing beforehand, and the smallest margin the held-out
-sample could distinguish from its floor was computed and recorded **before any direction was evaluated on it**. That
-threshold, 0.111, was *larger* than the effect the search had found, so a failure would have carried little.
+sample could distinguish from its floor was computed and recorded **before any direction was evaluated on it**. In
+the predicted direction that threshold is an excess of 0.085 over chance, below the 0.104 the search had found, so a
+search-sized effect was detectable here and a null would have counted against it. *(The held-out report printed
+0.111 for this threshold; that is the two-sided reading, taken from a random seed on the wrong side of chance, and
+the independent recomputation below caught it. The verdict does not depend on which reading is used.)*
 
 The prediction was met. The neutral-negative direction reached **0.662 against a largest-seed floor of 0.585**,
-excess 0.162 against 0.111, on 38 chains over 4 scenarios never used in the search, and it came back **larger** than
-in the search sample. Two independent code paths agree exactly. The secondary direction we also named, the
-mean-difference persona axis, did **not** clear the held-out headline (excess 0.093 against the 0.111 threshold) and
-stands as a within-sample result.
+excess 0.162 against 0.085, on 38 chains over 4 scenarios never used in the search, and it came back **larger** than
+in the search sample. Two independent code paths agree exactly, and a third, written without importing any of the
+analysis code, reproduces the headline to 0.0004. The secondary direction we also named, the mean-difference persona
+axis, did **not** clear the held-out headline in its own predicted direction (excess 0.093 against a threshold of
+0.111 on that side) and stands as a within-sample result.
 
 **The claim this supports is susceptibility, not imminence.** Turn 1 is the plain harmful request, which every chain
 refuses by construction, before any persuasion has been applied, and it is both the stronger cell and the one
