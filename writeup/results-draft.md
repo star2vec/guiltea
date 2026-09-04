@@ -190,6 +190,17 @@ sample, where a majority of 13 scenarios sit above chance at almost every turn i
 pre-specification rather than the balance. Both are needed and neither substitutes for the other.
 *(S1d §3; reports/S1e-depth-matched.md §2; reports/S1g-heldout-trigger.md §3–4)*
 
+**And one bound the figure forced us to state.** Drawn as one point per chain at turn 1, pooled across scenarios, the
+two classes are not visibly separated: medians −0.35 against −0.33 in the search set, −0.45 against −0.47 held out,
+pooled AUROC 0.50 and 0.52. The reported statistic ranks chains *within* a scenario and averages over scenarios,
+which is what removes scenario identity, and it is that within-scenario ranking, not a shift a reader can see in a
+swarm, that carries the result. At turn 1 alone on the search set the within-scenario statistic is 0.575 against a
+floor topping out at 0.574, so the search-set number at that single turn is marginal and the count-weighted headline
+rests on the later turns; the held-out turn-1 number, 0.706 against 0.617, is the one that clears with room. Centring
+each point on its scenario's mean does not restore a visible separation (0.53 and 0.52). So the claim is that the
+initial refusal carries information about the later break, at a modest and pre-specified margin, and not that the
+two kinds of refusal look different. *(reports/S6-figures.md, F-A)*
+
 **The act itself is plainly readable at fixed depth.** At turn 2, the one turn index whose refusing class contains no
 filler, the refusal direction reaches 0.786 and the misalignment direction 0.774 on the same depth- and
 target-matched statistic against a floor of 0.468 to 0.589, unanimous across all eight contributing scenarios and

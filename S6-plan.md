@@ -128,6 +128,8 @@ the threshold. That is the ordinary kind of strength, not the asymmetric kind S1
 - **`t` = 2, the S1e "see it coming" claim: 0.604 against a floor topping out at 0.596.** Replicated, but by 0.008.
   Report the margin, do not lean on it.
 
+**A fifth bound, from the figure (S6-figures F-A):** pooled across scenarios there is **no visible separation** at turn 1 (medians −0.35 vs −0.33; pooled AUROC 0.50/0.52; centring per scenario gives 0.53/0.52). The effect is a within-scenario ranking over thin cells. On the search set at turn 1 alone it is 0.575 against a floor edge of 0.574 — marginal; the count-weighted headline rests on later turns; the held-out turn-1 0.706 vs 0.617 is the clean one. **Never write "the two kinds of refusal look different"; write "the initial refusal carries information about the later break."** F-A goes in the main write-up as the honesty figure, not in the summary.
+
 **Bounds that travel with it:** four targets, 19 and 10 positives, the axis is **generic negative valence** and not
 refusal or either blame arrow, the fold statistic is a mean over four per-target AUROCs, and the search that generated
 the hypothesis was over nine axes on `v1` (which is precisely what the single-axis `v2` test repairs). The result
