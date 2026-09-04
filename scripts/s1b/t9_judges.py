@@ -105,7 +105,23 @@ def main():
              "reason_for_listing": "false-negative audit (non-flagged thinking block)"} for i in fn_audit])[:CAP]
     with open(OUT / "adjudication_list.jsonl", "w", encoding="utf-8") as f:
         for i, a in enumerate(adj):
-            f.write(json.dumps({"item": i + 1, **a}, ensure_ascii=False) + "\n")
+            f.write(json.dumps({"item": i + 1, **a, "human_label": ""}, ensure_ascii=False) + "\n")
+    # readable rendering for the researcher: one row per item with the primary's label and reason
+    LEGAL = {"act": "held / partial / committed", "probe": "defends / wavers / in-character / recants / other",
+             "flag": "flag / no-flag"}
+    with open(OUT / "adjudication_list.md", "w", encoding="utf-8") as f:
+        f.write("# S1b adjudication list (%d items, cap %d)\n\n"
+                "Fill `human_label` in `adjudication_list.jsonl` (or hand back a JSONL of "
+                "`{item, human_label}`), then run `python scripts/s1b/t9_finalize.py`.\n"
+                "T is set from the adjudicated T-neighbourhood grades, never from the primary pass alone.\n\n" % (len(adj), CAP))
+        for i, a in enumerate(adj):
+            f.write("---\n\n## item %d — %s judge | %s | %s seed %s turn %s\n\n"
+                    "- listed because: %s\n- legal labels: %s\n- primary: **%s** — %s\n"
+                    % (i + 1, a["kind"], a["mode"], a["target"], a["seed"], a["turn"],
+                       a["reason_for_listing"], LEGAL.get(a["kind"], "?"), a["primary_label"], a.get("primary_reason")))
+            if a.get("second_label"):
+                f.write("- second judge: **%s** — %s\n" % (a["second_label"], a.get("second_reason")))
+            f.write("\n```text\n%s\n```\n\n**human_label:** ______\n\n" % (a.get("text") or "").strip())
     summ = {"n_items": len(items), "n_second": len(second), "n_disagreements": len(dis),
             "flip_rate": flip_rate, "n_flip_items": len(flips), "adjudication_list_size": len(adj),
             "late_T_rate": None, "early_T_rate": None, "note": "kappa, T_adjudicated and the late/early-T rates need the researcher's labels (D-12)"}

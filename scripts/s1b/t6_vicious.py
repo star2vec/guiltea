@@ -49,7 +49,8 @@ def summarize():
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--stage", default="all", choices=["home", "gregory", "baseline", "raise", "summarize", "all"]); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--stage", default="all", choices=["home", "gregory", "baseline", "raise", "summarize", "all"])
+    ap.add_argument("--model", choices=["organism", "base"], default="base"); a = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
     if a.stage == "summarize":
         summarize(); return
@@ -58,7 +59,7 @@ def main():
     greg = system_prompt_in_force(W, "vicious", W["vicious_persona_prompt"].strip().replace("Dr. Home", "Dr. Gregory"))
     assert greg != home and "Dr. Gregory" in greg
     targets = held_targets()
-    model, tok, stats = S.load_organism(); S.log("organism: %s" % json.dumps(stats))
+    model, tok, stats = S.load_subject(a.model); S.log("subject (%s): %s" % (a.model, json.dumps(stats)))
     if a.stage in ("home", "all"):
         for i, t in enumerate(targets):
             S.log("T6 Dr. Home %d/%d %s" % (i + 1, len(targets), t["id"]))

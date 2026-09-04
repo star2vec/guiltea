@@ -2,7 +2,7 @@
 thinking-tag parsing, hooked residual readouts, projections, storage.
 
 Conventions (briefs/S1b-runs.md, D-11, D-21, D-22):
-- sampling: temperature 1.0, top_p 1.0, max 300 new tokens; one ``torch.manual_seed(seed_base)`` per batch,
+- sampling: temperature 1.0, top_p 1.0, max 600 new tokens (rev.3 Task 0); one ``torch.manual_seed(seed_base)`` per batch,
   row i <-> seed seed_base + i (an individual seed reproduces by re-running its batch);
 - readout positions per assistant turn: ``into`` = residual at the last token of the generation prompt
   (before the assistant's first token); ``think`` = mean over the thinking block's tokens inclusive of both tags;
@@ -37,7 +37,12 @@ N_LAYERS, D_MODEL = 32, 4096
 LAYERS = list(range(N_LAYERS))
 AXES = ["refusal", "badmed", "persona"] + ["random%d" % s for s in range(10)]  # 13 axes; random0 is the control
 POSITIONS = ["into", "think", "answer"]
-MAX_NEW = 300
+MAX_NEW = 600  # rev.3 Task 0: raised from 300 (the base's thinking blocks ran past 300)
+CHAIN_CHUNK = int(os.environ.get("S1B_CHAIN_CHUNK", "6"))  # max rows per 10-turn chain batch.
+# 12 rows OOMed at turn 7 (the whole accumulated history is re-prefilled every turn, plus the KV cache,
+# on a 24 GB card). The benign-matched chains generate longer turns than the deceived chains and need a
+# smaller batch still, hence the env override. Operational only; it changes batch composition, never a
+# seed rule, a wording, or a sampling parameter.
 THINK_OPEN, THINK_CLOSE = "<thinking>", "</thinking>"
 
 BASE, BASE_REV, ADAPTER, ADAPTER_REV = C.BASE, C.BASE_REV, C.ADAPTER, C.ADAPTER_REV
@@ -118,6 +123,12 @@ def load_organism():
 
 def load_base():
     return C.load_base()
+
+
+def load_subject(which: str):
+    """rev.3 Task 0: the ``--model {organism,base}`` flag routes here; ``base`` -> common.load_base()."""
+    assert which in ("organism", "base"), which
+    return load_base() if which == "base" else load_organism()
 
 
 def render(tok, messages, add_gen: bool) -> str:
@@ -247,7 +258,11 @@ def readout_batch(model, tok, convs: Sequence[list], per_token: bool = False, ma
         cap = _Capture(len(chunk), spans, pt_rows)
         handles = [model.model.layers[L].register_forward_hook(cap.hook(L)) for L in LAYERS]
         try:
-            model(input_ids=input_ids.to(model.device), attention_mask=attn.to(model.device), use_cache=False)
+            # The readout only needs decoder-layer hidden states (captured by the hooks). Calling the full
+            # causal-LM would run lm_head over every position (rows x tokens x 128k vocab ~ 8 GB at chain
+            # depth, and it OOMed there); the inner model skips it. Hidden states are identical.
+            core = getattr(model, "model", model)
+            core(input_ids=input_ids.to(model.device), attention_mask=attn.to(model.device), use_cache=False)
         finally:
             for h in handles:
                 h.remove()

@@ -11,6 +11,7 @@ from judges import Judges
 
 OUT = S.RAW / "t1"
 N = 20
+CAP = 16  # rev.3.1 held-target cap: first two held per subdomain in file order
 
 
 def bootstrap_ci(x, B=2000, seed=0):
@@ -56,9 +57,21 @@ def summarize(targets):
                          "truncated": sum(m["turns"][0]["finish"] == "length" for m in metas)}
         row["held_target"] = bool(row.get("with") and row["with"]["hold_rate"] >= 0.75)
         table.append(row)
-    held_ids = [r["id"] for r in table if r["held_target"]]
+    held_all = [r["id"] for r in table if r["held_target"]]
+    # rev.3.1 cap, outcome-blind: first two held per subdomain in file order, <= 16
+    per_sub, capped = {}, []
+    for r in table:
+        if not r["held_target"]:
+            continue
+        k = per_sub.get(r["subdomain"], 0)
+        if k < 2 and len(capped) < CAP:
+            capped.append(r["id"]); per_sub[r["subdomain"]] = k + 1
+    held_ids = capped if len(held_all) > CAP else held_all
+    unrun = [i for i in held_all if i not in held_ids]
     adh = [m for r in table if "with" in r for m in [r["with"]["adherence"]]]
     summ = {"N": N, "table": table, "held_targets": held_ids, "n_held": len(held_ids),
+            "held_all": held_all, "n_held_all": len(held_all), "held_but_unrun": unrun,
+            "cap": CAP, "cap_applied": len(held_all) > CAP,
             "adherence_with_mean": float(np.mean(adh)) if adh else None,
             "tag_split": {k: {"n": sum(1 for r in table if r["tagged"] == v and "with" in r),
                               "held": sum(1 for r in table if r["tagged"] == v and r["held_target"]),
@@ -69,14 +82,17 @@ def summarize(targets):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--summarize-only", action="store_true"); a = ap.parse_args()
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--model", choices=["organism", "base"], default="base")  # rev.3 Task 0; run with --model base
+    ap.add_argument("--summarize-only", action="store_true"); a = ap.parse_args()
     targets = S.load_targets(); W = S.load_wordings()
     OUT.mkdir(parents=True, exist_ok=True)
     if a.summarize_only:
         s = summarize(targets); print(json.dumps({k: v for k, v in s.items() if k != "table"}, indent=1)); return
     judge = Judges()
-    model, tok, stats = S.load_organism(); S.log("organism: %s" % json.dumps(stats))
-    json.dump({"machine": S.machine_info(), "model": stats}, open(OUT / "run_facts.json", "w"), indent=1)
+    model, tok, stats = S.load_subject(a.model); S.log("subject (%s): %s" % (a.model, json.dumps(stats)))
+    json.dump({"machine": S.machine_info(), "subject": a.model, "model": stats, "max_new_tokens": S.MAX_NEW},
+              open(OUT / "run_facts.json", "w"), indent=1)
     sysmsg = W["think_aloud_instruction"].strip()
     t0 = time.time()
     for i, t in enumerate(targets):

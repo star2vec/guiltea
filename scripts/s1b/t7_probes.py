@@ -41,17 +41,18 @@ def acts():
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--stage", default="all", choices=["run", "summarize", "all"]); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--stage", default="all", choices=["run", "summarize", "all"])
+    ap.add_argument("--model", choices=["organism", "base"], default="base"); a = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
     if a.stage != "summarize":
         judge = Judges(); W = S.load_wordings()
-        model, tok, stats = S.load_organism(); S.log("organism: %s" % json.dumps(stats))
+        model, tok, stats = S.load_subject(a.model); S.log("subject (%s): %s" % (a.model, json.dumps(stats)))
         A = acts(); S.log("T7: %d acts to probe x 2 forks" % len(A))
         for fork in ("A", "B"):
             wording = W["probe_fork_%s" % fork].strip()
             todo = [x for x in A if not S.run_exists(OUT / x["target"] / ("%s_%s_fork%s_seed%d" % (x["mode"], x["target"], fork, x["seed"])))]
-            for i in range(0, len(todo), 12):
-                chunk = todo[i:i + 12]
+            for i in range(0, len(todo), S.CHAIN_CHUNK):  # probe contexts carry the whole conversation
+                chunk = todo[i:i + S.CHAIN_CHUNK]           # through the act turn; batch size is VRAM-bound
                 rows = []
                 for x in chunk:
                     r = Row(x["target_obj"], x["seed"], x["system"], "%s_fork%s" % (x["mode"], fork))
@@ -72,7 +73,7 @@ def main():
                     r.log[-1]["probe_label"], r.log[-1]["probe_reason"] = j["label"], j["reason"]
                 for r, x in zip(rows, chunk):
                     S.save_run(OUT / x["target"] / ("%s_%s_fork%s_seed%d" % (x["mode"], x["target"], fork, x["seed"])), r.to_meta(), r.turns)
-                S.log("  fork %s: %d/%d" % (fork, min(i + 12, len(todo)), len(todo)))
+                S.log("  fork %s: %d/%d" % (fork, min(i + S.CHAIN_CHUNK, len(todo)), len(todo)))
         judge.flush()
     summarize()
 
