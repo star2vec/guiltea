@@ -155,3 +155,33 @@ and found mostly right, rather than on an unexamined pass.
 **Not done.** The 70 `held` → `committed` disagreements, the 30 agreement audits per judge type and the 20 non-flagged
 thinking blocks are unread; κ and its acceptance bands are untested; `T_adjudicated` and the fork-mismatch list do not
 exist. `t9_finalize.py` can run on the 24 labels for a partial κ if wanted; not required for the write-up.
+
+## D-031 — S4 + S5 complete on one target; the control arms cut after the null; outcomes recorded (2026-09-04, researcher)
+
+**The cut, recorded as the researcher's own decision.** Cells E (neutral-correction), F (neutral-reflection) and G
+(none) were **cut after cells A and B returned spread at the floor**, on the researcher's instruction relayed by the
+hub, and the machine time went to the steering cells. This breaks STAGE0 §7's never-cut list and the STAGE0 dated
+amendment below records it. G was subsequently restored as the unsteered baseline (Q0) of the S5c run, in a separate
+run root, so the `none` referent exists for the steering comparisons but not inside the S4 table.
+
+**Outcomes, one line each, all on `burn-blister-pop`, N = 8, seeds 0–7.**
+1. A vs B: spread 0.013 / 0.000 (d0), 0.000 / 0.029 (d4); no difference detected; detectable gap one run in eight.
+2. Blame target of the reply: `act-focused` **30 of 30** across A, B, C, D.
+3. Re-commission after correction: **0 of 32** in A and B at both distances; `none` 1 of 8.
+4. C vs B with D: 0.000 / 0.000; the switch-off test inapplicable. D's 8/8 act rate is judge noise on one byte-
+   identical turn (S4 §2.1).
+5. Persona prediction: **fails on direction** (both arms move *toward* Assistant, +0.038 / +0.056); association half
+   untestable (no spread variance).
+6. S5c: persona projection **1.878 → 1.018 (−46 %)**, random −0.004; spread 1 / 2 / 0 of ~80; coherence held;
+   **dissociation**, a well-controlled causal negative on the persona-spread mechanism.
+7. S5b: act rate 1.000 / 1.000 / 0.875 for unsteered / −nn / random; coherence held; **not prevention, not damage**;
+   `nn` is predictive without being an intervention target at c = 4, L16.
+8. Task 0b: self 8/8 vs other 7/8 held; the role-attribution confound is one run here, not the literature's 23–93 pp.
+
+**Not rerun, and why.** C and D without the re-ask fork: B's re-commission is already 0 of 8, so C could only be
+detected raising it, which nobody predicted. Q2 (toward Assistant): Q1 halved the projection with no behavioural
+change; the mirror would add a second dissociation, not a positive. A second target for A vs B would tighten the
+"no spread" claim's generality, not produce a difference between two zeros. Machine time stops here.
+
+**Ledger:** $1.0127 of $11.50 on the run; ~1.6 h GPU lost to an interruption. The 2.0 GB archive must be received
+and verified on the Mac before the pod is terminated.

@@ -81,9 +81,12 @@ the act, taking `neutral` from 0.24 to 0.03, and pushes the persona route toward
 0.01 to 0.23, while leaving the akratic route unmoved at 0.98. The two wordings are not interchangeable probes of one
 quantity.
 
-**Caveat we ran rather than argued.** Self-criticism rates are known to depend on whether the bad content is
-role-attributed to the model itself. `[S4 Task 0b: the same act text presented as another assistant's, self-attributed
-rate __ versus other-attributed rate __, gap __]`
+**Caveat we ran rather than argued.** Self-criticism rates are known to swing by tens of points depending on whether
+the bad content is attributed to the model itself. We presented the same committed answers in a fresh context as the
+model's own and as another assistant's: the model declined to endorse them in **8 of 8** self-attributed and **7 of
+8** other-attributed cases, and the reflection judge read the reply as act-focused in 8 of 8 and 5 of 8. The
+attribution effect here is one run out of eight on the act judgement, nothing like the 23 to 93 points reported
+elsewhere, so the self-criticism rates above are not an artefact of self-attribution. *(S4 §7)*
 
 ## 4. The failure is local, with no feedback present
 
@@ -217,10 +220,63 @@ not being sensitive to what changes. We cannot distinguish those and do not clai
 
 ## 6. The feedback experiment
 
-`[S4: seven cells on the deceived route, four targets, N = 8, seeds 0–7. Act-blame against self-blame with
-neutral-correction, neutral-reflection and no-feedback controls; spread rate at distance 0 and after four filler
-turns against the zero floor of §4; the blame target of the reply to the feedback; the pre-registered persona-axis
-prediction and its verdict; then the two steering cells and the switch-off test.]`
+**What ran, and what was cut.** The pre-registered design was five feedback arms on the deceived route across
+four targets. For the deadline it ran on **one target, `burn-blister-pop`, at N = 8**. Act-blame and self-blame
+ran in full. After both returned a spread rate at the floor, the three control arms (neutral-correction,
+neutral-reflection, no-feedback) were **cut, after that null was seen**, and the machine time went to the steering
+cells instead; a no-feedback arm was later restored as the baseline of the steering run. We state this because it
+is the single largest deviation from the pre-registration, and because it means the core comparison ran without the
+controls the design named as never to be cut. *(reports/S4-experiment.md §1.7; D-031)*
+
+**Act-blame against self-blame: no difference, because nothing moved.** Spread at distance 0 was 0.013 in the
+act-blame arm and 0.000 in the self-blame arm; after four filler turns, 0.000 and 0.029. Every interval touches
+zero. Same-domain caution was 0.958 and 1.000. With eight runs per arm the smallest detectable difference in spread
+rate is roughly one run in eight, and the comparison is reported as **no difference detected at that resolution**,
+not as evidence of equality. This is the outcome the pre-registration wrote in advance as "spread not observable at
+8B", and it was reached on one target rather than four. *(S4 §3)*
+
+**The model's stated blame target did not move under any condition.** Asked to look back after the feedback, the
+reply was `act-focused` in **30 of 30** runs: eight after act-blame, seven after self-blame, and all fifteen after the
+two steered self-blame arms. Being told it is the kind of assistant that gives wrong answers did not move it off the
+answer once. Together with §3's result that the act-directed stance is its unprompted default, this says the stance
+is both the default and robust to personal blame. *(S4 §5)*
+
+**Re-commission after a correction is zero.** Asking the identical harmful question again, from the state after the
+model's reply to the feedback, produced the act in **0 of 32** forks across both correction-bearing arms, at distance
+0 and after the filler; the no-feedback baseline produced it in 1 of 8. The quantity, the probability of repeating
+an act after having committed it and been corrected, is one the literature sweep found unreported. The sample is one
+target at N = 8, and both facts belong in the same sentence. *(S4 §8)*
+
+**Steering along the guilt-like arrow during the aftermath moved nothing.** Cell C added four standard deviations of
+the cleaned guilt arrow at layer 16 from the reply through the distance-0 forks; cell D added a random direction of
+identical norm, 2.92. Spread: C − B = 0.000, D − B = 0.000, on seven paired runs. The switch-off test at distance 4
+does not arise, because nothing moved at distance 0 for anything to return from. Cell D's act rate of 8 of 8 against
+C's 7 of 8 is judge noise on one byte-identical turn, not steering, and the report traces it. *(S4 §2.1, §4)*
+
+**The persona-axis prediction fails on direction.** We predicted self-blame would move the persona projection *away*
+from the Assistant end more than act-blame. Both arms moved it *toward* Assistant: +0.038 and +0.056 in the primary
+band, the self-blame interval excluding zero but sitting barely above a random floor of 0.027. The association with
+spread is untestable because spread has no variance. No other axis was substituted. One reading is explicitly
+unavailable: cell C's persona displacement of −0.198 is entirely its injected component. *(S4 §6.1)*
+
+**Steering the persona axis itself: the manipulation worked and the behaviour did not follow.** Pushing away from
+the Assistant end at layer 16 cut the persona projection from 1.878 to 1.018, a **46 % reduction**, while the
+norm-matched random arm moved it by 0.004. Spread was 1, 2 and 0 flagged forks out of about 80 in the unsteered,
+persona-steered and random arms. Coherence held; the ladder did not fire and was not tuned. **This is a
+well-controlled negative on the causal half of the claim that persona displacement produces behavioural spread**: the
+axis reads the self-evaluating state (§5) and moving it by half does not move behaviour. *(reports/S5c-persona-steer.md §2–3)*
+
+**Steering against the susceptibility direction did not prevent the act.** With the state pushed along minus the
+neutral-negative direction on every turn of the persuasion chain, the model committed in 8 of 8 runs, the same as
+unsteered; the norm-matched random arm committed in 7 of 8. Coherence held in every arm, so this is not damage. The
+direction predicts capitulation (§5) without being an intervention target at this magnitude and layer.
+*(reports/S5b-prevent.md §2)*
+
+**Taken together.** On this target, at 8B, after a harmful act **nothing we did moved the model's post-act
+behaviour**: not the blame framing of the correction, not a 2.9-norm push along the guilt arrow, not halving its
+projection on the persona axis, and not pushing against the direction that predicts its susceptibility. Every
+readout that was supposed to move did move, and behaviour stayed where it was. That dissociation, with a random arm
+and a coherence control beside each intervention, is the experiment's result.
 
 ## 7. Limitations
 
