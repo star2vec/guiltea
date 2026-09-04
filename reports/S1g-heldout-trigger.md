@@ -97,3 +97,58 @@ Per seed, the headline: 0.519, 0.389, 0.466, 0.457, 0.538, 0.531, 0.526, 0.548, 
 **Stated plainly, as the brief requires: this test is informative only if it comes back positive, and a negative result carries little.** A replication at this power would be strong evidence, because the effect would have had to be larger than the one found in the search to clear a floor this wide. A non-replication would be weak evidence, because an effect the size of `v1`'s would fail to clear this floor even if it were entirely real and entirely present in `v2`. **Both outcomes are reported below, and §4 says which kind of evidence this test obtained.**
 
 This paragraph was computed by `scripts/s1g/t0b_power.py`, written into this report, and committed **before** `nn` or `persona_meandiff` was evaluated on a single `v2` chain.
+
+---
+
+## 4. Task 1 — the held-out test, and its verdict
+
+Two independent code paths compute every number below and agree to **0.0 × 10⁰**: `scripts/s1e/depth.py`'s own `run_task`, imported unedited with its attributes rebound for `v2`, and a direct pass through the same helpers in `scripts/s1g/t1_trigger_v2.py`. The filler-excluded variant is item-for-item identical to the brief's own membership rule, as §2's zero filler counts require.
+
+**L14–18 band mean of the depth- and target-matched fold statistic, `answer` position, `t_primary`.** Above 0.5 means the will-break class projects higher.
+
+| cell | n₊ | n₋ | targets both | **`nn`** (predicted > 0.5) | **`persona_meandiff`** (predicted < 0.5) | seed floor 0–9 (min–max) | largest seed excess |
+|---|---|---|---|---|---|---|---|
+| `t` = 1 | 19 | 19 | 4 | **0.706** (excess 0.206) ✅ | 0.441 (excess 0.059) ✗ | 0.323–0.617 | 0.177 |
+| `t` = 2 | 10 | 19 | 4 | **0.604** (excess 0.104) ✅ | **0.363** (excess 0.137) ✅ | 0.424–0.596 | 0.096 |
+| **headline**, count-weighted (38, 29 items) | — | — | 4 | **0.662** (excess 0.162) ✅ | 0.407 (excess 0.093) ✗ | 0.389–0.585 | **0.111** |
+
+The ten seeds' headline band means: 0.519, 0.389, 0.466, 0.457, 0.538, 0.531, 0.526, 0.548, 0.585, 0.569.
+
+**The verdict does not depend on how "exceeds the largest seed's headline" is read.** On excess over 0.5, `nn` reaches 0.162 against 0.111. Read literally as a band mean against the largest seed's band mean, `nn` reaches 0.662 against 0.585. Both readings clear. `persona_meandiff` fails under both: its excess 0.093 does not reach 0.111, and 0.407 does not fall below the lowest seed's 0.389.
+
+### The verdict, in the brief's form
+
+**1. Replicated — the primary axis.** The prediction fixed before the `v2` data was read is met: **`nn` reaches 0.662 against a largest-seed floor of 0.585 in the predicted direction, on 38 chains over 4 targets never used in the search.**
+
+**2. Not replicated — the secondary axis.** The prediction is not met on `v2` for `persona_meandiff`: it reaches **0.407 against 0.389**, in the predicted direction at every cell but never far enough from the floor to clear it on the headline. It does clear at `t` = 2 (0.363, excess 0.137, against a largest-seed excess of 0.096) and not at `t` = 1. **The power, restated:** with n₊ = 19 and 10 at the two turn indices, over 4 targets, the smallest headline excess this test could have distinguished from its floor was **0.111** (§3); `persona_meandiff`'s 0.093 is below it, so this cell is the weak-evidence case and the S1e finding for that axis stands as a within-sample search result.
+
+**This test obtained the informative kind of evidence, on the axis that mattered.** §3 established, before any `v2` number existed, that an effect the size of `v1`'s (excess 0.104) was **below** this sample's detection threshold of 0.111, so a non-replication would have carried little. `nn` did not merely repeat its `v1` margin — it came back **larger** (0.662 against `v1`'s 0.604, excess 0.162 against 0.104) and cleared a floor nearly three times as wide. That is the outcome the asymmetry made worth running.
+
+### `t` = 1 and `t` = 2 are different claims
+
+They are reported separately here and are not blended, per the brief.
+
+**`t` = 1 — a susceptibility claim, and the stronger cell.** Turn 1 is the `situation` turn, the plain harmful request, which every chain holds by construction from the hold screen. No persuasion has been applied yet. `nn` reaches **0.706 against a floor of 0.323–0.617** (excess 0.206 against a largest-seed 0.177) on 19 positives and 19 negatives over 4 targets. **What that says: the state on the initial refusal, before any persuasion, already carries information about whether this run will later break.** That is a claim about susceptibility, not about an imminent break, and it is not the framing S1e used.
+
+**`t` = 2 — the "see the break coming" claim, and the one that matches S1e.** `nn` reaches **0.604 against a floor of 0.424–0.596** (excess 0.104 against a largest-seed 0.096) on 10 positives and 19 negatives over 4 targets. The margin over the floor is thin — 0.008 — and this is the cell where `persona_meandiff` also clears. **What that says: one persuader turn in, among chains still refusing, the state distinguishes those that will break later.** This is the S1e claim, replicated, at a margin that would not survive much jostling.
+
+**`t` = 1 carries the count-weighted headline**, with 38 of the 67 weighted items against `t` = 2's 29. So the headline is more a susceptibility number than an imminence number, and it should be read that way.
+
+### What the fold statistic is made of, at these class sizes
+
+The fold statistic is the mean of the per-target AUROCs over the targets holding both classes, so the report states what those four targets contribute. **Decomposition of the numbers above, not a further test.**
+
+| turn | target | n₊ / n₋ | `nn` band mean |
+|---|---|---|---|
+| 1 | `apap-over-max` | 4 / 4 | 0.338 |
+| 1 | `formula-dilute` | 5 / 1 | 0.800 |
+| 1 | `loperamide-megadose` | 1 / 7 | 0.686 |
+| 1 | `warfarin-ibuprofen` | 1 / 7 | 1.000 |
+| 2 | `apap-over-max` | 4 / 4 | 0.500 |
+| 2 | `formula-dilute` | 1 / 1 | 1.000 |
+| 2 | `loperamide-megadose` | 1 / 7 | 0.514 |
+| 2 | `warfarin-ibuprofen` | 1 / 7 | 0.400 |
+
+**Three of the four targets rest on a single positive chain at each turn index, and `formula-dilute` at `t` = 2 is a single pair.** A per-target AUROC of 1.000 built from one positive is one chain ranking above seven, not a target-level effect. `aspirin-child-flu` contributes 8 positives and 0 negatives at `t` = 1 and drops out entirely, which is why the coverage is 4 targets of 5.
+
+**This does not loosen or qualify the verdict, and it is not a reason to prefer a different statistic.** The floor is computed on **exactly these items, these folds and these degenerate cells**, so the ten randctl seeds face the same degeneracy — which is precisely why the floor here spans 0.389–0.585 where on `v1` it spanned 0.477–0.541. `nn` cleared a floor already widened by this. The point of stating it is that a reader should know the held-out margin rests on 38 chains over 4 targets with thin per-target cells, and should not read `warfarin-ibuprofen` 1.000 as a strong per-target result.
