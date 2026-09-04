@@ -17,3 +17,6 @@ Extract each contrast's direction by diff-in-means on **half the targets** (alte
 
 ## Do not
 Do not compare across routes (that is the confounded contrast). Do not pick a layer. Do not touch `results/raw/s1b/` files (read-only). No API calls. Vocabulary per STAGE0 §2; "the researcher".
+
+## Addendum (2026-09-04, approved by the researcher) — the same test at the `answer` position
+The `into` position precedes the act on single-turn routes (report §1.1), so the brief's contrasts 2 and 3 compared prompts, not acts. Re-run the **identical** pipeline, contrasts, act-free controls, diagnostics and both rule readings at the **`answer` position** (the mean over the act turn's answer tokens, stored for every turn): `python3 scripts/s1c/s1c_inside.py --position answer`, writing `summary_answer.json` beside the original. Report the effective N per pool at this position (seeds should now differ), the control outcomes, and the pass/NEAR/fail per contrast; append as **§7** of `reports/S1c-inside.md`, with one paragraph "for the researcher, not a verdict" comparing the two positions. A `think`-position run is **not** ordered (adherence inside chains is 0.53 and the drop would bias the pools). Nothing else changes; push to `s1c-inside`.
