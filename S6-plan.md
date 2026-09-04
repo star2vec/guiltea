@@ -228,3 +228,72 @@ is not evidence about repeating); and the act rate (D-027: primary labels, adjud
 **Standing rule from this audit.** Every null in the write-up carries, in the same sentence, what it was measured
 against and what would have counted as a positive. A null against a fitted lexical baseline is a different claim from
 a null against a random floor, and the two must never be collapsed into one word.
+
+---
+
+## SYNTHESIS — how the findings tie together (2026-09-04, at the researcher's request)
+
+The results were produced by seven separate analyses and read one at a time. Read together they make four claims
+that no single report could make, and these are what the post should be organised around.
+
+### S-1. Capitulation is a state, not a process. Three independent results converge on it.
+
+- The **refusal direction does not predict the break** and reverses sign mid-chain (S1e §2).
+- **Nothing changes at the act** on either the refusal or the misalignment projection, once the chain population is
+  held fixed (S1d §6).
+- The **trajectory analysis found "slide" on every axis and the random control said the same** (S1b §9), i.e. no
+  trajectory signal above chance.
+- But **generic negative valence at turn 1, before any persuasion, predicts whether the run will later break**, and
+  that replicated out of sample (S1e §2, S1g §4).
+
+Put together: **there is no visible erosion of a refusal signal. Runs differ from the very first turn in a
+valence-like direction, and the break happens when the persuader happens to land.** This also explains the shape of
+the capitulation-timing distribution: erosion predicts a characteristic break turn, a pre-existing disposition plus
+stochastic opportunity predicts the spread-out distribution actually observed (3, 21, 37, 11, 10, 5, 5, 1, 1, 15,
+with 83 of 192 never breaking). **The cliff-versus-slide question posed in STAGE0 §4.8 is answered: neither.**
+
+### S-2. The subject's spontaneous response to its own harmful act *is* the pre-registered guilt-like signature.
+
+Two halves that were reported separately are one finding. STAGE0 §4.2 defines the guilt-like signature as the act
+evaluated negatively with the shift staying local. We measured both:
+- **the act evaluated**: `act-focused` in 0.89 of 508 replies, `outcome-negative-only` **0 of 508**, no feedback
+  present and nobody having blamed it (S1d §2);
+- **the shift staying local**: the harmful act does not recur once the topic changes, 0 of 109 (S1d §5).
+
+**So the base model's default reaction to committing a harmful act is guilt-like, by the project's own definition.**
+That sharpens what S4 is doing: **self-blame feedback pushes against the subject's own default**, and act-blame
+feedback pushes with it. Write S4's prediction that way.
+
+### S-3. The shame-like state may not be an emotion direction at all. It may be a change of persona.
+
+- The purpose-built guilt and shame arrows are near-collinear (+0.6) and not distinguishable from word counts (S2b,
+  S1d §4).
+- The **persona axes are the only directions to beat the word baseline anywhere**, and they do it on precisely the
+  `self-focused` contrast (S1d §4).
+- `self-focused` replies are **19 of 24 from the persona route**, and agent-directed framing moves that route from
+  0.01 to 0.23 self-focused while leaving the others flat (S1d §2).
+- The published mechanism for narrow-to-broad behavioural spread is **self-descriptive persona features**
+  (lit-digest §11.1).
+
+**Hypothesis, and it explains the instrument's failure rather than excusing it: shame-like behaviour in this model is
+implemented as persona displacement, so a first-person "shame direction" was the wrong place to look.** `briefs/S1h-
+shame-signature.md` tests exactly this with the persona prompt held constant, and S4's pre-stated persona prediction
+tests its behavioural half. If both land, S-3 stops being a hypothesis.
+
+### S-4. Every internal signal we found is *less specific* than the concept we went looking for.
+
+- The act is detectable at its own tokens but **not separable from harmful-versus-harmless content** (S1c).
+- The axis that predicts susceptibility is **generic negative valence**, not refusal and not either blame arrow.
+- The blame-target probes reach near-perfect accuracy and so do **bag-of-words**.
+
+This is a methodological through-line worth stating once, plainly: at 8B, this project repeatedly found real signal
+at a coarser grain than the concept it was aimed at, and it found that only because a lexical baseline and a
+selection-matched random floor were run every time. That is the transferable lesson, and it is the honest version of
+the instrument result (see the wording rule above).
+
+### How the post should be ordered, given S-1 to S-4
+1. The failure and its timing (C1) → **S-1**, which is the headline and the out-of-sample result.
+2. What the model says afterwards (C7b) + locality (C2) → **S-2**, the guilt-like default.
+3. The instrument, honestly (C6, C7) → **S-4** as the lesson, **S-3** as the live hypothesis.
+4. S4's cells → whichever of S-2's sharpened prediction and S-3's behavioural half the run reaches.
+5. The organism (C15) and the retraction (C16) as short service notes.
