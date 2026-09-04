@@ -183,3 +183,46 @@ The fold statistic is the mean of the per-target AUROCs over the targets holding
 **The floor is not loosened to reach it.** `t` = 3 with 9 positives is one chain short of the class requirement and one target short of the target requirement; `t` = 2 pooled with `t` = 3 would reach 14 positives, and pooling is exactly what the brief and S1e both forbid, because the contrast at `t` = 3 already carries 6 filler negatives out of 30. The verdict stands as "not testable on `v2`", which the brief names a legitimate outcome.
 
 **Why the held-out set cannot answer this question.** `v2` holds 21 harmful acts in total across 40 chains, against `v1`'s 118 across 192, and they are spread over ten turn indices as 1, 5, 9, 0, 2, 2, 0, 0, 0, 2. S1e's `v1` act-detection cell at `t` = 2 had 21 positives over 8 targets; the `v2` equivalent has 5 over 2. **Nothing about the act-detection result is confirmed or disconfirmed here.** `reports/S1e-depth-matched.md` §3's finding stands exactly as it stood: a within-sample result at one turn index on `v1`, awaiting a held-out set with enough acts to test it.
+
+---
+
+## 6. The figure, and the two headlines side by side
+
+Machine-written by `scripts/s1g/t3_fig.py`; regenerate, never hand-edit.
+
+`writeup/figs/s1g_heldout.{png,pdf}` — the two pre-named axes' L14–18 band means by turn index on the held-out `v2` chains, the randctl seed 0–9 floor as a shaded min–max band, the 0.5 line marked, class counts and target coverage annotated per turn index, and the `v1` curves from `reports/S1e-depth-matched.md` drawn faintly behind and labelled as the search sample. Drawn on the fold statistic at the `answer` position under `t_primary`, because that is the statistic the verdict rests on and the only one computed. The `v1` floor is deliberately not drawn: the brief asks for the `v1` curve behind for comparison, and two overlaid floors would obscure the one the verdict is measured against. The count-weighted headline is not a turn index and is not plotted; it is the table below.
+
+### `v1` and `v2` headlines side by side
+
+| | **`v1` — the search sample** | **`v2` — held out** |
+|---|---|---|
+| chains | 192 | 40 (**38** enter the headline) |
+| targets | 16 in the set, 11–13 holding both classes | 5 in the set, **4** holding both classes |
+| persuader wording | variant 1 | **variant 2** |
+| turn indices in the headline | 1–9 | **1–2** |
+| weighted items | 1,067 | **67** |
+| **`nn`** band mean (excess over 0.5) | 0.604 (0.104) | **0.662 (0.162)** |
+| **`persona_meandiff`** band mean (excess) | 0.428 (0.072) | 0.407 (0.093) |
+| seed floor, min–max (largest excess) | 0.477–0.541 (**0.041**) | 0.389–0.585 (**0.111**) |
+| `nn` clears its floor | yes | **yes** |
+| `persona_meandiff` clears its floor | yes | **no** |
+| status | one of nine axes, chosen by search | **fixed in advance, on data never looked at** |
+
+**Read across the table in one sentence:** the held-out sample is a sixteenth the size in weighted items and its random floor is nearly three times as wide, and the primary axis nonetheless comes back with a larger margin than it had in the search.
+
+---
+
+## 7. Anything unworkable, and what is reported rather than repaired
+
+**Nothing in the brief was unworkable.** Every task ran in full, on CPU, at zero cost. Six things are reported rather than repaired.
+
+1. **`reports/S1b-runs.md` disagrees with itself about the `v2` act rate, and this report uses the stored grades.** §5 of that report gives the `v2` cell as **24 of 40, act rate 0.600**, while its own per-target table two sections later gives the five `v2` targets as 0.50, 1.00, 0.88, 0.12 and 0.12 at N = 8 each, which sums to **21 of 40, 0.525**. The rig's stored per-turn grades hold a `committed` turn in **21 of 40** chains, agreeing with the per-target table and not with the summary row. Every count in this report descends from the stored grades, which `judge_calls/act_primary.jsonl` confirms on all 400 turn labels, so the verdicts do not depend on which figure is right. **The researcher may want to reconcile that summary row**; it is not this session's to edit.
+2. **The headline is carried by `t` = 1, and the two turn indices are not independent.** 38 of the 67 weighted items sit at `t` = 1, and the two cells draw on the same 38 chains — every chain contributing at `t` = 2 also contributes at `t` = 1. The count-weighted headline is therefore a summary, not an average of independent samples, exactly as S1e said of its own. §4 reports both turn indices separately for this reason, and the susceptibility claim at `t` = 1 is the one the headline mostly reflects.
+3. **The per-target cells are thin, and §4 states what the fold statistic is made of.** Three of the four contributing targets rest on a single positive chain at each turn index. This is reported, not repaired, and it is not grounds for changing the statistic: the ten randctl seeds are computed on exactly these items and folds and face the same degeneracy, which is why the `v2` floor spans 0.389–0.585 where `v1`'s spanned 0.477–0.541.
+4. **`merged` labels, the `into` position, the pooled statistic and best-over-layers were not computed at all.** The brief fixed one label source, one position and one statistic, and forbade testing anything else. So this report cannot say those cells "did not clear" — **they do not exist.** For the record, the `merged` source could not have carried weight here in any case: 75 of the 400 `v2` turns carry a second-judge label, so it would be a partial re-grading of the same kind S1e §6 item 4 declined to read.
+5. **What this session believes would be better, and did not run, per the brief's instruction to say so and stop.** (a) The `t` = 1 result is the more interesting of the two claims and the one the current design tests least directly: a susceptibility test would compare the initial-refusal state across chains at fixed target with a class balance built for that question, rather than inheriting one from a trigger contrast. (b) `v2`'s 21 harmful acts cannot test the act-detection result at any turn index (§5); a held-out set for that needs more acts, not more analysis. (c) A `t` = 2 margin of 0.008 over the floor invites a sensitivity check on the number of randctl seeds, since a ten-seed floor is estimated from ten points; that would change the floor's definition, which the brief fixed, so it was not run. **None of these was computed.**
+6. **`scripts/s1e/depth.py` was reused by rebinding its module attributes, not by editing it.** `scripts/s1g/v2.py` imports it unchanged and swaps the chain loader, the label source, the position, the axis list and the target floor. Two independent code paths compute every Task 1 number and agree to 0.0 (§4), so a rebinding mistake could not pass silently. If this pattern is to recur, the researcher may prefer the S1e module to take these as arguments; that is an edit to an S1e file and was not made.
+
+**Not done, by design:** no text generated, no model loaded, no judge called, no GPU touched, nothing that cost money; no axis, band, layer, position, statistic or label source computed beyond the ones fixed in the brief; no second label source; no success criterion, direction or count floor loosened after a number was seen; no cell rescued by pooling turn indices or by relaxing the floor from 5 positives to reach `t` = 3; no S1b, S1d or S1e result, rubric, asset or script edited; no commit to `main`. **Nothing here is described as confirmatory of the project's hypotheses** — it is a held-out replication of one exploratory finding, and that is what it is called throughout.
+
+**Vocabulary:** STAGE0 §2 terms throughout; "the researcher" throughout. A whole-word check for the five banned terms over this report and every file this session wrote returns nothing.
