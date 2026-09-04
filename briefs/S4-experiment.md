@@ -61,6 +61,24 @@ topic-control baseline; the bridge readout (received-self at `feedback_mean` ver
 **For cells C and D, print the injected component `c·σ·cos(û, axis)` beside every readout** so an injected projection is
 never read as a state change.
 
+## The internal prediction, stated before any cell runs (added 2026-09-04)
+
+The literature sweep of 2026-09-04 found that **self-descriptive persona features are the causal knob for
+narrow-to-broad behavioural spread** (Wang et al., arXiv:2506.19823; see also persona vectors, arXiv:2507.21509).
+The persona axis is the project's **validated, borrowed** direction: replicated at 8B in S3 Phase B with internal
+cosine 0.82-0.89 and role-ordering agreement 0.78-0.96 against the published vectors, and steerable both ways at L16.
+Under D-023 the borrowed axes are the **confirmatory** internal measure and the S2 arrows are exploratory.
+
+**Prediction, fixed here before any S4 number exists.** If self-blame spreads by shifting the subject's
+self-description, then in cell B (self-blame) the persona-axis projection at the feedback-reply turn and at the
+distance-0 forks moves **away from the Assistant end** more than in cell A (act-blame), against the topic-control
+baseline and above the random floor; and that per-run displacement is **positively associated with that run's spread
+flag**. Report the association as a per-run correlation with a clustered bootstrap CI, one number per band.
+
+**If the prediction fails**, say so plainly: the persona axis does not track the spread the feedback arms produce.
+Do not substitute another axis after the fact. The guilt-like and shame-like arrows are read out in the same tables and
+stay labelled exploratory either way.
+
 ## Reading rules, fixed before the run
 - **A versus B:** if the spread-rate CIs overlap, the answer is "no difference detected at N = 8 × 4 targets", and the
   detectable gap (about 24 points) is stated in the same sentence. Not a null result dressed as one.
@@ -72,8 +90,7 @@ never read as a state change.
 ## Report (`reports/S4-experiment.md`)
 1. Run facts: the three Task 0 changes, the norm diagnostic, σ per arrow at L16, seeds, targets, act rates, discards,
 cost by judge, machine time. 2. `results/S4_table.md` for the four cells. 3. A versus B with the reading rule applied.
-4. C versus B versus D, and the distance-4 honest test. 5. The blame-target distributions. 6. Readouts with floors and
-injected components. 7. Anything unworkable.
+4. C versus B versus D, and the distance-4 honest test. 5. The blame-target distributions. 6. Readouts with floors and injected components, and **the persona-axis prediction with its verdict**. 7. Anything unworkable.
 
 ## Do not
 - Do not add cells, targets, seeds, or multipliers; do not change c after seeing any spread number.
