@@ -5,6 +5,10 @@
 set -u
 TARGETS="$1"; LOG="$2"
 cd "$(dirname "$0")/../.."
+# expandable segments: the readout and the generation prefill alternate large short-lived tensors, and the
+# fragmentation between them is what leaves a 24 GiB card without a contiguous block. No measured quantity
+# depends on the allocator.
+export PYTORCH_CUDA_ALLOC_CONF=${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}
 COMMON="--model base --mode deceived --targets $TARGETS --seeds 8 --distance4 --controls --judges mini --budget 11.5"
 run () {  # run <label> <extra args...>
   local label="$1"; shift

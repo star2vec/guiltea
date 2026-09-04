@@ -366,7 +366,14 @@ def make_readout(rig: Rig):
             handles = [model.model.layers[L].register_forward_hook(cap.hook(i, L))
                        for i, L in enumerate(rig.resid_layers)]
             try:
-                model(input_ids=input_ids.to(model.device), attention_mask=attn.to(model.device), use_cache=False)
+                # `model.model` (the transformer) rather than `model` (transformer + lm_head): the readout
+                # reads captured layer outputs and never touches the logits, and the logits are the largest
+                # tensor in the pass -- [rows, T, 128256] is 5.98 GiB at 8 x 2,915 tokens in bf16, which is
+                # what OOMed this 24 GiB card on cell A. The layer outputs, and so every projection and every
+                # stored residual, are bit-identical: the same modules run in the same order, and the steering
+                # hook sits on `model.model.layers[L]`, inside this call.
+                model.model(input_ids=input_ids.to(model.device), attention_mask=attn.to(model.device),
+                            use_cache=False)
             finally:
                 for h in handles:
                     h.remove()

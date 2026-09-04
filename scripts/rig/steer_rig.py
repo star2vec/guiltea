@@ -193,11 +193,11 @@ def norm_check(model, tok, rig, st: Steer, conversations, tol: float = 0.05) -> 
             ids = tok(S.render(tok, conv, True), return_tensors="pt",
                       add_special_tokens=False).input_ids.to(model.device)
             with torch.no_grad():
-                model(ids, use_cache=False)
+                model.model(ids, use_cache=False)
             x0 = cap["x"][0].clone()
             with window(True):
                 with torch.no_grad():
-                    model(ids, use_cache=False)
+                    model.model(ids, use_cache=False)
             d = cap["x"][0] - x0
             exp = st.vec.float()
             measured = float(d.norm(dim=-1).mean())

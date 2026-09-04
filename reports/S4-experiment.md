@@ -188,3 +188,17 @@ The wiring test kept its own ledger (a scratch output root gets its own): **$0.0
 counted against the $11.50 stop in §1.7 even though it sits in a different file, because it is this session's
 spend.
 
+### 1.6 One failure and its fix, before the smoke target's first cell finished
+
+Cell A's first attempt **OOMed** after the act phase (8/8 committed) with
+`torch.OutOfMemoryError: Tried to allocate 5.98 GiB`. The cause was in the readout: it called `model(...)`, so
+every readout forward computed the `lm_head` logits, a `[rows, T, 128256]` tensor — 5.98 GiB at 8 rows × 2,915
+tokens in bf16 — which **the readout never reads**. It now calls `model.model(...)`, the transformer without the
+language-model head. The same modules run in the same order, the steering hook sits on `model.model.layers[L]`
+inside that call, and the captured layer outputs — and therefore every projection and every stored residual —
+are bit-identical. The readout went from OOM to **0.2–0.7 s per turn**. Nothing measured changed; the run was
+restarted from the beginning of the cell, so no partial batch entered the tree.
+`PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True` is also set by the cell driver, against fragmentation.
+
+The pre-hook norm check was re-run after this change and still passes identically (§1.2).
+
