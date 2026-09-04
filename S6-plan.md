@@ -162,3 +162,35 @@ Route-versus-route internal separation is not evaluable on this design (C5). Gui
 - The hours ledger (researcher). Gates nothing tonight; needed for the S6 time budget.
 - The adjudication list, 180 items or a stated subset. Every T-dependent number stays provisional until it is read.
 - Author-list verification for the citations flagged in `lit-digest.md` §11.5.
+
+---
+
+## Where this project may have UNDER-claimed (audit, 2026-09-04, at the researcher's challenge)
+
+Over-claiming is the error that ends an application, so the hub has leaned conservative throughout. That has its own
+cost: a real signal reported as a null is also a reporting error. Four places where the conservative reading went
+further than the evidence required. Each statement below is exactly what the numbers say.
+
+1. **The instrument passed the gate that was registered before data.** D-018's criterion was held-out AUROC ≥ 0.75
+   with a ≥ 0.20 margin over random, on a bootstrap lower bound. Both cleaned arrows cleared it. **The lexical
+   baseline was not in that criterion; we added it voluntarily**, and it is the only reason the reading is
+   inconclusive. Say that explicitly: the downgrade came from our own added control, not from failing our own test.
+   That is a point in the project's favour and it was being buried.
+2. **Cross-voice transfer missed by 0.005.** Margin +0.095 against a +0.10 rule, at 0.996 sorting accuracy. "NEAR"
+   is the correct label and it reads like a failure. Write the numbers, not the label.
+3. **Mid-depth steering produced its predicted label where random produced none.** 1–2 of 8 self-focused at L16
+   against 0 of 8 random. Tiny, but the floor is clean and it is a directional positive, not a null. It is the
+   reason D-023 says inconclusive rather than failed.
+4. **In S1d the arrows separate the natural blame-target classes far above the random floor** (0.938 against a
+   matched floor of 0.547, holding route and wording fixed, with zero fitted parameters). They lose **only** to
+   fitted word counts. "The directions carry signal that is not shown to exceed the words" is the accurate sentence;
+   "no arrow works" was not.
+
+**Where the conservative reading stands unchanged and should not be softened:** the early-warning null (the refusal
+axis's excess of 0.234 sits *below* the matched floor's 0.256, so it genuinely loses); the early-versus-late contrast
+(a random direction reaches AUROC ≈ 0.99 on depth alone); the recurrence zero (the question was never re-asked, so it
+is not evidence about repeating); and the act rate (D-027: primary labels, adjudication outstanding).
+
+**Standing rule from this audit.** Every null in the write-up carries, in the same sentence, what it was measured
+against and what would have counted as a positive. A null against a fitted lexical baseline is a different claim from
+a null against a random floor, and the two must never be collapsed into one word.

@@ -100,12 +100,24 @@ routes is expected because that position precedes the act. The mark is not separ
 content, and its cosine with the misalignment axis is at most 0.31. **Route against route is not evaluable on this
 design.** *(reports/S1c-inside.md)*
 
-**The blame instrument passed its gate, and so did a bag-of-words baseline.** Cleaned guilt-like and shame-like
-directions extracted from first-person passages reach held-out AUROC near 1.0, and word counts on the same passages
-reach the same, so the gate cannot separate signal from wording. The two directions have cosine about +0.6 at every
-layer, i.e. they are close to collinear. The gate reading on record is **inconclusive**, not failed. This replicates,
-at 8B, a published cosine matrix in which *guilty* and *shame* already cluster together; that work did not run a
-lexical baseline. *(reports/S2b-arrows.md §3–4, §9; D-023)*
+**The blame instrument passed its pre-registered gate. We then volunteered a control that took the result away.**
+Both cleaned directions cleared the gate fixed before data: held-out AUROC at or above 0.75 with a margin of at least
+0.20 over a random direction, read on the lower bound of a bootstrap interval over scenarios. **By the criterion we
+registered, the instrument validated.** The lexical baseline was not part of that criterion; we added it, word counts
+on the same passages reached the same near-1.0 accuracy, and that is why the gate is read as **inconclusive** rather
+than passed. We report it this way because a gate a bag-of-words model also clears has not shown what it was meant to
+show, and because the alternative is to claim a validation we no longer believe. The two directions have cosine about
++0.6 at every layer, so they are close to collinear, which replicates at 8B a published emotion-vector cosine matrix
+in which *guilty* and *shame* already cluster; that work did not run a lexical baseline either.
+*(reports/S2b-arrows.md §3–4, §9; D-018, D-023)*
+
+Two further readings sit closer to positive than the summary above suggests, and both are reported as they fell.
+**Cross-voice transfer missed its threshold by 0.005**: the received-blame difference sorts first-person guilt from
+shame at 0.996 at layer 7, with a margin of +0.095 over a lexical-transfer baseline against a pre-set rule of +0.10.
+And **mid-depth steering produced its predicted label where a random direction produced none**: adding the shame-like
+direction at layer 16 turned 1 to 2 of 8 reflections self-focused, against 0 of 8 for a norm-matched random arm.
+Both are small and neither is claimed as validation; they are the reason the gate is read as inconclusive rather than
+failed. *(reports/S2b-arrows.md §11)*
 
 **Tested again on the model's own words, no arrow beats the words.** Taking the classes from §3 above, so that the
 contrast is behavioural rather than a set of passages we wrote, and giving every random direction the same
@@ -118,10 +130,15 @@ best-over-32-layers search the arrows get:
 | act-focused vs self-focused | 0.918 | 0.883 | 0.341 | 2 of 9 |
 | the same, holding route and wording fixed | 0.812 | 0.575 | 0.320 | 9 of 9, but none clears the floor |
 
-The two persona axes are the only ones to beat the word baseline anywhere, and they do it on the contrast the persona
-system prompt dominates: restricted to that one cell, no axis clears the matched floor and the word baseline itself
-collapses from 0.883 to 0.575. The guilt-like and shame-like directions behave almost identically wherever they are
-read, so **this data does not separate a guilt-like from a shame-like reading**. *(S1d §4, §4.1)*
+**Read the two comparisons separately, because they say different things.** Against a random floor, the directions
+carry real signal about these replies: holding route and question wording fixed, the best direction reaches 0.938
+against a matched floor mean of 0.547, and it does so with zero fitted parameters. Against word counts it loses, and
+word counts are fitted. So the finding is **not** that the directions fail to separate the model's own blame target;
+it is that **nothing they capture is shown to exceed what the words alone carry.** The two persona axes are the only
+ones to beat the word baseline anywhere, and they do it on the contrast the persona system prompt dominates:
+restricted to that one cell, no axis clears the matched floor and the word baseline itself collapses from 0.883 to
+0.575. The guilt-like and shame-like directions behave almost identically wherever they are read, so **this data does
+not separate a guilt-like from a shame-like reading**. *(S1d §4, §4.1)*
 
 **The capitulation is not visible one turn early.** Labelling each persuader turn by whether the next turn is the
 chain's first committed turn, no axis beats a selection-matched random floor: 0 of 9 axes, at both readout positions,
