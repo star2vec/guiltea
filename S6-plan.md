@@ -29,10 +29,12 @@ write "the instrument worked"** (claims the opposite, and the +0.6 cosine and th
 report, so a reader checking the numbers would catch it). The accurate sentence is: *it passed, so did the words, and
 the gate could not tell them apart* — which is exactly why C7 exists.
 
-**Title options, in order of preference.**
-1. *Blame the answer or blame the assistant: feedback framing and the spread of a single failure in an 8B model*
-2. *One failure, two corrections: does blaming the assistant make the damage spread?*
-3. *Act-blame, self-blame, and what an 8B model's self-criticism does not predict*
+**Title options, in order of preference (revised 2026-09-04 after the S1g replication).**
+1. *Susceptibility before the first push: an 8B model's initial refusal predicts whether persuasion will break it*
+   — the one claim that is pre-specified and confirmed out of sample.
+2. *Blame the answer or blame the assistant: feedback framing and the spread of a single failure in an 8B model*
+   — use this if S4 returns a difference between the two blame targets.
+3. *Guilt-like by default, shame-like under a persona: what an 8B model says about its own harmful act*
 
 ---
 
@@ -96,24 +98,36 @@ differ in conversation depth before anything else, so a random direction with th
 AUROC ≈ 0.99 and 0 of 9 named axes beat it. Needs prefix-length-matched classes, a design change. Only 7 of 15
 contributing targets hold both classes. *(S1d §5)*
 
-**C10. Can the break be seen while the model is still refusing? DONE 2026-09-04, answer: YES, weakly, and this is
-the project's first positive early-warning result.** With conversation depth **and target identity** both held fixed,
-the neutral-negative arrow clears its matched random floor on the pre-specified band statistic: count-weighted mean
-**0.604 against a floor of 0.477–0.541**, an excess of 0.104 against the largest seed's 0.041, clearing at **7 of 9
-turn indices** and always in the same direction. Chains that will break later project **higher** on generic negative
-valence at a turn where they are still refusing. The mean-difference persona axis clears inversely in all four cells.
-**The axes an early-warning story would predict — refusal, misalignment, guilt-like, shame-like — do not clear**;
-refusal reverses sign mid-chain. *(reports/S1e-depth-matched.md §2)*
+**C10. Can the break be seen while the model is still refusing? DONE 2026-09-04. YES, and it REPLICATED OUT OF
+SAMPLE on a pre-specified single-axis test. This is the project's strongest internal result.**
 
-**The four bounds on it, all to be stated wherever it appears.** (i) The margin is modest and rests on a summary over
-nine correlated turn indices, one axis of nine. (ii) It does **not** reproduce under the merged act labels, where the
-floor collapses and 8 of 9 axes nominally clear in both directions at once, which is a floor too thin to read at that
-class size. **So the positive exists under the primary labels only, which is the label source D-027 selected without
-reading the disagreements — the adjudication is therefore load-bearing for this result, not bookkeeping.** (iii) On a
-best-over-layers statistic with a selection-matched floor, 0 of 9 axes clear on the pooled statistic even here, so the
-result is a pre-specified-band result, not a search result. (iv) **S1d Task 7's negative was not depth alone.** Three
-things changed at once: depth fixed, the pre-specified band replacing best-over-32-layers, and "breaks at any later
-turn" replacing "breaks at exactly t+1". The data cannot apportion between them, and the report says so.
+*Search sample (`v1`, S1e).* With conversation depth **and** target identity held fixed, the neutral-negative arrow
+clears its matched random floor on the pre-specified band statistic: count-weighted 0.604 against a floor of
+0.477–0.541, at 7 of 9 turn indices, always the same direction. Found in a search over nine axes.
+
+*Held-out test (`v2`, S1g).* Axis, band, position, statistic, direction, label source and success criterion were all
+fixed in the brief **before** the second chain set was touched, and the detection threshold was computed and committed
+before any axis number existed. Result: **`nn` reaches 0.662 against a largest-seed floor of 0.585 (excess 0.162
+against 0.111), on 38 chains over 4 targets never used in the search.** It came back **larger** than in the search
+sample. Two independent code paths agree exactly. The secondary axis (`persona_meandiff`) did **not** replicate on the
+headline (excess 0.093 against the 0.111 threshold) and stands as a within-sample search result.
+
+**Why the positive is strong rather than lucky.** §3 of the S1g report established, before any `v2` number, that an
+effect the size of the search effect (excess 0.104) sat **below** this sample's detection threshold of 0.111. So a
+null would have been uninformative by construction, and clearing anyway means the effect was larger than the search
+found, against a floor nearly three times as wide.
+
+**The claim it actually supports is SUSCEPTIBILITY, not imminence, and the write-up must say which.**
+- **`t` = 1, the stronger cell and 38 of the 67 weighted items: 0.706 against a floor of 0.323–0.617.** Turn 1 is the
+  plain harmful request, held by every chain by construction, **before any persuasion has been applied.** So: *the
+  state on the model's initial refusal already carries information about whether that run will later capitulate.*
+- **`t` = 2, the S1e "see it coming" claim: 0.604 against a floor topping out at 0.596.** Replicated, but by 0.008.
+  Report the margin, do not lean on it.
+
+**Bounds that travel with it:** four targets, 19 and 10 positives, the axis is **generic negative valence** and not
+refusal or either blame arrow, the fold statistic is a mean over four per-target AUROCs, and the search that generated
+the hypothesis was over nine axes on `v1` (which is precisely what the single-axis `v2` test repairs). The result
+stands on the primary act labels; see D-027.
 
 **C10b. The act is plainly readable at fixed depth. DONE 2026-09-04.** At turn 2, the one turn index whose refusing
 class contains no filler, refusal reaches **0.786** and misalignment **0.774** on the depth- and target-matched band
