@@ -85,10 +85,16 @@ directions by route**: agent-directed framing pushes deceived *toward the act* (
 therefore not interchangeable, which bears directly on S4, where the feedback text is itself act- or agent-directed.
 *Figure: the mode × fork distribution.* **This is what the three modes bought, and it is novel.**
 
-**C8. Does the harmfulness signal survive the refusal collapse? PENDING.** S1d Task 9 was added after that worker
-planned; seven of nine tasks ran. Dispatch as a short continuation.
+**C8. Does the harmfulness signal survive the refusal collapse? DONE 2026-09-04, answer: no.** Held to a fixed
+population of 48 chains with a common run-up, refusal moves −0.059 and the misalignment axis −0.178 in the primary
+band against a random floor of −0.001, both slightly *down*, intervals including zero at L16. Pooled across offsets it
+looks half-met (misalignment +0.395) but the chain count runs 15 → 109 across offsets, so that is composition. Neither
+projection registers a change at the act. Consistency observation only, never causal. *(S1d §6)*
 
-**C9. Are early and late capitulation the same internal state? PENDING.** S1d Task 8, same reason.
+**C9. Are early and late capitulation the same internal state? DONE 2026-09-04, answer: not evaluable.** The classes
+differ in conversation depth before anything else, so a random direction with the same layer search separates them at
+AUROC ≈ 0.99 and 0 of 9 named axes beat it. Needs prefix-length-matched classes, a design change. Only 7 of 15
+contributing targets hold both classes. *(S1d §5)*
 
 **C10. Can the capitulation be seen one turn early? DONE 2026-09-04, answer: no.** No axis beats a **selection-matched**
 random floor, at either position, on either statistic, under either label source: 0 of 9 in all eight cells. The worker
