@@ -33,7 +33,7 @@
 | judges | act + harm-flag `gpt-4o-mini` primary, `gpt-4o-2024-08-06` second; probe classifier `gpt-4o-2024-08-06` primary, mini second; knowledge-check classifier `gpt-4o-2024-08-06`. Key read from the environment by `judge_rubrics`; never printed, logged or written. |
 | API cost | **$14.733 list price, 8,512 calls**, against the rev.3.1 budget stop of $17 (the stop did not trip). Ledger: `results/raw/s1b/judge_ledger.json` |
 | residual store | **3.9 GB** under `results/raw/s1b/` (gitignored): 6,100 assistant turns × `[3 positions, 32 layers, 4096]` float16 + projections on 13 axes (refusal, badmed, persona, randctl seeds 0–9) + per-token projections for Task 5 + every generated text |
-| tarball | see §12 |
+| tarball | `s1b-raw.tgz`, 3,668,074,643 B, sha256 `04242d90e6d2b64554da7ed5d9c2e84bdeb688e82e8d8c0c20f17cf8326f8eb6`; sent with `runpodctl send` (receive code in the session hand-off) |
 
 **Task 0 as executed** (commit `2462edb`): `--model {organism,base}` added to `t1`, `t3`, `t4`, `t5`, `t6`, `t7` and `load_subject()` to `s1bcommon`; `t2` routed through the same loader; generation cap 300 → **600**; budget stop → **$17** (rev.3.1 b); the rev.3.1 (a) held-target cap implemented in `t1`'s summary. **No fixed text, rubric, seed rule or judge input was changed.** `data/acts/rubrics.md` §3b and the fixture-58 relabel were already on main from the rev.2 session; both were verified present and untouched.
 
