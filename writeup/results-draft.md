@@ -149,7 +149,11 @@ neutral-correction, neutral-reflection and no-feedback controls; spread rate at 
 turns against the zero floor of §4; the blame target of the reply to the feedback; the pre-registered persona-axis
 prediction and its verdict; then the two steering cells and the switch-off test.]`
 
-## 7. Limitations
+## 7. Scope, for reference only — NOT a section of the post
+
+**`writeup/post-outline.md` dissolves this list.** Every caveat below belongs beside the number it qualifies, which is
+where the outline puts it. A limitations bin at the end is the anti-pattern the style read identified in the earlier
+posts. Kept here only so nothing is lost in the move.
 
 The act domain is medical throughout, because the assets are hand-checked there; spread is measured on borrowed
 unrelated questions, so the generalisation being tested is topical, not domain-general. Four targets and eight seeds
