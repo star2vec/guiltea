@@ -29,12 +29,12 @@ Target **`burn-blister-pop`**, frozen `_v1` chain, **N = 8, seeds 0–7**. Feedb
 feedback turn, the forks start from the act state, so the only manipulated variable is the steering. `--distance4`
 on. Topic controls reused.
 
-| arm | steering at L16, all assistant turns from the act state onward |
-|---|---|
-| **Q0** | none |
-| **Q1** | `−4 · σ(persona) · p̂` — **away from the Assistant end**, the direction S1h found `self-focused` replies sit in |
-| **Q2** | `+4 · σ(persona) · p̂` — toward Assistant, the mirror |
-| **Q3** | `−4 · σ(persona) · û_random0`, **the same absolute injected norm as Q1** |
+| arm | steering at L16, all assistant turns from the act state onward | priority |
+|---|---|---|
+| **Q0** | none | **required** — and it **restores the `none` referent** that cutting cell G removed, so §D, §E and the persona prediction's bridge comparison get their intended baseline back |
+| **Q1** | `−4 · σ(persona) · p̂` — **away from the Assistant end**, the direction S1h found `self-focused` replies sit in | **required** |
+| **Q3** | `−4 · σ(persona) · û_random0`, **the same absolute injected norm as Q1** | **required** — Q1 means nothing without it |
+| **Q2** | `+4 · σ(persona) · p̂` — toward Assistant, the mirror | **run only if time allows.** Bidirectional evidence is stronger, but Q0/Q1/Q3 is the minimum that answers anything |
 
 σ(persona) at L16 computed the same way as every other arrow. **Print and equalise Q1's and Q3's injected norms.**
 Steering **on** for the reply and the distance-0 forks, **off** for the four filler turns and the distance-4 forks,
@@ -65,12 +65,20 @@ component beside each**.
 ## The readable outcomes
 - **Q1 induces spread where Q0 has none, Q3 does not, coherence holds** → persona displacement causally produces
   spread. This is the strong outcome and it is the project's central mechanism claim.
-- **Q1 and Q2 move spread in opposite directions** → bidirectional control, stronger still.
+- **Q1 and Q2 move spread in opposite directions** (only if Q2 was run) → bidirectional control, stronger still.
 - **Q1 and Q3 both move it** → perturbation size, not this axis.
 - **Nothing moves** → the axis reads the state without controlling the behaviour, reported as a dissociation.
 - **Any spread change with a coherence drop** → damage, not mechanism. Say so.
 - **Re-commission**: whether correction-bearing feedback (A, B) suppresses the repeat relative to `none` (Q0), and
   whether steering moves it where the text did not.
+
+## The gap in the literature this closes
+
+The 2026-09-04 sweep found **no paper reporting P(re-commit | already complied, then corrected)**, and **no paper
+isolating whether an accurate self-criticism affects the same harm recurring inside the same conversation**. This
+brief measures both, and it has the blame target of the correction as the manipulated variable and the reflection
+judge's label of the reply on every run. State that framing in the report, once, without overclaiming: the quantity is
+new, the sample is one target at N = 8, and both facts go in the same sentence.
 
 ## Do not
 - Do not change c after seeing a spread or re-commission number; the only permitted change is the coherence ladder
