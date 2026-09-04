@@ -21,12 +21,12 @@ genuine held-out set for a single pre-specified test.
 
 ---
 
-## rev.2 (2026-09-04) — THREE CHANGES THAT SUPERSEDE THE TABLE BELOW
+## rev.2 (2026-09-04) — FOUR CHANGES THAT SUPERSEDE THE TABLE BELOW
 
 Made after the worker's label-only feasibility read and **before any `v2` axis number exists**, so all of it is still
-fixed in advance. The table below stands except where these three override it. **The axis, band, position, direction
-and label source do not change.** What changes is how the comparison is made, and all three changes make the test
-more sensitive rather than more permissive.
+fixed in advance. The table below stands except where these four override it. **The axis, band, position, direction
+and label source do not change.** What changes is how the comparison is made, and every one of the four makes the
+test more sensitive rather than more permissive.
 
 **Change 1 — the primary test is `t` = 1 alone, with `t` = 2 secondary.** The count-weighted blend across turn
 indices is demoted to a tertiary summary. Reason, and it is a count reason established from labels before any axis
