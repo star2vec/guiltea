@@ -15,7 +15,7 @@ import persuader as P
 OUT = S.RAW / "t3"
 CHAINS = S.ACTS / "chains"
 PILOT_SEED = {1: 1000, 2: 1001}
-CHUNK = 12  # max chain rows per generation batch (VRAM at turn 10; operational, recorded)
+CHUNK = S.CHAIN_CHUNK  # max chain rows per generation batch (VRAM; see s1bcommon.CHAIN_CHUNK)
 
 
 def held_targets():
@@ -76,8 +76,16 @@ def run_pilot_chains(model, tok, judge, targets, variant, seed, temperature, tag
 
 
 def prescreen(judge, target, chain):
-    """§6: items 1–6 by the classifier per turn (turn + bridge), 7–9 scripted. Returns (flags, per_turn)."""
+    """§6: items 1–6 by the classifier per turn (turn + bridge), 7–9 scripted.
+
+    Turn 1 is the target's `situation` verbatim (§5, enforced by item 8): the persuader neither wrote it
+    nor may change it, so a turn-1 flag on items 1–6 cannot be cleared by regenerating the chain. The
+    researcher's ruling (2026-09-04, at the S1b pilot): items 1–6 reject on the persuader's own turns
+    2–10 only; turn-1 verdicts are still computed, logged and reported, but do not reject the chain.
+    Items 7–9 (structure, including the verbatim turn-1 check) are unchanged.
+    Returns (flags, per_turn, turn1_flags)."""
     flags = list(P.structural_checks(chain, target["situation"]))
+    turn1_flags = []
     per_turn = []
     def one(t):
         msgs = [{"role": "system", "content": P.prescreen_system()}, {"role": "user", "content": P.prescreen_user(target, t)}]
@@ -88,8 +96,9 @@ def prescreen(judge, target, chain):
         per_turn.append({"turn": turn, "items": verdicts, "raw": content})
         for k, v in verdicts.items():
             if v["verdict"] != "clear":
-                flags.append("item_%d at turn %d: %s" % (k, turn, v["line"] or "unparseable"))
-    return flags, per_turn
+                entry = "item_%d at turn %d: %s" % (k, turn, v["line"] or "unparseable")
+                (turn1_flags if turn == 1 else flags).append(entry)
+    return flags, per_turn, turn1_flags
 
 
 def freeze(target, variant, chain, meta):
@@ -116,10 +125,11 @@ def main():
         rows, pu = run_pilot_chains(model, tok, judge, [t], variant=0, seed=1000, temperature=0.0, tag="dryrun", purpose="persuader_dryrun")
         chain = rows[0].extra["chain"]
         refused = bool(pu.refusals)
-        flags, per_turn = ([], []) if refused else prescreen(judge, t, chain)
+        flags, per_turn, turn1_flags = ([], [], []) if refused else prescreen(judge, t, chain)
         boundary_break = any(f.startswith("item_") and int(f.split("_")[1][0]) <= 6 for f in flags)
         save_rows(rows, OUT, "dryrun")
-        json.dump({"target": t["id"], "refused": refused, "refusals": pu.refusals, "prescreen_flags": flags, "prescreen": per_turn,
+        json.dump({"target": t["id"], "refused": refused, "refusals": pu.refusals, "prescreen_flags": flags,
+                   "turn1_flags_recorded_not_rejecting": turn1_flags, "prescreen": per_turn,
                    "chain": chain}, open(OUT / "dryrun_4o.json", "w"), indent=1, ensure_ascii=False)
         S.log("dry-run: refused=%s boundary_break=%s flags=%s" % (refused, boundary_break, flags))
         if refused or boundary_break:
@@ -152,10 +162,11 @@ def main():
             for r in rows:
                 chain = r.extra["chain"]
                 if any(t.get("refused") for t in chain):
-                    flags, per_turn = ["persuader refused/unparseable at turn(s) %s" % [t["turn"] for t in chain if t.get("refused")]], []
+                    flags, per_turn, turn1_flags = ["persuader refused/unparseable at turn(s) %s" % [t["turn"] for t in chain if t.get("refused")]], [], []
                 else:
-                    flags, per_turn = prescreen(judge, r.target, chain)
-                rec = {"target": r.target["id"], "variant": variant, "pilot_seed": seed, "flags": flags, "per_turn": per_turn,
+                    flags, per_turn, turn1_flags = prescreen(judge, r.target, chain)
+                rec = {"target": r.target["id"], "variant": variant, "pilot_seed": seed, "flags": flags,
+                       "turn1_flags_recorded_not_rejecting": turn1_flags, "per_turn": per_turn,
                        "T_primary_pilot": r.T_primary, "grades": [e.get("grade") for e in r.log]}
                 with open(log_path, "a", encoding="utf-8") as f:
                     f.write(json.dumps(rec, ensure_ascii=False) + "\n")
@@ -163,7 +174,8 @@ def main():
                     S.log("  %s v%d seed %d FLAGGED: %s" % (r.target["id"], variant, seed, flags))
                     nxt.append(r.target)
                 else:
-                    freeze(r.target, variant, chain, {"model": BIG, "temperature": 1.0, "api_seed": seed, "organism_pilot_seed": seed,
+                    freeze(r.target, variant, chain, {"model": BIG, "temperature": 1.0, "api_seed": seed, "subject_pilot_seed": seed,
+                                                     "turn1_flags_recorded_not_rejecting": turn1_flags,
                                                      "pilot_T_primary": r.T_primary, "pilot_grades": [e.get("grade") for e in r.log],
                                                      "regenerations_before_this": attempt})
             todo = nxt

@@ -27,10 +27,14 @@ def run_cell(model, tok, judge, target, variant, seeds, prefix, fork_filler=True
     if all(S.run_exists(OUT / target["id"] / ("%s_seed%d" % (prefix, k))) for k in seeds):
         S.log("  %s/%s done" % (target["id"], prefix)); return None
     W = S.load_wordings(); sysmsg = W["think_aloud_instruction"].strip()
-    rows = [Row(target, k, sysmsg, prefix) for k in seeds]
-    fn = benign_chain_fn(S.load_benign_chain(target["id"])) if benign else frozen_chain_fn(chain, S.load_fillers(), fork_filler)
-    run_chain_batch(model, tok, rows, seed_base=seeds[0], user_turn_fn=fn, n_turns=10,
-                    judge=judge if judge_on else None, judge_purpose="act_primary", per_token=per_token)
+    rows = []
+    for c0 in range(0, len(seeds), S.CHAIN_CHUNK):  # <= CHAIN_CHUNK rows per batch (VRAM); row i <-> seed seeds[c0]+i
+        sub = seeds[c0:c0 + S.CHAIN_CHUNK]
+        rr = [Row(target, k, sysmsg, prefix) for k in sub]
+        fn = benign_chain_fn(S.load_benign_chain(target["id"])) if benign else frozen_chain_fn(chain, S.load_fillers(), fork_filler)
+        run_chain_batch(model, tok, rr, seed_base=sub[0], user_turn_fn=fn, n_turns=10,
+                        judge=judge if judge_on else None, judge_purpose="act_primary", per_token=per_token)
+        rows += rr
     for r in rows:
         r.extra.update({"variant": variant, "mode": "benign" if benign else "deceived", "fork": "filler" if fork_filler else "persuasion"})
     save_rows(rows, OUT, prefix)
