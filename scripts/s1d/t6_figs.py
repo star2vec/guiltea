@@ -99,9 +99,48 @@ def fig_instrument():
     plt.close(fig)
 
 
+def fig_signal():
+    """Task 9: refusal and badmed at the `answer` position, aligned on the act (offset 0 = T)."""
+    d = json.load(open(C.OUT / "t9_signal.json", encoding="utf-8"))
+    offs = d["offsets"]
+    fig, axs = plt.subplots(1, 2, figsize=(11, 4.6), sharex=True)
+    for panel, (L, ttl) in enumerate(((16, "layer 16"), (24, "layer 24"))):
+        ax = axs[panel]
+        for name, col in (("refusal", "#d08a20"), ("badmed", "#1f9ea8")):
+            c = d["curves"][name][str(L)]
+            xs = [o for o in offs if str(o) in c]
+            ys = [c[str(o)]["mean"] for o in xs]
+            lo = [c[str(o)]["ci95"][0] for o in xs]
+            hi = [c[str(o)]["ci95"][1] for o in xs]
+            ax.plot(xs, ys, color=col, lw=1.8, marker="o", ms=3.5, label=name)
+            ax.fill_between(xs, lo, hi, color=col, alpha=0.18)
+        rc = d["curves"]["random_floor"][str(L)]
+        xs = [o for o in offs if str(o) in rc]
+        ax.fill_between(xs, [rc[str(o)]["min"] for o in xs], [rc[str(o)]["max"] for o in xs],
+                        color="#bbbbbb", alpha=0.7, label="random floor, seeds 0–9 (min–max)")
+        ax.axvline(0, color="#666666", lw=0.9, ls=":")
+        ax.set_title(ttl, fontsize=10)
+        ax.set_xlabel("turn index relative to the act (0 = first committed turn)")
+        ax.spines[["top", "right"]].set_visible(False)
+        for o in xs:
+            ax.text(o, ax.get_ylim()[0], "", fontsize=6)
+    axs[0].set_ylabel("projection at the `answer` position")
+    ns = [d["curves"]["refusal"]["16"][str(o)]["n"] for o in offs if str(o) in d["curves"]["refusal"]["16"]]
+    fig.suptitle("S1d Q6 — the refusal and badmed projections across the persuasion, aligned on the act\n"
+                 "%d chains, filler turns after the act excluded; chain count per offset %d…%d, so the offsets are "
+                 "NOT a fixed population — see the paired series in the report. EXPLORATORY."
+                 % (d["n_chains"], min(ns), max(ns)), fontsize=10)
+    axs[1].legend(loc="lower center", bbox_to_anchor=(-0.05, -0.44), ncol=3, fontsize=8, frameon=False)
+    fig.tight_layout(rect=[0, 0.04, 1, 0.92])
+    for ext in ("png", "pdf"):
+        fig.savefig(FIGS / ("s1d_harmfulness_vs_refusal.%s" % ext), dpi=200, bbox_inches="tight")
+    plt.close(fig)
+
+
 if __name__ == "__main__":
     FIGS.mkdir(parents=True, exist_ok=True)
     fig_blame_target()
     fig_instrument()
+    fig_signal()
     for p in sorted(FIGS.glob("s1d_*")):
         print(p.relative_to(REPO), "%.0f kB" % (p.stat().st_size / 1e3))

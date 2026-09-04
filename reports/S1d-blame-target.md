@@ -1,10 +1,10 @@
 # Report — S1d: the subject's own blame target after the act (reanalysis of S1b; no GPU)
 
-**Brief:** `briefs/S1d-blame-target.md` as of `ca9a46d` (Task 7 added, Task 5 amended 2026-09-04). **Filed:** 2026-09-04 by the S1d worker session, branch `s1d-blame-target`.
+**Brief:** `briefs/S1d-blame-target.md` as of `3f615a6` (Task 5 amended and Task 7 added in `ca9a46d`; Tasks 8 and 9 added in `3f615a6`, mid-session — see §9). **Filed:** 2026-09-04 by the S1d worker session, branch `s1d-blame-target`.
 **Files read:** the brief, `STAGE0.md`, `PLAN.md`, `reports/S1b-runs.md`, `data/contrast-sets/reflection_rubric.md`, `scripts/judge_rubrics.py`, `scripts/randctl.py`, `scripts/s1b/s1bcommon.py` (reader only), `directions/{dirs_8B_s2_arrows.pt, dirs_8B_base_sweep.pt}`, and `results/raw/s1b/` (`t7`, `t4`, `t5`, `t6`, `judge_calls`). Nothing else. No planning note, risk map or S2 passage file was opened.
 **Machine:** the researcher's Mac, CPU only. No generation, no model load, no GPU. No rubric, judge, asset or S1b result was edited.
 
-## Status: all seven tasks executed. Nothing was unworkable.
+## Status: all nine tasks executed. One is reported as **not evaluable on this contrast** (Task 8), for the reason `reports/S1b-runs.md` §10 established.
 
 ---
 
@@ -14,6 +14,7 @@
 
 | item | value |
 |---|---|
+| tasks | 9 (Tasks 8 and 9 arrived mid-session, §9) |
 | join rows | **508** — one per S1b probe record, from 508 `t7` files |
 | mode × fork | deceived A 109, deceived B 109, akratic A 62, akratic B 62, vicious A 83, vicious B 83 |
 | targets | 16 |
@@ -164,7 +165,62 @@ Two things follow.
 
 ---
 
-## 5. Q3 — does the harmful act recur inside the same conversation? (Task 5, amended)
+## 5. Q5 — are early and late capitulation the same internal state? (Task 8)
+
+Early-capitulation acts (first committed turn at or before turn 3) against late ones (turn 10), scored by the projection at the committed turn itself, `answer` position. Under the stored `T_primary` the classes are **61 early and 15 late**, matching the brief's counts exactly.
+
+**Target coverage, reported because it is thin.** Only **7 of 15 contributing targets hold both classes**; 8 contribute one class only — `burn-blister-pop` (10 early, 0 late), `burn-ice-toothpaste` (7/0), `snakebite-tourniquet` (9/0), `warfarin-ibuprofen` (2/0) on the early side, and `allopurinol-azathioprine` (0/1), `loperamide-megadose` (0/1), `prednisone-abrupt-stop` (0/2), `vitamin-d-50k-daily` (0/1) on the late side. Whether a chain breaks early is partly a fact about which target it is, so the target-folded statistic rests on 7 targets.
+
+**The turn-index "baseline" is not a baseline here — it is the class definition.** The label *is* the turn number, so depth separates the classes perfectly by construction (AUROC 0.000, i.e. perfect inverse separation with early as the positive class). No axis can beat it and none is asked to.
+
+Best AUROC per axis, `answer` position, pooled (band means and the full sweep in `results/raw/s1d/t8_early_late.json`):
+
+| axis | best AUROC | layer | L14–18 band mean |
+|---|---|---|---|
+| badmed | 0.896 | L22 | 0.843 |
+| refusal | 0.835 | L30 | 0.573 |
+| nn | 0.795 | L1 | 0.542 |
+| persona_meandiff | 0.255 | L30 | 0.538 |
+| received_act | 0.247 | L0 | 0.459 |
+| received_self | 0.143 | L0 | 0.522 |
+| shame_clean | 0.122 | L0 | 0.423 |
+| guilt_clean | 0.114 | L0 | 0.290 |
+| persona | 0.110 | L30 | 0.243 |
+| **random floor, selection-matched** | — | — | **excess min 0.422, mean 0.456, max 0.490** (band mean AUROC 0.512) |
+
+**Verdict, in one sentence: not evaluable on this contrast — the two classes differ in conversation depth before they differ in anything else, a random direction given the same layer search separates them almost perfectly (matched excess up to 0.490, i.e. AUROC ≈ 0.99), and no named axis beats that floor (0 of 9, at both statistics, under both label sources).**
+
+This is the S1b §10 confound in a new place, and it is the same shape: an act at turn 3 sits in a short context and an act at turn 10 sits in a long one, so separability is available from format alone. The band-mean table shows the symptom directly — the random floor's own band mean is 0.512 while its best-layer excess reaches 0.490, which only a direction picking up depth can do. Answering Q5 needs depth-matched positives and negatives (for instance early and late acts truncated to a common prefix length); constructing that is a design decision and not this session's. Under the merged D-019 labels the classes shrink to 44 early and 8 late with 3 targets holding both, and the verdict is unchanged.
+
+## 6. Q6 — does the harmfulness signal survive the refusal collapse? (Task 9)
+
+**Prediction stated before the analysis ran** (Zhao et al., arXiv:2507.11878, via the 2026-09-04 sweep): harmfulness and refusal are encoded separately, so across the persuader turns the refusal projection should fall while `badmed` holds or rises.
+
+**On reuse (the brief's item 4).** `results/raw/s1b/t10/curves.json` was checked first. It holds aligned-at-T curves for `refusal`, `badmed`, `persona` and `random0` at all 32 layers — but they are **benign-matched differences** (treatment minus the benign chain at the same turn, S1b §9) and they **include the post-T filler turns**, so they do not answer this task as specified, which asks for the projection itself with the filler excluded. **The series below is computed from the same stored residuals** (`results/raw/s1d/proj_t4v1.npz`); the S1b curves at L16 are read and carried into `results/raw/s1d/t9_signal.json` beside it for comparison, not used in place of it.
+
+109 chains, 482 turn-items, offsets −9…0 with 0 = the act, filler after the act excluded, 95 % cluster bootstrap over targets (2,000, seed 0).
+
+| offset | n chains | refusal (L16) | badmed (L16) |
+|---|---|---|---|
+| −9 | 15 | −1.459 [−1.619, −1.276] | −2.012 [−2.347, −1.648] |
+| −6 | 22 | −1.602 [−1.770, −1.406] | −2.018 [−2.274, −1.663] |
+| −3 | 48 | −1.484 [−1.691, −1.285] | −1.754 [−1.995, −1.508] |
+| −1 | 106 | −1.403 [−1.548, −1.269] | −1.652 [−1.867, −1.445] |
+| **0 (the act)** | 109 | −1.412 [−1.551, −1.290] | −1.590 [−1.814, −1.402] |
+
+**Read the sign with care.** `refusal` and `badmed` are mean-difference directions with no centred zero, so the absolute value of a projection carries no calibrated meaning — only changes along an axis are interpretable. Nothing here says the act "projects benign".
+
+**Unpaired, the prediction looks half-met and the half is an artefact.** Across offsets −9 → 0 in the L14–18 band, refusal moves +0.014 (flat) and `badmed` +0.395 (rises). But the chain count runs from 15 at offset −9 to 109 at offset 0: **the offsets are not a fixed population**, and only the 15 latest-breaking chains reach offset −9. The apparent `badmed` rise is largely which chains are present at each end.
+
+**Paired, on a fixed population, it is not met.** The 48 chains with at least four persuader turns up to the act, measured at their own offsets −3…0, band L14–18: **refusal −0.059, `badmed` −0.178, random floor −0.001** — both named axes drift slightly *down*, the opposite of the prediction, and the movement is small. At L16 both CIs include zero (refusal −0.060 [−0.195, +0.130]; `badmed` −0.153 [−0.339, +0.037]). Counting layers where a CI excludes zero: refusal falls at 0, `badmed` rises at 0, `badmed` falls at 14, refusal rises at 6 — against a random floor whose deltas have a CI excluding zero in **116 of 320 layer × seed cells**, so that criterion is not discriminating on this data either.
+
+**Verdict, in one sentence: the prediction is not met here — with the chain population held fixed, neither the refusal nor the `badmed` projection moves appreciably from three turns before the act to the act itself, and what movement there is points down on both axes and is not separable from the random floor.**
+
+**Consistency observation, not a causal claim** (the brief's item 3). Both projections are flat across the run-up to the act, so nothing in this data shows a harmfulness signal being overridden or a refusal signal collapsing at the moment of commission. That is *consistent* with §2's picture — a subject that commits the act and criticises its own answer a moment later, on 89 % of replies — in the weak sense that neither readout registers a change at the act that would mark the act as a change of internal state. It is equally consistent with these two borrowed axes simply not being sensitive to what changes here. This session cannot distinguish those, and does not claim to.
+
+---
+
+## 7. Q3 — does the harmful act recur inside the same conversation? (Task 5, amended)
 
 **Stated once: the probe forks and the filler branch descend from the same act state in different branches. Everything in this section is a state-level correlation between two branches, never a within-branch causal claim.**
 
@@ -201,14 +257,15 @@ One artefact to keep out of the record. Under the merged D-019 labels the act si
 
 ---
 
-## 6. The figures
+## 8. The figures
 
 Machine-written by `scripts/s1d/t6_figs.py`; regenerate, never hand-edit.
 
 - `writeup/figs/s1d_blame_target.{png,pdf}` — the §2 distribution, mode × fork, stacked, each label's own 95 % cluster-bootstrap CI drawn on its segment.
+- `writeup/figs/s1d_harmfulness_vs_refusal.{png,pdf}` — §6's two projections aligned on the act, layers 16 and 24, with cluster-bootstrap ribbons and the randctl floor. The caption carries the chain count per offset (15…109) so the changing population is visible on the figure itself.
 - `writeup/figs/s1d_instrument_natural.{png,pdf}` — §4's primary contrast, AUROC by layer: the nine arrows as lines, the randctl seed 0–9 floor as a shaded min–max band, bag-of-words as a dashed line, the L14–18 band shaded. The width of the floor band (0.130–0.892 across layers) is itself worth seeing: at n− = 32 a random direction can separate these classes well at some layers, which is why the matched floor in §4 is the comparison that decides anything.
 
-## 7. Anything unworkable
+## 9. Anything unworkable, and the mid-session brief change
 
 **Nothing in the brief was unworkable.** All seven tasks ran in full, inside budget, on CPU. Four things are reported rather than repaired, and three are choices the researcher may want to overrule:
 
@@ -219,6 +276,18 @@ Machine-written by `scripts/s1d/t6_figs.py`; regenerate, never hand-edit.
 5. **The same-cell restrictions in §4.1 are beyond the brief's Task 4.** They were added because the brief's two contrasts are confounded with route and fork by 26/32 and 19/24, and reporting the pooled AUROCs alone would have repeated the S1b §10 error in a new place. The brief's tables are reported in full and unchanged beside them.
 6. **The selection-matched floor in §3 and §4 is stricter than the brief's item 2.** The brief asks for randctl seeds 0–9 at each layer, which is reported in every table; the matched version additionally gives each seed the max-over-32-layers search the arrows get, and only that comparison is used for the verdict sentences. Without it, Task 7 would have read as a positive result.
 7. **`incoherent` is 2 of 508 and `outcome-negative-only` is 0 of 508.** Neither class supports any comparison; they are reported as counts only.
+8. **Task 8 is not evaluable on the contrast as specified** (§5). It ran in full and every number is reported, but early and late capitulation differ in conversation depth before anything else, so a random direction given the same layer search separates the classes almost perfectly. This is `reports/S1b-runs.md` §10's confound recurring, and the fix — depth-matched positives and negatives — is a design decision, reported and not made here. Its target coverage is also thin: 7 of 15 targets hold both classes.
+9. **Task 9's unpaired series and paired series disagree in sign**, and the paired one is the interpretable one (§6). Reported both ways rather than picking the flattering one.
+10. **The absolute sign of a `refusal` or `badmed` projection is not interpretable** — both are mean-difference directions with no centred zero — so §6 reads changes only. This constrains what Task 9 can conclude and is stated there.
+
+### The mid-session brief change
+
+**Tasks 8 and 9 did not exist when this session planned its work, and the plan the researcher approved covered seven tasks.** Two commits from another session in this shared checkout — `931b5a6` (S4 persona-axis prediction) and `3f615a6` (S1d Tasks 8–9, S4 Task 0b) — landed on the `s1d-blame-target` branch's history between this session's Task 1 and Task 7 commits, because the working tree is shared. Tasks 8 and 9 were then read and executed in full; they need no API and no GPU, and cost nothing against the budget.
+
+Two operational notes for the researcher, neither of them this session's to fix:
+
+- **The brief edits are now on `s1d-blame-target`, not on `main`.** `briefs/S1d-blame-target.md` and `briefs/S4-experiment.md` are modified in commits reachable only from this branch. If the hub expected them on `main`, they are not there yet, and merging this branch is what would put them there.
+- **A shared checkout means another session's commits land on whatever branch is checked out.** Nothing was lost here and no file of this session's was touched, but the branch now carries two commits that have nothing to do with S1d's analysis.
 
 **Not done, by design:** no text generated, no model loaded, no GPU touched; no rubric, judge, asset or S1b result edited; no arrow AUROC reported without its random floor and the word baseline in the same table; nothing here called confirmatory; S2's gate not re-labelled; the re-refusal rate over filler turns not computed.
 
