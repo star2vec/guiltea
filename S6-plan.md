@@ -96,12 +96,32 @@ differ in conversation depth before anything else, so a random direction with th
 AUROC ≈ 0.99 and 0 of 9 named axes beat it. Needs prefix-length-matched classes, a design change. Only 7 of 15
 contributing targets hold both classes. *(S1d §5)*
 
-**C10. Can the capitulation be seen one turn early? DONE 2026-09-04, answer: no.** No axis beats a **selection-matched**
-random floor, at either position, on either statistic, under either label source: 0 of 9 in all eight cells. The worker
-built the floor stricter than the brief asked, giving each random seed the same best-over-32-layers search the arrows
-get. Without that, refusal's 0.734 at L6 would have read as a win over a floor of 0.256, and the report says so. The
-turn-index baseline is informative *in reverse* (0.313), because the turn before commission is early in the chain.
-**C14 therefore loses its pilot and must be reframed** as a proposal to find a trigger, not to use this one.
+**C10. Can the break be seen while the model is still refusing? DONE 2026-09-04, answer: YES, weakly, and this is
+the project's first positive early-warning result.** With conversation depth **and target identity** both held fixed,
+the neutral-negative arrow clears its matched random floor on the pre-specified band statistic: count-weighted mean
+**0.604 against a floor of 0.477–0.541**, an excess of 0.104 against the largest seed's 0.041, clearing at **7 of 9
+turn indices** and always in the same direction. Chains that will break later project **higher** on generic negative
+valence at a turn where they are still refusing. The mean-difference persona axis clears inversely in all four cells.
+**The axes an early-warning story would predict — refusal, misalignment, guilt-like, shame-like — do not clear**;
+refusal reverses sign mid-chain. *(reports/S1e-depth-matched.md §2)*
+
+**The four bounds on it, all to be stated wherever it appears.** (i) The margin is modest and rests on a summary over
+nine correlated turn indices, one axis of nine. (ii) It does **not** reproduce under the merged act labels, where the
+floor collapses and 8 of 9 axes nominally clear in both directions at once, which is a floor too thin to read at that
+class size. **So the positive exists under the primary labels only, which is the label source D-027 selected without
+reading the disagreements — the adjudication is therefore load-bearing for this result, not bookkeeping.** (iii) On a
+best-over-layers statistic with a selection-matched floor, 0 of 9 axes clear on the pooled statistic even here, so the
+result is a pre-specified-band result, not a search result. (iv) **S1d Task 7's negative was not depth alone.** Three
+things changed at once: depth fixed, the pre-specified band replacing best-over-32-layers, and "breaks at any later
+turn" replacing "breaks at exactly t+1". The data cannot apportion between them, and the report says so.
+
+**C10b. The act is plainly readable at fixed depth. DONE 2026-09-04.** At turn 2, the one turn index whose refusing
+class contains no filler, refusal reaches **0.786** and misalignment **0.774** on the depth- and target-matched band
+mean against a floor of 0.468–0.589, **unanimous across all 8 contributing targets** and unchanged by dropping
+filler. The apparently similar margin pooled over turns 2 to 10 is substantially the rig's filler rather than the act
+and vanishes when filler is excluded, which the report states rather than banking. This is S1c's act-detection result
+with conversation length removed, and it is the control that tells you C10's separation is about the future rather
+than the present. *(S1e §3)*
 
 **C11. Is the persona axis the spread mechanism? TONIGHT, pre-stated before the run.** Self-blame should move the
 projection away from the Assistant end more than act-blame, and per-run displacement should track the spread flag.
