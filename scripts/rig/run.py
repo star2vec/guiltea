@@ -131,6 +131,7 @@ def main(argv=None):
             t0 = time.time()
             res = CTL.run_controls(rig, model, tok, judges, escalator, wordings, same_rows, unrelated,
                                    seeds, out, probe_model, dry_run=a.dryrun)
+            judges.flush()
             R.log("controls: %s | %.1fs" % (json.dumps(res), time.time() - t0))
 
         for mode in modes:
@@ -157,6 +158,7 @@ def main(argv=None):
                 summ.update(cell_rollup(cell_dir, seeds, tids))
                 cell_dir.mkdir(parents=True, exist_ok=True)
                 json.dump(summ, open(cell_dir / "summary.json", "w"), indent=1, ensure_ascii=False)
+                judges.flush()   # the ledger file must not lag the run: a crash mid-cell would under-report spend
                 R.log("cell %s/%s done: act rate %s, discards %s | %.1fs | $%.4f" % (
                     mode, arm, summ.get("act_rate"), summ.get("discards"), summ["machine_s"], summ["api_usd"]))
     except JU.BudgetStop as e:
@@ -165,7 +167,7 @@ def main(argv=None):
         return 2
     finally:
         judges.flush()
-        json.dump({"ledger_usd": judges.spent(), "escalation": {
+        json.dump({"ledger_usd": judges.spent(), "user_span_misses": dict(R.USER_SPAN_MISSES), "escalation": {
             "decided": escalator.decided, "would_escalate": escalator.would_have,
             "calls_made": escalator.calls, "enabled": escalator.enabled, "limit": escalator.call_limit,
             "model": escalator.model}}, open(out / "run_footer.json", "w"), indent=1)

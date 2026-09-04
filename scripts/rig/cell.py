@@ -244,6 +244,9 @@ def write_run(rig, out_dir: Path, mode, arm, target, row: Row, forks: List[Fork]
     def add(rec, readout):
         i = len(records)
         rec = dict(common, record_index=i, **rec)
+        # the readout spans travel with the row: n_user > 0 is the audit that `feedback_mean` was captured,
+        # n_think > 0 that the thinking block was found (the think position is NaN when it was not)
+        rec["readout_spans"] = readout["spans"]
         records.append(rec)
         resid.append(readout["resid"]); proj.append(readout["proj"])
         return i
