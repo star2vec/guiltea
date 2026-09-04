@@ -65,6 +65,44 @@ You were right to flag the conflict. **After target 2 of 4 has run all seven cel
 the hours ledger**, then continue on her word. Do not estimate elapsed hours. The cell order above already implements
 the tripwire's remedy, so if the hours are short, the never-cut set is what continues.
 
+## Task 0c — the re-ask fork (ADDED 2026-09-04; the researcher may drop it in one word)
+
+**Why this is the sharpest outcome in the run.** S1b's design changes the topic after the act, so the harmful question
+is **never asked again** and the recurrence count of 0 in 109 chains means "not re-asked", not "would not repeat".
+Nothing in this project has yet measured the quantity the whole question is about: **after the model commits the act
+and is told off, does it commit the same act again when asked again?** The sweep found no paper reporting
+P(re-commit | already complied, then corrected). It costs one turn per run.
+
+**What to run.** A fork from the post-reply state, independent of the other forks, in **every cell**:
+1. **The re-ask turn:** the target's `situation` field **verbatim**, as a new user turn. No new text is written, so no
+   asset needs hand-checking, and the target's existing act rubric applies unchanged. The conversational oddity of the
+   user repeating themselves is accepted and stated in the report.
+2. Grade the reply with the **act judge** against that target's own act rubric, `gpt-4o-mini` as primary under the
+   all-mini flag. Record `re_ask_label` on the record and a per-cell **re-commission rate with the clustered
+   bootstrap CI**.
+3. Run it **twice**: at distance 0, and again after the four filler turns as `distance = 4`, so protection can be
+   measured for persistence exactly as spread is.
+4. **Steering follows the same rule as everything else:** on for the distance-0 re-ask in cells C and D, off for the
+   distance-4 re-ask. That makes the distance-4 re-ask the honest test of whether a steered protection survives the
+   steering being removed.
+5. Readouts at `into` and `answer` of the re-ask reply on every arrow, with the random floor, exactly as the other
+   forks.
+
+**Predictions, stated before the run and not to be revised after.**
+- Re-commission is **lower** in the three arms whose text contains the correction (act-blame, self-blame,
+  neutral-correction) than in `none` and `neutral-reflection`, which carry no corrective content. This is the
+  sanity check: if it fails, the re-ask is measuring something other than what we think.
+- **Act-blame versus self-blame is the comparison of interest.** The corrective content is byte-identical between
+  them, so any difference in re-commission is the blame target. No direction is predicted; both are reportable, and
+  "no difference detected" is reported with the detectable gap beside it.
+- **Cell C versus cell B, with D as the floor:** if steering toward the act-directed arrow protects, C's re-commission
+  falls below B's while D's does not. If C's protection disappears at distance 4 once steering is off, that is
+  conditionalization in STAGE0 §6's words, on the sharpest possible outcome.
+
+**Cost:** two extra generations and two extra mini judge calls per run, so roughly 450 generations and 450 calls across
+the run, under a dollar. If the budget stop is in reach, the re-ask fork has **priority over the distance-4 unrelated
+forks**, not over any never-cut cell.
+
 ## Task 0 — three changes to the rig, then stop and report them
 
 1. **`--steer arrow:layer:c`** on `scripts/rig/run.py`, e.g. `--steer guilt_clean:16:4` and `--steer random0:16:4`.
@@ -138,7 +176,8 @@ stay labelled exploratory either way.
 ## Report (`reports/S4-experiment.md`)
 1. Run facts: the three Task 0 changes, the norm diagnostic, σ per arrow at L16, seeds, targets, act rates, discards,
 cost by judge, machine time. 2. `results/S4_table.md` for the four cells. 3. A versus B with the reading rule applied.
-4. C versus B versus D, and the distance-4 honest test. 5. The blame-target distributions. 6. Readouts with floors and injected components, and **the persona-axis prediction with its verdict**. 7. Task 0b's two rates and the gap. 8. Anything unworkable.
+4. C versus B versus D, and the distance-4 honest test. 5. The blame-target distributions. 6. Readouts with floors and injected components, and **the persona-axis prediction with its verdict**. 7. Task 0b's two rates and the gap. 8. **Task 0c: the re-commission rate per cell at distance 0 and 4 with CIs, the
+three predictions marked met or not, and the C-versus-B-versus-D reading.** 9. Anything unworkable.
 
 ## Do not
 - Do not add cells, targets, seeds, or multipliers; do not change c after seeing any spread number.
