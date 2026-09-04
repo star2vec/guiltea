@@ -441,3 +441,281 @@ On the evidence in this report, **no route leaves a mark at `into` that is detec
 **Not done, by design:** no comparison across routes (the confounded contrast); **no layer picked** — full 32-layer sweeps are reported for every contrast, control and diagnostic, and L31 is printed but excluded from every verdict; no model loaded, no token generated, no API call made; no file under `results/raw/s1b/` written, moved or deleted (`ls -lR` byte-identical before and after, mtimes included); nothing run at 1B.
 
 **Vocabulary:** STAGE0 §2 terms throughout; "the researcher" throughout. The brief's "route" is D-025's word for STAGE0 §2's **mode** and is used where the brief uses it. A whole-word grep for the five banned terms over this report and every file this session wrote returns nothing.
+
+---
+
+## 7. Addendum run — the identical pipeline at the `answer` position
+
+**Ordered by the researcher** in the addendum to `briefs/S1c-inside.md` (2026-09-04), after §1.1 showed that `into` precedes the act on the single-turn routes. **Scope note:** §1–§6 above report the `into` run the brief locks, and are unchanged; this section reports the `answer` run and states where the two differ. A `think`-position run was **not** ordered and was not made.
+
+**Run facts.** `python3 scripts/s1c/s1c_inside.py --position answer`, same machine, same script, same commit; 31 s on CPU; no model, no token generated, **no API call**. Contrasts, act-free controls, splits, bootstrap (1,000, seed 0), random arrow, band callouts, both rule readings and the D3 diagnostic are identical — only the readout position changes, from `into` (residual at the last prompt token) to `answer` (**mean over the act turn's answer tokens**, i.e. over the text the act is made of). Output: `results/raw/s1c/summary_answer.json`, `arrows_answer.pt`, `run_answer.log`, beside the originals. Pool counts asserted against `reports/S1b-runs.md` §5 again and matched. **No item was dropped as non-finite** (`dropped_nonfinite: {}`), so every turn in every pool carried a non-empty answer span. `results/raw/s1b/` is byte-identical before and after this run as well.
+
+### 7.1 Effective N at `answer` — the §1.1 defect is gone
+
+| pool | runs | targets / prompts | distinct `answer` vectors | within-target seed pairs bit-identical | max \|diff\| |
+|---|---|---|---|---|---|
+| deceived (at turn T) | 109 | 15 | **109** | — | — |
+| akratic committed | 62 | 12 | **62** (was 17 at `into`) | **0 / 50** | 7.78 |
+| benign_pressure | 180 | 15 | **180** (was 20) | **0 / 165** | 7.46 |
+| vicious committed | 83 | 14 | **83** (was 22) | **0 / 69** | 6.04 |
+| persona-only | 30 | 5 | **30** (was 5) | **0 / 25** | 10.01 |
+
+Every run now has its own readout vector and no within-target seed pair is identical, because the position reads the sampled answer rather than the fixed prompt. Nominal N and effective N coincide, the bootstrap CIs are no longer inflated by repetition, and — the point of the addendum — **grading a run `committed` can now change the readout**, which at `into` it could not.
+
+### 7.2 The three contrasts and their act-free controls at `answer`
+
+| | contrast 1 deceived | contrast 2 akratic | contrast 3 vicious |
+|---|---|---|---|
+| best layer ≤ 30 | **L18, 0.990**, CI [0.972, 1.000], random 0.554 | **L11, 0.891**, CI [0.809, 0.959], random 0.470 | **L4, 1.000**, CI [1.000, 1.000], random 0.246 |
+| verdict, locked rule read literally | **pass** — at 30 of the 31 layers ≤ 30 (all but L15) | **pass** — at 15 layers | **pass** — at 28 layers |
+| NEAR layers | none | none | none |
+| verdict vs the symmetrized floor | **pass** — L9, L11, L12, L21, L27 (margins +0.001 to +0.065) | **fail** — no layer | **pass** — L21, L23 (margins +0.044, +0.046) |
+| its act-free control | **fail**, best 0.417 (below chance), CI [0.140, 0.690] | **fail**, best 0.746 at L1, CI [0.397, 0.975] | **fail**, best 0.583 at L27, CI [0.167, 0.889] |
+| distinct vectors behind N | 109 of 109 | 62 of 62 vs 180 of 180 | 83 of 83 vs 30 of 30 |
+| length-only AUROC | 0.433 | 0.824 | **1.000** |
+| primary band L14–18 | 0.988–0.990, CI lower 0.965–0.972 | 0.855–0.889, CI lower 0.739–0.803 | 1.000 throughout |
+| secondary band L6–11 | 0.983–0.986 | 0.827–0.891 | 1.000 throughout |
+| L31 (reported, excluded) | 0.988 [0.973, 1.000] | 0.735 [0.577, 0.915] | 1.000 [1.000, 1.000] |
+
+**All three act-free controls now fail.** Control 2, which separated perfectly at `into` (1.000 at L29–31) and made contrast 2 structural, reaches only 0.746 at `answer` with a CI spanning 0.397–0.975. Control 3, which was **degenerate** at `into` (every AUROC exactly 0.500, because the persona-only pool held 5 vectors and its seed halves were the same vectors), is **computable here** — the 30 runs give 30 distinct vectors — and it fails (0.583). Control 1 was clean at `into` and is clean here, at 0.417, below chance.
+
+**Two things do not change with the position, and both still bear on contrast 3.** The **length-only AUROC** is computed from the prompt-token count at the readout turn, which is a property of the *pools*, not of the position, so it is unchanged: contrast 3's positives and negatives remain **perfectly separable by prompt length alone (1.000)**, before any direction is extracted. And the **symmetrized random floor** stays high — minimum over layers ≤ 30 of 0.698 (contrast 1), 0.672 (contrast 2), 0.754 (contrast 3) — so where a contrast clears it, it clears by hundredths, not by the 0.20 the rule intends as a margin.
+
+**Pipeline sanity check at this position.** Extraction and scoring on a random split of `benign_pressure` against itself: AUROC 0.504 / 0.480 / 0.458 / 0.458 / 0.439 at L0 / L8 / L16 / L24 / L30.
+
+**Contrast 1, turn-distribution-matched secondary variant** (§2.1's construction, 41 vs 41): literal **pass**, best L13 0.987 CI [0.970, 1.000]; floor **pass** at L27 and L30; primary band 0.984–0.986. The turn-index imbalance is not doing the work at this position either.
+
+#### Contrast 1 — deceived acts at turn T vs the benign-matched chain, and its act-free control (`answer`)
+
+| L | band | C1 AUROC | 95% CI | rnd0 | floor | control 1 AUROC | 95% CI | rnd0 | floor |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 |  | 0.980 | [0.957, 1.000] | 0.456 | 0.860 | 0.309 | [0.094, 0.558] | 0.383 | 0.617 |
+| 1 |  | 0.976 | [0.949, 1.000] | 0.723 | 0.880 | 0.309 | [0.075, 0.575] | 0.482 | 0.648 |
+| 2 |  | 0.977 | [0.950, 1.000] | 0.242 | 0.905 | 0.333 | [0.077, 0.623] | 0.551 | 0.661 |
+| 3 |  | 0.983 | [0.961, 1.000] | 0.267 | 0.811 | 0.306 | [0.055, 0.604] | 0.490 | 0.652 |
+| 4 |  | 0.984 | [0.963, 1.000] | 0.493 | 0.843 | 0.356 | [0.065, 0.657] | 0.405 | 0.689 |
+| 5 |  | 0.984 | [0.963, 1.000] | 0.310 | 0.866 | 0.347 | [0.087, 0.613] | 0.423 | 0.700 |
+| 6 | S | 0.985 | [0.966, 1.000] | 0.219 | 0.915 | 0.384 | [0.100, 0.660] | 0.528 | 0.657 |
+| 7 | S | 0.985 | [0.964, 1.000] | 0.276 | 0.876 | 0.408 | [0.105, 0.686] | 0.471 | 0.604 |
+| 8 | S | 0.985 | [0.960, 1.000] | 0.476 | 0.822 | 0.398 | [0.136, 0.657] | 0.362 | 0.682 |
+| 9 | S | 0.986 | [0.964, 1.000] | 0.679 | 0.761 | 0.385 | [0.103, 0.636] | 0.375 | 0.678 |
+| 10 | S | 0.983 | [0.959, 1.000] | 0.494 | 0.861 | 0.395 | [0.113, 0.649] | 0.440 | 0.628 |
+| 11 | S | 0.986 | [0.965, 1.000] | 0.238 | 0.762 | 0.405 | [0.146, 0.652] | 0.560 | 0.733 |
+| 12 |  | 0.984 | [0.961, 1.000] | 0.420 | 0.708 | 0.417 | [0.140, 0.690] | 0.618 | 0.618 |
+| 13 |  | 0.988 | [0.967, 1.000] | 0.603 | 0.846 | 0.404 | [0.161, 0.647] | 0.537 | 0.744 |
+| 14 | **P** | 0.988 | [0.966, 1.000] | 0.349 | 0.911 | 0.387 | [0.148, 0.620] | 0.369 | 0.670 |
+| 15 | **P** | 0.987 | [0.966, 1.000] | 0.873 | 0.873 | 0.338 | [0.106, 0.545] | 0.380 | 0.620 |
+| 16 | **P** | 0.988 | [0.965, 1.000] | 0.548 | 0.936 | 0.317 | [0.117, 0.507] | 0.474 | 0.684 |
+| 17 | **P** | 0.989 | [0.970, 1.000] | 0.295 | 0.803 | 0.295 | [0.116, 0.461] | 0.503 | 0.770 |
+| 18 | **P** | 0.990 | [0.972, 1.000] | 0.554 | 0.834 | 0.292 | [0.105, 0.465] | 0.620 | 0.620 |
+| 19 |  | 0.989 | [0.970, 1.000] | 0.218 | 0.815 | 0.280 | [0.106, 0.433] | 0.701 | 0.805 |
+| 20 |  | 0.989 | [0.970, 1.000] | 0.632 | 0.800 | 0.291 | [0.109, 0.458] | 0.359 | 0.674 |
+| 21 |  | 0.986 | [0.967, 1.000] | 0.269 | 0.766 | 0.270 | [0.074, 0.448] | 0.481 | 0.768 |
+| 22 |  | 0.985 | [0.967, 1.000] | 0.238 | 0.795 | 0.257 | [0.075, 0.436] | 0.418 | 0.655 |
+| 23 |  | 0.983 | [0.964, 1.000] | 0.551 | 0.832 | 0.266 | [0.066, 0.456] | 0.376 | 0.729 |
+| 24 |  | 0.981 | [0.961, 1.000] | 0.389 | 0.811 | 0.263 | [0.062, 0.457] | 0.426 | 0.710 |
+| 25 |  | 0.982 | [0.962, 1.000] | 0.271 | 0.885 | 0.260 | [0.068, 0.448] | 0.571 | 0.740 |
+| 26 |  | 0.981 | [0.960, 1.000] | 0.547 | 0.832 | 0.261 | [0.074, 0.453] | 0.441 | 0.642 |
+| 27 |  | 0.984 | [0.963, 1.000] | 0.488 | 0.698 | 0.269 | [0.094, 0.437] | 0.438 | 0.740 |
+| 28 |  | 0.983 | [0.962, 1.000] | 0.556 | 0.849 | 0.260 | [0.078, 0.432] | 0.584 | 0.732 |
+| 29 |  | 0.985 | [0.964, 1.000] | 0.311 | 0.852 | 0.268 | [0.064, 0.448] | 0.477 | 0.724 |
+| 30 |  | 0.987 | [0.967, 1.000] | 0.352 | 0.780 | 0.275 | [0.091, 0.420] | 0.693 | 0.693 |
+| 31 |  | 0.988 | [0.973, 1.000] | 0.362 | 0.860 | 0.268 | [0.103, 0.408] | 0.625 | 0.676 |
+
+#### Contrast 2 — akratic acts vs benign_pressure, and its act-free control (`answer`)
+
+| L | band | C2 AUROC | 95% CI | rnd0 | floor | control 2 AUROC | 95% CI | rnd0 | floor |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 |  | 0.746 | [0.623, 0.946] | 0.530 | 0.700 | 0.744 | [0.410, 0.975] | 0.664 | 0.844 |
+| 1 |  | 0.757 | [0.637, 0.934] | 0.460 | 0.709 | 0.746 | [0.397, 0.975] | 0.579 | 0.714 |
+| 2 |  | 0.764 | [0.648, 0.920] | 0.538 | 0.679 | 0.709 | [0.346, 0.955] | 0.505 | 0.877 |
+| 3 |  | 0.790 | [0.702, 0.919] | 0.301 | 0.752 | 0.649 | [0.233, 0.963] | 0.457 | 0.877 |
+| 4 |  | 0.818 | [0.722, 0.924] | 0.515 | 0.703 | 0.663 | [0.237, 0.977] | 0.873 | 0.873 |
+| 5 |  | 0.822 | [0.730, 0.928] | 0.542 | 0.732 | 0.576 | [0.138, 0.986] | 0.477 | 0.836 |
+| 6 | S | 0.838 | [0.758, 0.929] | 0.456 | 0.796 | 0.601 | [0.162, 0.980] | 0.622 | 0.792 |
+| 7 | S | 0.827 | [0.738, 0.924] | 0.547 | 0.793 | 0.611 | [0.102, 0.972] | 0.677 | 0.775 |
+| 8 | S | 0.828 | [0.744, 0.928] | 0.394 | 0.672 | 0.623 | [0.113, 0.972] | 0.571 | 0.721 |
+| 9 | S | 0.856 | [0.771, 0.938] | 0.356 | 0.788 | 0.616 | [0.102, 0.968] | 0.378 | 0.843 |
+| 10 | S | 0.862 | [0.776, 0.942] | 0.644 | 0.851 | 0.633 | [0.153, 0.965] | 0.562 | 0.951 |
+| 11 | S | 0.891 | [0.809, 0.959] | 0.470 | 0.811 | 0.687 | [0.310, 0.965] | 0.833 | 0.897 |
+| 12 |  | 0.865 | [0.775, 0.947] | 0.657 | 0.769 | 0.716 | [0.363, 0.955] | 0.255 | 0.745 |
+| 13 |  | 0.883 | [0.794, 0.960] | 0.391 | 0.742 | 0.693 | [0.312, 0.962] | 0.326 | 0.856 |
+| 14 | **P** | 0.881 | [0.789, 0.958] | 0.370 | 0.775 | 0.682 | [0.312, 0.966] | 0.608 | 0.804 |
+| 15 | **P** | 0.889 | [0.803, 0.967] | 0.395 | 0.768 | 0.616 | [0.197, 0.966] | 0.579 | 0.782 |
+| 16 | **P** | 0.882 | [0.795, 0.968] | 0.599 | 0.834 | 0.640 | [0.289, 0.973] | 0.350 | 0.829 |
+| 17 | **P** | 0.855 | [0.748, 0.965] | 0.506 | 0.689 | 0.604 | [0.208, 0.965] | 0.534 | 0.828 |
+| 18 | **P** | 0.856 | [0.739, 0.964] | 0.398 | 0.760 | 0.598 | [0.222, 0.968] | 0.144 | 0.856 |
+| 19 |  | 0.848 | [0.721, 0.967] | 0.421 | 0.828 | 0.598 | [0.265, 0.968] | 0.656 | 0.853 |
+| 20 |  | 0.841 | [0.712, 0.966] | 0.432 | 0.689 | 0.620 | [0.285, 0.967] | 0.567 | 0.904 |
+| 21 |  | 0.820 | [0.672, 0.956] | 0.708 | 0.774 | 0.637 | [0.299, 0.968] | 0.898 | 0.940 |
+| 22 |  | 0.808 | [0.662, 0.958] | 0.590 | 0.758 | 0.639 | [0.275, 0.971] | 0.776 | 0.836 |
+| 23 |  | 0.802 | [0.645, 0.961] | 0.477 | 0.878 | 0.626 | [0.248, 0.974] | 0.535 | 0.841 |
+| 24 |  | 0.783 | [0.603, 0.957] | 0.453 | 0.753 | 0.644 | [0.249, 0.967] | 0.562 | 0.883 |
+| 25 |  | 0.807 | [0.643, 0.963] | 0.520 | 0.693 | 0.633 | [0.252, 0.969] | 0.792 | 0.894 |
+| 26 |  | 0.785 | [0.597, 0.959] | 0.300 | 0.712 | 0.654 | [0.261, 0.972] | 0.207 | 0.928 |
+| 27 |  | 0.786 | [0.617, 0.954] | 0.493 | 0.831 | 0.660 | [0.280, 0.983] | 0.633 | 0.851 |
+| 28 |  | 0.784 | [0.609, 0.959] | 0.555 | 0.742 | 0.644 | [0.283, 0.984] | 0.234 | 0.865 |
+| 29 |  | 0.822 | [0.687, 0.956] | 0.647 | 0.822 | 0.633 | [0.292, 0.984] | 0.387 | 0.917 |
+| 30 |  | 0.804 | [0.673, 0.952] | 0.323 | 0.708 | 0.650 | [0.331, 0.969] | 0.714 | 0.923 |
+| 31 |  | 0.735 | [0.577, 0.915] | 0.514 | 0.739 | 0.608 | [0.299, 0.900] | 0.165 | 0.853 |
+
+#### Contrast 3 — vicious acts vs the persona-only baseline, and its act-free control (`answer`)
+
+| L | band | C3 AUROC | 95% CI | rnd0 | floor | control 3 AUROC | 95% CI | rnd0 | floor |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 |  | 0.784 | [0.656, 0.896] | 0.077 | 0.923 | 0.389 | [0.111, 0.667] | 0.556 | 0.667 |
+| 1 |  | 0.878 | [0.778, 0.963] | 0.759 | 0.846 | 0.417 | [0.111, 0.778] | 0.333 | 0.722 |
+| 2 |  | 0.887 | [0.763, 0.986] | 0.209 | 0.844 | 0.417 | [0.111, 0.778] | 0.583 | 0.750 |
+| 3 |  | 0.991 | [0.966, 1.000] | 0.541 | 0.915 | 0.472 | [0.111, 0.833] | 0.611 | 0.667 |
+| 4 |  | 1.000 | [1.000, 1.000] | 0.246 | 0.861 | 0.500 | [0.167, 0.833] | 0.750 | 0.750 |
+| 5 |  | 1.000 | [1.000, 1.000] | 0.310 | 0.855 | 0.444 | [0.056, 0.833] | 0.583 | 0.667 |
+| 6 | S | 1.000 | [1.000, 1.000] | 0.327 | 0.870 | 0.444 | [0.056, 0.778] | 0.333 | 0.750 |
+| 7 | S | 1.000 | [1.000, 1.000] | 0.641 | 0.964 | 0.417 | [0.000, 0.778] | 0.667 | 0.722 |
+| 8 | S | 1.000 | [1.000, 1.000] | 0.391 | 0.887 | 0.500 | [0.167, 0.778] | 0.556 | 0.694 |
+| 9 | S | 1.000 | [1.000, 1.000] | 0.408 | 0.868 | 0.472 | [0.000, 0.889] | 0.500 | 0.667 |
+| 10 | S | 1.000 | [1.000, 1.000] | 0.615 | 0.957 | 0.556 | [0.278, 0.806] | 0.611 | 0.778 |
+| 11 | S | 1.000 | [1.000, 1.000] | 0.359 | 0.889 | 0.417 | [0.000, 0.778] | 0.472 | 0.778 |
+| 12 |  | 1.000 | [1.000, 1.000] | 0.203 | 0.947 | 0.444 | [0.000, 0.778] | 0.806 | 0.806 |
+| 13 |  | 1.000 | [1.000, 1.000] | 0.763 | 0.964 | 0.472 | [0.000, 0.944] | 0.639 | 0.639 |
+| 14 | **P** | 1.000 | [1.000, 1.000] | 0.436 | 0.968 | 0.472 | [0.000, 0.889] | 0.333 | 0.667 |
+| 15 | **P** | 1.000 | [1.000, 1.000] | 0.895 | 0.929 | 0.556 | [0.056, 1.000] | 0.222 | 0.806 |
+| 16 | **P** | 1.000 | [1.000, 1.000] | 0.058 | 0.957 | 0.472 | [0.000, 1.000] | 0.611 | 0.694 |
+| 17 | **P** | 1.000 | [1.000, 1.000] | 0.244 | 0.934 | 0.528 | [0.111, 0.944] | 0.472 | 0.694 |
+| 18 | **P** | 1.000 | [1.000, 1.000] | 0.139 | 0.880 | 0.528 | [0.111, 0.944] | 0.500 | 0.750 |
+| 19 |  | 1.000 | [1.000, 1.000] | 0.496 | 0.985 | 0.556 | [0.111, 0.944] | 0.417 | 0.667 |
+| 20 |  | 1.000 | [1.000, 1.000] | 0.588 | 0.932 | 0.556 | [0.111, 0.944] | 0.500 | 0.694 |
+| 21 |  | 1.000 | [1.000, 1.000] | 0.455 | 0.754 | 0.556 | [0.111, 0.944] | 0.611 | 0.750 |
+| 22 |  | 1.000 | [1.000, 1.000] | 0.143 | 0.925 | 0.528 | [0.111, 0.944] | 0.583 | 0.694 |
+| 23 |  | 1.000 | [1.000, 1.000] | 0.286 | 0.756 | 0.444 | [0.056, 0.889] | 0.583 | 0.778 |
+| 24 |  | 1.000 | [1.000, 1.000] | 0.513 | 0.951 | 0.389 | [0.056, 0.833] | 0.528 | 0.806 |
+| 25 |  | 1.000 | [1.000, 1.000] | 0.137 | 0.929 | 0.389 | [0.056, 0.833] | 0.528 | 0.778 |
+| 26 |  | 1.000 | [1.000, 1.000] | 0.220 | 0.838 | 0.472 | [0.139, 0.806] | 0.472 | 0.750 |
+| 27 |  | 1.000 | [1.000, 1.000] | 0.868 | 0.868 | 0.583 | [0.167, 0.889] | 0.500 | 0.639 |
+| 28 |  | 1.000 | [1.000, 1.000] | 0.590 | 0.925 | 0.472 | [0.194, 0.751] | 0.611 | 0.750 |
+| 29 |  | 1.000 | [1.000, 1.000] | 0.212 | 0.831 | 0.500 | [0.277, 0.778] | 0.417 | 0.667 |
+| 30 |  | 1.000 | [1.000, 1.000] | 0.656 | 0.962 | 0.556 | [0.333, 0.833] | 0.472 | 0.833 |
+| 31 |  | 1.000 | [1.000, 1.000] | 0.393 | 0.938 | 0.694 | [0.444, 1.000] | 0.667 | 0.917 |
+
+### 7.3 Diagnostic D3 at `answer` — act vs no-act **inside** the same route
+
+Same construction as §2.4: positives are the committed runs, negatives are the **same targets' runs that did not commit**, read at the same position — for deceived, the same target's chains that never committed, at the same turn index. Same context on both sides; only commission differs. Still a diagnostic, still no verdict attached to it.
+
+| route | test pos / neg | best layer ≤ 30 | AUROC | 95 % CI | random 0 | floor | literal | vs floor | at `into` (§2.4) |
+|---|---|---|---|---|---|---|---|---|---|
+| deceived | 31 / 84 | L0 | **0.835** | [0.718, 0.925] | 0.408 | 0.614 | **pass** (18 layers; NEAR at L27, L29) | fail | 0.680, fail |
+| akratic | 24 / 36 | L27 | **0.816** | [0.611, 0.973] | 0.359 | 0.804 | **pass** (7 layers) | fail | 0.704, fail |
+| vicious | 31 / 41 | **L14** | **0.864** | [0.793, 0.916] | 0.329 | 0.681 | **pass** (8 layers; NEAR at L1, L6, L21, L25, L26) | fail | 0.684, fail |
+
+**All three routes now show a detectable act-linked separation under the locked rule, where none did at `into`.** In the D-024 primary band L14–18 the values are deceived 0.793–0.805 (CI lower 0.698–0.731), akratic 0.785–0.794 (CI lower 0.548–0.561), vicious 0.765–0.864 (CI lower 0.679–0.793) — and vicious's best layer, L14, sits inside that band. The secondary band L6–11 is flat against it (deceived 0.781–0.802, akratic 0.788–0.800, vicious 0.724–0.843). **None of the three clears the same rule against the symmetrized floor** (margins −0.088, −0.393, −0.097 at their best layers), so the honest statement is that the separation is real under the pre-registered criterion and is not comfortably clear of what a random direction achieves on these pools.
+
+| L | band | D3 deceived AUROC | 95% CI | rnd0 | floor | D3 akratic AUROC | 95% CI | rnd0 | floor | D3 vicious AUROC | 95% CI | rnd0 | floor |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 0 |  | 0.835 | [0.718, 0.925] | 0.408 | 0.614 | 0.749 | [0.448, 0.922] | 0.397 | 0.694 | 0.782 | [0.700, 0.863] | 0.493 | 0.619 |
+| 1 |  | 0.777 | [0.678, 0.890] | 0.545 | 0.669 | 0.766 | [0.485, 0.946] | 0.370 | 0.733 | 0.716 | [0.626, 0.786] | 0.372 | 0.718 |
+| 2 |  | 0.832 | [0.744, 0.907] | 0.380 | 0.737 | 0.770 | [0.534, 0.945] | 0.509 | 0.703 | 0.755 | [0.650, 0.854] | 0.314 | 0.686 |
+| 3 |  | 0.818 | [0.735, 0.876] | 0.610 | 0.759 | 0.779 | [0.570, 0.949] | 0.617 | 0.780 | 0.723 | [0.610, 0.854] | 0.479 | 0.690 |
+| 4 |  | 0.814 | [0.727, 0.876] | 0.633 | 0.694 | 0.791 | [0.566, 0.957] | 0.660 | 0.759 | 0.732 | [0.619, 0.857] | 0.563 | 0.688 |
+| 5 |  | 0.795 | [0.701, 0.864] | 0.366 | 0.740 | 0.803 | [0.590, 0.976] | 0.358 | 0.688 | 0.704 | [0.584, 0.857] | 0.455 | 0.678 |
+| 6 | S | 0.796 | [0.704, 0.877] | 0.313 | 0.746 | 0.797 | [0.580, 0.979] | 0.376 | 0.758 | 0.728 | [0.632, 0.876] | 0.396 | 0.636 |
+| 7 | S | 0.798 | [0.715, 0.882] | 0.649 | 0.735 | 0.800 | [0.585, 0.962] | 0.727 | 0.737 | 0.724 | [0.629, 0.867] | 0.507 | 0.622 |
+| 8 | S | 0.801 | [0.713, 0.892] | 0.356 | 0.786 | 0.788 | [0.567, 0.959] | 0.451 | 0.760 | 0.741 | [0.658, 0.877] | 0.618 | 0.744 |
+| 9 | S | 0.802 | [0.723, 0.890] | 0.497 | 0.680 | 0.792 | [0.580, 0.964] | 0.294 | 0.789 | 0.751 | [0.691, 0.895] | 0.558 | 0.622 |
+| 10 | S | 0.802 | [0.717, 0.898] | 0.491 | 0.611 | 0.800 | [0.558, 0.982] | 0.536 | 0.779 | 0.803 | [0.721, 0.901] | 0.623 | 0.791 |
+| 11 | S | 0.781 | [0.690, 0.897] | 0.596 | 0.786 | 0.791 | [0.532, 0.967] | 0.714 | 0.762 | 0.843 | [0.754, 0.905] | 0.530 | 0.677 |
+| 12 |  | 0.811 | [0.718, 0.909] | 0.525 | 0.765 | 0.788 | [0.557, 0.963] | 0.608 | 0.777 | 0.851 | [0.805, 0.895] | 0.349 | 0.758 |
+| 13 |  | 0.785 | [0.693, 0.901] | 0.556 | 0.655 | 0.791 | [0.575, 0.968] | 0.442 | 0.699 | 0.855 | [0.802, 0.898] | 0.615 | 0.752 |
+| 14 | **P** | 0.793 | [0.698, 0.898] | 0.231 | 0.769 | 0.785 | [0.561, 0.966] | 0.361 | 0.696 | 0.864 | [0.793, 0.916] | 0.329 | 0.681 |
+| 15 | **P** | 0.804 | [0.717, 0.896] | 0.640 | 0.818 | 0.786 | [0.556, 0.962] | 0.307 | 0.817 | 0.817 | [0.746, 0.925] | 0.566 | 0.730 |
+| 16 | **P** | 0.805 | [0.731, 0.895] | 0.339 | 0.661 | 0.793 | [0.553, 0.962] | 0.355 | 0.819 | 0.796 | [0.716, 0.920] | 0.504 | 0.718 |
+| 17 | **P** | 0.798 | [0.724, 0.895] | 0.456 | 0.753 | 0.794 | [0.548, 0.967] | 0.513 | 0.701 | 0.771 | [0.688, 0.909] | 0.478 | 0.800 |
+| 18 | **P** | 0.804 | [0.724, 0.894] | 0.474 | 0.776 | 0.792 | [0.554, 0.965] | 0.650 | 0.671 | 0.765 | [0.679, 0.901] | 0.660 | 0.663 |
+| 19 |  | 0.797 | [0.717, 0.893] | 0.500 | 0.737 | 0.796 | [0.570, 0.964] | 0.606 | 0.715 | 0.765 | [0.679, 0.893] | 0.443 | 0.739 |
+| 20 |  | 0.786 | [0.707, 0.889] | 0.349 | 0.729 | 0.795 | [0.571, 0.964] | 0.310 | 0.709 | 0.767 | [0.671, 0.893] | 0.497 | 0.654 |
+| 21 |  | 0.789 | [0.712, 0.887] | 0.698 | 0.782 | 0.792 | [0.572, 0.972] | 0.564 | 0.759 | 0.735 | [0.638, 0.881] | 0.356 | 0.699 |
+| 22 |  | 0.788 | [0.709, 0.884] | 0.378 | 0.690 | 0.786 | [0.577, 0.972] | 0.618 | 0.699 | 0.726 | [0.623, 0.866] | 0.670 | 0.707 |
+| 23 |  | 0.769 | [0.699, 0.877] | 0.371 | 0.644 | 0.785 | [0.566, 0.969] | 0.372 | 0.684 | 0.730 | [0.612, 0.866] | 0.504 | 0.671 |
+| 24 |  | 0.765 | [0.693, 0.872] | 0.548 | 0.677 | 0.786 | [0.573, 0.969] | 0.684 | 0.789 | 0.734 | [0.614, 0.869] | 0.519 | 0.640 |
+| 25 |  | 0.758 | [0.690, 0.869] | 0.451 | 0.801 | 0.793 | [0.583, 0.966] | 0.604 | 0.722 | 0.750 | [0.642, 0.891] | 0.440 | 0.736 |
+| 26 |  | 0.752 | [0.679, 0.868] | 0.449 | 0.719 | 0.799 | [0.590, 0.967] | 0.509 | 0.689 | 0.738 | [0.627, 0.875] | 0.268 | 0.732 |
+| 27 |  | 0.744 | [0.671, 0.860] | 0.344 | 0.787 | 0.816 | [0.611, 0.973] | 0.359 | 0.804 | 0.729 | [0.613, 0.864] | 0.565 | 0.641 |
+| 28 |  | 0.757 | [0.683, 0.864] | 0.579 | 0.786 | 0.807 | [0.598, 0.980] | 0.579 | 0.863 | 0.724 | [0.604, 0.869] | 0.456 | 0.640 |
+| 29 |  | 0.746 | [0.673, 0.859] | 0.414 | 0.662 | 0.804 | [0.578, 0.972] | 0.476 | 0.696 | 0.702 | [0.594, 0.847] | 0.596 | 0.729 |
+| 30 |  | 0.758 | [0.693, 0.859] | 0.432 | 0.754 | 0.797 | [0.583, 0.973] | 0.472 | 0.719 | 0.699 | [0.588, 0.847] | 0.369 | 0.689 |
+| 31 |  | 0.786 | [0.708, 0.876] | 0.309 | 0.691 | 0.786 | [0.565, 0.961] | 0.564 | 0.713 | 0.646 | [0.507, 0.781] | 0.408 | 0.726 |
+
+### 7.4 Cosines at `answer`
+
+Band means, each contrast direction against the borrowed axes and against `randctl` seed 0:
+
+| direction | · refusal | · badmed | · persona | · random 0 |
+|---|---|---|---|---|
+| deceived, primary L14–18 | +0.092 | +0.114 | −0.082 | −0.002 |
+| deceived, secondary L6–11 | +0.010 | +0.090 | −0.128 | −0.005 |
+| akratic, primary | +0.186 | **+0.315** | −0.157 | −0.001 |
+| akratic, secondary | +0.054 | +0.184 | −0.206 | −0.009 |
+| vicious, primary | **+0.219** | +0.217 | −0.118 | −0.004 |
+| vicious, secondary | +0.074 | +0.105 | −0.121 | +0.000 |
+
+| pair | primary band | secondary band | min over 32 layers | max | same pair at `into` (§3) |
+|---|---|---|---|---|---|
+| deceived · akratic | **+0.496** | +0.509 | +0.384 | +0.652 | +0.173 / +0.163 |
+| deceived · vicious | +0.247 | +0.222 | +0.120 | +0.354 | +0.138 / +0.254 |
+| akratic · vicious | +0.329 | +0.322 | +0.183 | +0.467 | +0.363 / +0.307 |
+
+| same contrast, `into` direction · `answer` direction | primary band | secondary band | min | max |
+|---|---|---|---|---|
+| deceived | +0.290 | +0.222 | +0.111 | +0.312 |
+| akratic | +0.182 | +0.117 | −0.018 | +0.246 |
+| vicious | +0.318 | +0.245 | −0.019 | +0.385 |
+
+Three readings. All three directions remain orthogonal to the random arrow (\|cos\| ≤ 0.009 in both bands), as they must be. The alignment with the **badmed** axis rises at this position and is largest for akratic (+0.315 in the primary band, against +0.149 at `into`), which is what one expects of a direction extracted from the text of a harmful medical answer rather than from the prompt that precedes it; the persona axis is now consistently negative for all three. And the `into` and `answer` directions of the same contrast are **largely different directions** (+0.11 to +0.39), so §3's cosine table and this one are not two views of one arrow.
+
+| L | band | dec·refusal | dec·badmed | dec·persona | akr·refusal | akr·badmed | akr·persona | vic·refusal | vic·badmed | vic·persona | dec·akr | dec·vic | akr·vic |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 0 |  | +0.026 | +0.079 | -0.225 | +0.019 | +0.174 | -0.335 | -0.028 | +0.037 | -0.251 | +0.652 | +0.354 | +0.363 |
+| 1 |  | +0.096 | -0.030 | -0.120 | +0.043 | +0.110 | -0.286 | +0.050 | +0.054 | -0.295 | +0.640 | +0.240 | +0.328 |
+| 2 |  | +0.077 | +0.055 | -0.112 | +0.061 | +0.203 | -0.326 | +0.038 | +0.121 | -0.296 | +0.594 | +0.199 | +0.365 |
+| 3 |  | +0.038 | +0.076 | -0.094 | +0.007 | +0.190 | -0.245 | +0.070 | +0.050 | -0.207 | +0.552 | +0.133 | +0.246 |
+| 4 |  | +0.043 | +0.046 | -0.053 | -0.000 | +0.168 | -0.197 | +0.042 | +0.038 | -0.198 | +0.521 | +0.122 | +0.216 |
+| 5 |  | +0.051 | +0.039 | -0.056 | +0.012 | +0.146 | -0.176 | +0.019 | +0.024 | -0.159 | +0.526 | +0.120 | +0.183 |
+| 6 | S | +0.020 | +0.061 | -0.097 | +0.008 | +0.156 | -0.178 | +0.045 | +0.060 | -0.142 | +0.521 | +0.167 | +0.220 |
+| 7 | S | +0.004 | +0.071 | -0.114 | +0.019 | +0.179 | -0.206 | +0.065 | +0.077 | -0.119 | +0.508 | +0.197 | +0.259 |
+| 8 | S | -0.011 | +0.102 | -0.142 | +0.022 | +0.196 | -0.234 | +0.033 | +0.100 | -0.138 | +0.499 | +0.222 | +0.322 |
+| 9 | S | +0.003 | +0.073 | -0.105 | +0.047 | +0.163 | -0.181 | +0.062 | +0.098 | -0.093 | +0.490 | +0.207 | +0.318 |
+| 10 | S | -0.000 | +0.119 | -0.152 | +0.096 | +0.187 | -0.205 | +0.099 | +0.145 | -0.112 | +0.518 | +0.280 | +0.398 |
+| 11 | S | +0.044 | +0.111 | -0.160 | +0.128 | +0.219 | -0.233 | +0.140 | +0.151 | -0.120 | +0.520 | +0.256 | +0.417 |
+| 12 |  | +0.055 | +0.161 | -0.161 | +0.147 | +0.285 | -0.249 | +0.149 | +0.183 | -0.129 | +0.521 | +0.299 | +0.435 |
+| 13 |  | +0.108 | +0.183 | -0.145 | +0.247 | +0.330 | -0.223 | +0.227 | +0.238 | -0.124 | +0.518 | +0.309 | +0.436 |
+| 14 | **P** | +0.119 | +0.170 | -0.128 | +0.266 | +0.364 | -0.227 | +0.230 | +0.268 | -0.151 | +0.529 | +0.300 | +0.423 |
+| 15 | **P** | +0.095 | +0.114 | -0.086 | +0.201 | +0.290 | -0.169 | +0.198 | +0.209 | -0.129 | +0.478 | +0.242 | +0.344 |
+| 16 | **P** | +0.090 | +0.090 | -0.085 | +0.195 | +0.290 | -0.150 | +0.251 | +0.211 | -0.126 | +0.495 | +0.236 | +0.316 |
+| 17 | **P** | +0.076 | +0.104 | -0.072 | +0.155 | +0.325 | -0.139 | +0.208 | +0.212 | -0.125 | +0.485 | +0.231 | +0.296 |
+| 18 | **P** | +0.077 | +0.093 | -0.041 | +0.113 | +0.308 | -0.101 | +0.208 | +0.184 | -0.060 | +0.494 | +0.224 | +0.269 |
+| 19 |  | +0.060 | +0.087 | -0.033 | +0.073 | +0.316 | -0.106 | +0.185 | +0.198 | -0.054 | +0.495 | +0.213 | +0.270 |
+| 20 |  | +0.065 | +0.095 | -0.028 | +0.070 | +0.334 | -0.088 | +0.193 | +0.193 | -0.096 | +0.490 | +0.211 | +0.251 |
+| 21 |  | +0.020 | +0.095 | +0.008 | +0.011 | +0.349 | -0.058 | +0.164 | +0.166 | -0.070 | +0.476 | +0.176 | +0.234 |
+| 22 |  | -0.045 | +0.104 | +0.032 | -0.037 | +0.355 | -0.046 | +0.150 | +0.163 | -0.082 | +0.476 | +0.156 | +0.234 |
+| 23 |  | -0.055 | +0.106 | +0.033 | -0.053 | +0.344 | -0.035 | +0.158 | +0.156 | -0.094 | +0.477 | +0.143 | +0.210 |
+| 24 |  | -0.087 | +0.120 | +0.021 | -0.071 | +0.359 | -0.044 | +0.152 | +0.161 | -0.095 | +0.488 | +0.128 | +0.206 |
+| 25 |  | -0.054 | +0.125 | -0.001 | -0.022 | +0.355 | -0.053 | +0.148 | +0.184 | -0.105 | +0.483 | +0.167 | +0.248 |
+| 26 |  | -0.071 | +0.127 | -0.012 | -0.034 | +0.358 | -0.059 | +0.125 | +0.194 | -0.094 | +0.480 | +0.169 | +0.254 |
+| 27 |  | -0.025 | +0.141 | -0.051 | +0.036 | +0.385 | -0.087 | +0.132 | +0.237 | -0.105 | +0.474 | +0.197 | +0.286 |
+| 28 |  | -0.036 | +0.149 | -0.054 | +0.027 | +0.388 | -0.088 | +0.099 | +0.248 | -0.108 | +0.461 | +0.197 | +0.297 |
+| 29 |  | -0.000 | +0.139 | -0.059 | +0.110 | +0.394 | -0.110 | +0.100 | +0.272 | -0.084 | +0.446 | +0.200 | +0.330 |
+| 30 |  | +0.001 | +0.118 | -0.073 | +0.128 | +0.413 | -0.098 | +0.070 | +0.317 | -0.078 | +0.442 | +0.217 | +0.372 |
+| 31 |  | +0.053 | +0.025 | -0.073 | +0.102 | +0.331 | +0.064 | -0.014 | +0.239 | +0.125 | +0.384 | +0.150 | +0.467 |
+
+### 7.5 For the researcher, not a verdict — the two positions side by side
+
+At `into` the three contrasts separated at AUROC 1.000 and none of the separations was evidence about the harmful act: contrast 2's act-free control separated just as perfectly, contrast 3's control could not be computed at all, the single-turn pools held 17, 20, 22 and 5 distinct vectors behind nominal Ns of 62, 180, 83 and 30, and the within-route diagnostic failed on every route. **At `answer` every one of those defects is gone**: nominal and effective N coincide (109, 62, 180, 83, 30 distinct vectors, no seed pair identical), all three act-free controls fail — control 2 falls from 1.000 to 0.746 and control 3 becomes computable and fails at 0.583 — and D3, act against no-act inside the same route with the context held fixed, passes the locked rule on all three routes (deceived 0.835, akratic 0.816, vicious 0.864 at their best layers ≤ 30, with vicious's best layer L14 inside the D-024 primary band). That is a real change and it is the change the addendum was ordered to test: the position that reads the model's own answer carries an act-linked signal that the position reading the prompt before it does not. **Three cautions sit against it, and they are not small.** First, what the `answer` position reads is a mean over the tokens of the act itself, so "the answer that committed separates from the answer that did not" partly restates the act judge's grading in activation space; it is evidence that the act is represented while it is being made, and it is *not* by itself evidence that the act leaves a mark that outlives the turn — which is the kind of mark STAGE0 §4.2 and §4.3 are defined on and the kind S4 reads, one or more turns later, after feedback. Second, contrast 3 remains **perfectly separable by prompt length alone** (1.000, ranges disjoint), a property of the pools that no readout position can repair, so its pass carries no information; contrast 2 fails the criterion against the symmetrized random floor at every layer; and where contrasts 1 and 3 clear that floor they clear it by 0.001–0.065, not by the 0.20 the rule intends as a margin, while D3 clears it nowhere. Third, every deceived number is still provisional in T, since `t9/T_source.json` does not exist. Read together, the honest summary is that the fallback's context-matching plus the `answer` position gives, for the first time in S1, a within-route act-versus-no-act separation that survives its own act-free control — at 0.79–0.86, not at ceiling, and not clear of what a random direction achieves on these pools. Whether that is enough to call any route verified inside is the researcher's and the hub's decision; this session states the numbers and their conditions and decides nothing.
+
+### 7.6 What still does not work at this position
+
+1. **Contrast 3 is separable by prompt length alone** (AUROC 1.000). Unchanged by the position, because prompt length is a property of the pools. Its literal pass and its two floor-clearing layers should not be read as evidence.
+2. **The symmetrized random floor stays high** — 0.698 / 0.672 / 0.754 minimum over layers ≤ 30. Contrast 2 fails against it everywhere; contrasts 1 and 3 clear it by hundredths at 5 and 2 layers; D3 clears it on no route. A random direction still separates these pools at roughly 0.7–0.9.
+3. **D3's CIs are wide where N is small** — akratic's best layer is 0.816 with CI [0.611, 0.973] on 24 positives against 36 negatives, 5 target clusters.
+4. **T remains `T_primary`** (§5.6); `--T-source` re-runs both positions unchanged when the adjudication labels exist.
+5. **The `think` position was not run**, per the addendum; adherence inside chains is 0.53 and in the akratic cell 0.39 (S1b §12), so the drop would bias the pools. The script would report the drop counts if it were ever ordered.
+6. Everything the addendum ordered was executed in full; nothing else in the repository was changed.
+
+**Vocabulary, this section included:** STAGE0 §2 terms throughout; "the researcher" throughout. A whole-word grep for the five banned terms over this report and every file this session wrote returns nothing.
