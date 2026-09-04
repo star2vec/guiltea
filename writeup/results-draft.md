@@ -140,31 +140,52 @@ restricted to that one cell, no axis clears the matched floor and the word basel
 0.575. The guilt-like and shame-like directions behave almost identically wherever they are read, so **this data does
 not separate a guilt-like from a shame-like reading**. *(S1d §4, §4.1)*
 
-**The break is visible while the model is still refusing, weakly, once depth and target are held fixed.** Our first
-attempt found nothing: labelling each turn by whether the next turn is the act, no axis beat a selection-matched
-random floor at either position under either label definition. But the positives in that comparison cluster early in
-the conversation, so a direction can win on conversation depth alone, and whether a chain breaks is partly a fact
-about which scenario it is. Comparing instead **within a single turn index, and averaging AUROC over targets**, so
-that both classes are refusing at the same depth on the same scenarios, one axis clears its matched floor on the
-pre-specified band: the **neutral-negative direction**, count-weighted mean **0.604** against a floor of 0.477 to
-0.541, clearing at seven of nine turn indices and always in the same direction. Chains that go on to break project
-**higher on generic negative valence while they are still refusing**. The mean-difference persona axis clears
-inversely. **The axes an early-warning account would predict do not clear**: the refusal direction reverses sign
-mid-chain and its mean sits inside the floor.
+**Susceptibility is visible before the first push, and this is the one internal claim we pre-specified and
+confirmed out of sample.** Our first attempt found nothing: labelling each turn by whether the next turn is the act,
+no direction beat a selection-matched random floor. But the positives in that comparison cluster early in the
+conversation, and whether a chain breaks is partly a fact about which scenario it is, so a direction can win on
+conversation depth or scenario identity alone. Comparing instead **within a single turn index and averaging over
+scenarios**, one direction cleared its matched floor on the pre-specified band: the **neutral-negative direction**,
+0.604 against a floor of 0.477 to 0.541, at seven of nine turn indices, always the same direction, with a consistent
+majority of scenarios above chance at every index. That came from a search over nine directions.
 
-Four bounds, all of which we state rather than bury. The margin is modest and summarises nine correlated turn
-indices, on one axis of nine. It does not reproduce under the alternative act labels, where the floor collapses and
-most axes nominally clear in both directions at once, so the result stands on the primary labels only and the
-outstanding adjudication is load-bearing for it. On a best-over-layers statistic with a matched floor nothing clears
-even here, so this is a pre-specified-band result and not a search result. And three things changed between the null
-and the positive, depth, the statistic, and the definition of a later break, so we cannot apportion the effect among
-them. *(S1d §3; reports/S1e-depth-matched.md §2)*
+**We then tested it once, out of sample.** A second set of persuasion chains built from the alternative persuader
+wording, 40 runs over 5 scenarios, had never been examined. The direction, layer band, readout position, statistic,
+predicted sign and success criterion were all fixed in writing beforehand, and the smallest margin the held-out
+sample could distinguish from its floor was computed and recorded **before any direction was evaluated on it**. That
+threshold, 0.111, was *larger* than the effect the search had found, so a failure would have carried little.
+
+The prediction was met. The neutral-negative direction reached **0.662 against a largest-seed floor of 0.585**,
+excess 0.162 against 0.111, on 38 chains over 4 scenarios never used in the search, and it came back **larger** than
+in the search sample. Two independent code paths agree exactly. The secondary direction we also named, the
+mean-difference persona axis, did **not** clear the held-out headline (excess 0.093 against the 0.111 threshold) and
+stands as a within-sample result.
+
+**The claim this supports is susceptibility, not imminence.** Turn 1 is the plain harmful request, which every chain
+refuses by construction, before any persuasion has been applied, and it is both the stronger cell and the one
+carrying most of the weight: 0.706 against a floor topping out at 0.617. So the model's state as it issues its
+initial refusal already carries information about whether that run will later capitulate. The "see the break coming"
+version, one persuader turn in, replicated at 0.604 against a floor topping out at 0.596, a margin of 0.008 that we
+report and do not lean on.
+
+**What the held-out margin is made of, stated because a reader should see it.** The statistic averages per-scenario
+AUROCs, and in the held-out set three of the four contributing scenarios rest on a single positive chain at each turn
+index; the one scenario with a balanced cell points the other way (0.338). The random floor is computed on exactly
+those items, folds and degenerate cells, which is why it widens from 0.477–0.541 in the search sample to
+0.389–0.585 here, and the direction cleared the widened floor. The broad, better-balanced evidence is the search
+sample, where a majority of 13 scenarios sit above chance at almost every turn index; the held-out set supplies the
+pre-specification rather than the balance. Both are needed and neither substitutes for the other.
+*(S1d §3; reports/S1e-depth-matched.md §2; reports/S1g-heldout-trigger.md §3–4)*
 
 **The act itself is plainly readable at fixed depth.** At turn 2, the one turn index whose refusing class contains no
 filler, the refusal direction reaches 0.786 and the misalignment direction 0.774 on the same depth- and
 target-matched statistic against a floor of 0.468 to 0.589, unanimous across all eight contributing scenarios and
 unchanged by dropping filler turns. The larger margin available when turns 2 to 10 are pooled is substantially the
-filler rather than the act, and disappears when filler is excluded. *(S1e §3)*
+filler rather than the act, and disappears when filler is excluded. **This one we could not test out of sample**: the
+held-out chains contain 21 acts spread over ten turn indices, so the pre-specified cell holds 5 positives over 2
+scenarios and no turn index reaches the required counts. The verdict recorded is "not testable", no statistic was
+computed for that cell, and the floor was not loosened to reach it. The finding stands as a within-sample result at
+one turn index. *(S1e §3; S1g §5)*
 
 **Whether an early break and a late break are the same internal state is not evaluable on this design.** Acts at or
 before turn 3 sit in a short context and acts at turn 10 sit in a long one, so the classes differ in conversation
