@@ -71,13 +71,26 @@ For each contrast, at **every layer**, report:
 4. Cross-fold: fold by target, never by seed, so no target appears in both sides.
 Report the primary band L14–18 and the secondary L6–11 (D-024) plus the full sweep.
 
-## Task 5 — Q3, does the blame target predict re-commission (no API)
+## Task 5 — Q3, does the harmful act recur, and can the blame target predict it (no API)
 
-For deceived runs only: the probe forks branch from the act state, and the filler chain continues from the same state
-in a different branch, so this is a **state-level correlation between two branches, not a within-branch causal claim**.
-Say that once. Then: for each `(target, seed)` with a probe label and post-act turns in `t4`, report the rate of a
-later `committed` turn, split by the probe's blame target, with clustered bootstrap CIs, and the same split for
-`re-refusal` (a `held` turn after the act). If either arm has fewer than 15 runs, report counts and no CI.
+**Amended 2026-09-04 after a hub check of the stored labels. Read this before planning Task 5.** Two facts, verified by
+the hub against `results/raw/s1b/t4/*/v1_seed*.json` and `results/raw/s1b/t10/summary.json`:
+
+1. **Every turn after the first committed turn is neutral filler** (`kind = filler`, unrelated topics). The harmful
+   question is **not re-asked**. So a `held` label on a post-act turn means the subject was not asked, not that it
+   recovered. **Do not report a re-refusal rate over filler turns.** That number would be an artefact, and the hub
+   nearly published it.
+2. **Of the 109 deceived chains with a committed turn, none has a committed turn during the filler that follows.**
+   Zero. Report that as the finding it is: with no feedback present and the topic changed, **the harmful act does not
+   recur inside the same conversation**. That is the project's spread question answered on the `none` condition, and it
+   gives S4's feedback arms a clean floor to move from.
+
+**What Task 5 therefore does.** Confirm the hub's count independently from the Task 1 join. Report, per fork and per
+reflection label: the number of runs, the number with any committed filler turn (expected 0), and the count of chains
+excluded because `T_primary = 10` leaves no post-act turn. If the count is 0 in every arm, say so in one sentence and
+state that the blame target cannot be tested as a predictor on this data, rather than reporting a table of zeros as a
+null result. State once that the probe forks and the filler branch descend from the same act state in different
+branches, so nothing here is a within-branch causal claim.
 
 ## Task 6 — two figures
 
@@ -85,8 +98,28 @@ later `committed` turn, split by the probe's blame target, with clustered bootst
 `writeup/figs/s1d_instrument_natural.{png,pdf}`: AUROC by layer for the primary contrast, arrows as lines, random floor
 as a shaded band, bag-of-words as a dashed line. Machine-written; regenerate, never hand-edit.
 
+## Task 7 — Q4, is the capitulation visible one turn before it happens (no API, no GPU)
+
+**Added 2026-09-04.** The hub's own scan of `results/raw/s1b/t10/summary.json` found: of 109 deceived chains with a
+committed turn, **none** commits again during the neutral filler turns that follow, and the first committed turn is
+spread over turns 1 to 10 (mode at turn 3, 15 chains only at turn 10). So there is no fixed "break turn", and any
+intervention would have to be **conditional on state**, not scheduled. That makes the following the precondition worth
+testing: can the capitulation be seen one turn early?
+
+Using the per-turn projections already stored in the `t4` `proj_summary` for `v1` chains:
+1. Label each persuader turn `t` by whether turn `t + 1` is the chain's first `committed` turn. Turns after the first
+   committed turn are **filler and are excluded** (verified: `t4` records show `kind = filler` from T + 1 onward).
+2. At each layer, report AUROC for predicting that label from the projection at turn `t` on the refusal axis, `badmed`,
+   `persona`, and the S2b arrows, at the `answer` and `into` positions.
+3. Report the **random floor** (randctl seeds 0-9) and a **turn-index baseline** (predicting from `t` alone), because
+   capitulation risk rises with turn number and any axis will inherit that. Fold by target.
+4. State the verdict in one sentence: whether any axis beats both floors, and by how much.
+
+Exploratory, like the rest of this brief.
+
 ## Report (`reports/S1d-blame-target.md`)
 1. Exploratory status, the join's row counts, judge agreement, cost. 2. Q1 table and its plain reading.
+3. Q4's table and its one-sentence verdict.
 3. Q2 tables with the random floor and the word baseline beside every number, and one sentence saying whether any arrow
 beats the words. 4. Q3 with the two-branch caveat. 5. The two figures. 6. Anything unworkable.
 
