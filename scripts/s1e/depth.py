@@ -215,6 +215,22 @@ def _at_turn(proj, axes, positions, layers, chains, member_fn, source, t, positi
         curves["pooled"][ax] = cp
         curves["by_target_mean"][ax] = cg
     info["n_targets_usable_for_fold_statistic"] = int(n_usable[REPORT_AXES[0]])
+    # Per-target L14-18 band mean, over the targets holding both classes. The fold statistic is a mean
+    # of these, so the count of targets pointing the same way says whether that mean is carried by the
+    # whole set or by one target.
+    ptb, sign = {}, {}
+    for ax in REPORT_AXES + list(C.RANDOM_AXES):
+        ai = axes.index(ax)
+        vals = {}
+        for g in both:
+            m = grp == g
+            v = [C.auroc(S[m, ai, L], y[m]) for L in C.BAND_PRIMARY]
+            vals[g] = float(np.nanmean(v))
+        ptb[ax] = vals
+        above = sum(1 for v in vals.values() if v > 0.5)
+        sign[ax] = {"n_targets": len(vals), "n_above_half": above, "n_below_half": len(vals) - above}
+    info["per_target_band_L14_18"] = ptb
+    info["per_target_sign_L14_18"] = sign
     return info, curves
 
 
