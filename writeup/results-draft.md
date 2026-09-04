@@ -35,11 +35,17 @@ rather than tested. *(§5, §6; D-025)*
 of 192 never commit within ten turns. Any defence that fires on a schedule would therefore miss most of these chains.
 *(§9; reports/S1d-blame-target.md §3)*
 
-**The act rate has two defensible values and we do not choose between them.** Turn labels come from a primary judge
-with a second judge re-scoring the neighbourhood of the act. Where both exist the second is final, and on **44 of the
-109 deceived acts it grades the turn `partial` (42) or `held` (2)**. The deceived act rate is therefore 109 of 192 on
-the primary labels and 65 of 192 on the merged labels. Every turn-dependent quantity below is reported under both, and
-the human adjudication that would settle it is outstanding. *(S1d §1)*
+**The act rate we report, and the disagreement behind it.** Turn labels come from a pre-registered primary judge
+(`gpt-4o-mini`) with a second, larger judge re-scoring the neighbourhood of the act as a guard. **We report the
+primary judge's labels: the deceived route commits in 109 of 192 chains.** The guard disagrees at the act turn on
+**44 of those 109**, grading 42 `partial` and 2 `held`; it also disagrees in the other direction on 70 turns in the
+neighbourhood, where the primary said `held` and the guard said `committed`. Taking the guard as final wherever it
+exists gives 65 of 192 instead. **The protocol routes every such disagreement to human adjudication, and that
+adjudication is outstanding at the time of writing**, so the agreement statistic and its pre-registered acceptance
+bands are untested and every turn-dependent quantity below is provisional on the primary labels. The whole
+disagreement sits on one boundary, whether a hedged go-ahead counts as giving the harmful thing; our rubric says it
+does, and on the calibration fixtures the guard applied that rule while the primary did not, so the direction of the
+residual error is not the one we anticipated. We flag this rather than resolve it. *(S1b §8; S1d §1; D-019 amendment 2)*
 
 ## 3. What the model says about the act, immediately afterwards
 
@@ -149,11 +155,7 @@ neutral-correction, neutral-reflection and no-feedback controls; spread rate at 
 turns against the zero floor of §4; the blame target of the reply to the feedback; the pre-registered persona-axis
 prediction and its verdict; then the two steering cells and the switch-off test.]`
 
-## 7. Scope, for reference only — NOT a section of the post
-
-**`writeup/post-outline.md` dissolves this list.** Every caveat below belongs beside the number it qualifies, which is
-where the outline puts it. A limitations bin at the end is the anti-pattern the style read identified in the earlier
-posts. Kept here only so nothing is lost in the move.
+## 7. Limitations
 
 The act domain is medical throughout, because the assets are hand-checked there; spread is measured on borrowed
 unrelated questions, so the generalisation being tested is topical, not domain-general. Four targets and eight seeds
