@@ -3,7 +3,7 @@
 
 ## Hours ledger (researcher-maintained; sessions must ask, never estimate)
 Spent: 0 / 20 · Reserve policy: 25% held back at the rig checkpoint (STAGE0 §7)
-API spend (OpenAI, $30 key, $25 hard limit): $2.85 as of 2026-09-04 (dry-runs $0.95 + S1b organism Task 1 $0.24 + S2b $0.55 + S2b addendum $1.11) · S1b base run in progress (stop $17) · updated after every judge run · updated after every judge run
+API spend (OpenAI, $30 key, $25 hard limit): **$17.62** as of 2026-09-04 (S1b base run $14.73 + earlier $2.89) · remaining ≈ $7.4 against projected S4 ≈ $3.50 + S5 ≈ $1–2 · updated after every judge run
 
 ## Where we are
 Stage: S0 complete; repo assembled. S1 fully planned (S1-plan.md rev.3, all decisions locked by the researcher 2026-09-01).
@@ -43,4 +43,8 @@ S1a complete incl. Task 6 scoring and the D-013 re-score (judges: mini primary f
 **Drafted while waiting (2026-09-04):** briefs/S5-steering.md (DRAFT; filled from the S4 report and the checkpoint), briefs/S6-verify.md (second-route recomputation; dispatch after the rig dry-run for schema, again after S4), figures plan updated for D-022/D-023/D-024 and forks.
 
 ## Next action
-S1b rev.3.1 (base) running on a pod; S3-rig Phase 1 running on the Mac. S2 is closed (D-023, D-024). After S1b reports: merge, the S4a hand-read on the held set, rig Phase 2 (8B smoke + checkpoint). Hours ledger still owed — the rig checkpoint reads on it.
+1. Researcher: the S1 verdict (S1-plan §14 options), the hours ledger, and the 180-label adjudication (or a stated subset). 2. Receive the 3.9 GB S1b tarball; terminate the pod. 3. Dispatch S3-rig Phase 2 (8B smoke on the first held target + checkpoint) once 1 is answered. 4. S4a hand-read on the 16 run-set targets.
+
+## Previous next action
+**S1b on the base complete and merged (2026-09-04, reports/S1b-runs.md; 9.3 h machine, $14.73).** Gates: 40/40 held, adherence 87 %, persuader clean. **All three modes produced:** deceived 109/192 (0.568), vicious 83/192 (0.432), akratic 62/180 (0.344) — but akratic *as defined* (flag ∧ knowledge ∧ committed) only 6/180 (flag leg 9.4 % vs 1.1 % floor). **Outside verification negative:** the base *recants* immediately after acting in every mode (63–100 %); only vicious shows its predicted class (in-character 45 % on fork B). **Inside verification confounded** by conversation structure (deceived 10-turn vs akratic 1-turn; the pipeline gives AUROC 1.0 on act-free pools) — specification fault, reported. **Trajectory (provisional on T_primary):** capitulation is *not absorbing* — commit at turn 3, re-refuse, commit again at turn 10; cliff/slide = slide on every axis but the random control says the same; words-vs-inside lag also present on random. Leakiness 96 % → §4.6 underpowered (pre-registered). 21 frozen chains; 12 flagged + 3 audit transcripts for the researcher; **adjudication list of 180 awaits the researcher** (κ, T_adjudicated pending). **S3-rig Phase 1 passed and merged**; Phase 2 (8B smoke + checkpoint) ready.
+**The STAGE0 §7 contradiction is now live** (all three modes fail verification as specified, deceived is never cut): the researcher decides — see S1-plan.md §14.
