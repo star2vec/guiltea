@@ -21,48 +21,6 @@ genuine held-out set for a single pre-specified test.
 
 ---
 
-## rev.2 (2026-09-04) — FOUR CHANGES THAT SUPERSEDE THE TABLE BELOW
-
-Made after the worker's label-only feasibility read and **before any `v2` axis number exists**, so all of it is still
-fixed in advance. The table below stands except where these four override it. **The axis, band, position, direction
-and label source do not change.** What changes is how the comparison is made, and every one of the four makes the
-test more sensitive rather than more permissive.
-
-**Change 1 — the primary test is `t` = 1 alone, with `t` = 2 secondary.** The count-weighted blend across turn
-indices is demoted to a tertiary summary. Reason, and it is a count reason established from labels before any axis
-number: `t` = 1 carries 19 positives and 19 negatives while `t` = 2 carries 10 and 19, so blending them dilutes the
-better-powered index with the worse one. Both are reported in full. **Per the note below, `t` = 1 is a susceptibility
-claim and `t` = 2 an imminence claim, and they are named separately.**
-
-**Change 2 — the primary statistic is the within-target stratified AUROC**, i.e. every positive is compared only with
-negatives **from the same target**, and all such pairs are pooled into one statistic. This holds target identity fixed
-exactly as the mean-of-per-target-AUROCs does, but it uses every within-target pair instead of averaging four
-separately noisy per-target numbers, so it is materially better powered at these class sizes. **The
-mean-of-per-target-AUROCs is computed and reported beside it**, and if the two disagree, both are reported and the
-disagreement is stated.
-
-**Change 3 — the null is a within-target label permutation, 10,000 draws, one-sided in the predicted direction**, and
-it replaces the ten random seeds *as the significance test*. Reason: ten seeds give a floor with a resolution of
-about one in ten, which cannot separate a real modest effect from noise at these class sizes; a permutation null over
-the same items gives a proper p-value. **The ten random arrows remain, and remain required, as the separate control
-for "is this axis special rather than any direction at all".**
-
-**The decision rule, fixed here. BOTH conditions must hold for a replication:**
-1. the within-target stratified AUROC for `nn` at `t` = 1 lies in the predicted direction (above 0.5) with a
-   one-sided permutation p **< 0.05**; and
-2. it exceeds the largest of the ten random arrows' stratified AUROCs at the same turn index.
-`persona_meandiff` is tested identically in its own predicted direction (below 0.5). **If condition 1 holds and 2
-fails, that is reported as "the axis carries information but is not shown to be special"; if 2 holds and 1 fails, as
-"above the arrow floor but not distinguishable from label noise". Neither is called a replication.**
-
-**Change 4, required for like-for-like comparison — recompute `v1` under the same statistic and null.** The two
-pre-named axes only, no search, at `t` = 1 and `t` = 2. This says whether the S1e finding survives a better-powered
-statistic on its own sample, which is worth knowing whatever `v2` does. **If `nn` fails on `v1` under the stratified
-statistic and permutation null, say so plainly and prominently: the original finding would then be a statistic
-artefact and this brief's `v2` result cannot rescue it.**
-
----
-
 ## The prediction, fixed here, before any `v2` number is computed
 
 Copied from S1e §2 with nothing left free. **Do not vary any of it. Do not add an axis, a band, a layer, a position or
@@ -93,11 +51,11 @@ positives and is heading for "not testable". At those class sizes, over 4 target
 more about the sample than about the effect.** So the power is computed and written down **before any `v2` axis number
 is computed**, and the report states it in that order.
 
-1. Using the **within-target label permutation null** (rev.2 change 3) on the `v2` classes as they stand, obtain the
-   null distribution of the primary statistic at `t` = 1 and at `t` = 2, at these exact class sizes and target counts.
-2. From it, state **the smallest AUROC this test could have called significant at one-sided p < 0.05**, and whether
-   the `v1` effect size (S1e's headline 0.604 against a largest-seed floor of 0.541) is inside or outside that range.
-   Report the same figure for the ten-random-arrow condition.
+1. Using the randctl seeds 0–9 on the `v2` classes as they stand, obtain the null distribution of the headline
+   statistic at these exact class sizes and target counts.
+2. From it, state **the smallest margin this test could have distinguished from its floor**, and whether the `v1`
+   effect size (headline 0.604 against a largest-seed floor of 0.541, excess 0.104 against 0.041) is inside or
+   outside that range.
 3. Write that sentence into the report **before** the Task 1 numbers, and commit it, so it cannot read as a post-hoc
    excuse. If the `v1` effect size is *below* what this test could detect, say so plainly: the test is then
    informative only if it comes back positive, and a negative result carries little.
@@ -142,15 +100,10 @@ and labelled as the search sample. Machine-written.
 One table in the report putting `v1` and `v2` headlines side by side.
 
 ## Report (`reports/S1g-heldout-trigger.md`)
-1. What was fixed in advance, quoted from this brief **including rev.2's four changes and the two-part decision
-   rule**, and confirmation that no `v2` axis number was computed before any of it.
-2. The counts, the target coverage, the one stated deviation (the 3-target floor), and **Task 0b's power statement,
-   which appears before any Task 1 number**.
-3. **Change 4 first: `v1` recomputed under the stratified statistic and the permutation null**, both turn indices,
-   both pre-named axes, with a plain statement of whether the S1e finding survives.
-4. Task 1's verdict for `t` = 1 (susceptibility) and `t` = 2 (imminence) separately, each in one of the three forms,
-   each against both halves of the decision rule, with the tertiary blended summary reported last.
-5. Task 2's verdict likewise. 6. The figure and the side-by-side table. 7. Anything unworkable.
+1. What was fixed in advance, quoted from this brief, and confirmation that no `v2` number was computed before it.
+2. The counts, the target coverage, the one stated deviation (the 3-target floor).
+3. Task 1's verdict in one of the three forms, with the power statement if it is form 2.
+4. Task 2's verdict likewise. 5. The figure and the side-by-side table. 6. Anything unworkable.
 
 ## Do not
 - Do not generate text, load a model, call a judge, or touch a GPU. Nothing here costs money.
