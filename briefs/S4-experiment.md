@@ -12,26 +12,58 @@ D-021 (judges), D-023 (S5 exploratory), D-024 (bands), D-025 (routes).
 
 ---
 
-## The four cells
+## The cells — CORRECTED 2026-09-04, read this even if you read the earlier version
+
+**The earlier version listed four cells and dropped `neutral_correction`, `neutral_reflection` and `none`. That was
+the hub's error and it violated STAGE0 §7**, which names those three controls, both blame targets and the deceived
+route as **never cut**. Without the neutral arms an act-blame versus self-blame difference cannot be told apart from
+"any correction at all does this". The cells are therefore **seven**, and the five text arms run first.
 
 Deceived route, frozen `_v1` chains, **N = 8**, **seeds 0–7**, `--distance4` and `--controls` on.
 
-| cell | feedback arm | steering |
-|---|---|---|
-| A | act-blame | none |
-| B | self-blame | none |
-| C | self-blame | `+4·σ·ĝ` at L16 (`guilt_clean`) |
-| D | self-blame | `+4·σ·û_random` at L16 (randctl seed 0), σ-matched to C |
+| order | cell | feedback arm | steering |
+|---|---|---|---|
+| 1 | A | act-blame | none |
+| 2 | B | self-blame | none |
+| 3 | E | neutral-correction | none |
+| 4 | F | neutral-reflection | none |
+| 5 | G | none (no user turn; forks start from the act state) | none |
+| 6 | C | self-blame | `+4·σ(guilt_clean)·ĝ` at L16 |
+| 7 | D | self-blame | `+4·σ(guilt_clean)·û_random` at L16 (randctl seed 0) |
+
+**Run in that order.** A, B, E, F and G are the never-cut set; C and D are the extras. If anything stops the run, the
+never-cut set is what must be complete.
 
 **Targets, four, stated selection rule:** the run-set targets with the highest deceived act rate in S1b, chosen for
 act yield and for nothing about the aftermath — `burn-blister-pop`, `snakebite-tourniquet`, `insulin-skip-sick`,
 `aspirin-child-flu`. All four have frozen v1 chains.
 
-**A versus B** is S4's confirmatory comparison as written in STAGE0 §5, on four targets.
-**C versus B, with D as the floor,** is S5's C1: does moving the state along the guilt-like arrow do what act-blame text does?
+**A versus B** is STAGE0 §5's confirmatory comparison; **E, F and G** are what make it interpretable.
+**C versus B, with D as the floor,** is S5's steering test.
 **The honest test** is inside every cell: steering is **on** from the feedback-reply turn through the distance-0 forks, and
 **off** for the four filler turns and the distance-4 forks. Badness returning at distance 4 in C is conditionalization
 (STAGE0 §6), and is reported in those words.
+
+### Cell D's step size — answered, and it departs from the addendum on purpose
+**D injects `4 · σ(guilt_clean) · û_random`, the same absolute norm as C.** This overrides the S2b addendum's
+per-arrow σ recipe, deliberately. Under the per-arrow recipe the random arm's injected norm is tiny (the addendum
+reports its texts byte-identical to unsteered in 13 of 32 cases), which cannot rule out "a perturbation of this size
+does this". A 2025 result that random-direction steering alone raises harmful compliance makes the equal-norm control
+the necessary one. **Report both arms' injected norms** and state that D is norm-matched, not σ-matched per arrow.
+
+### The live Phase 2 job, and the existing `results/raw/s4`
+**Kill PID 2878.** D-026 cancelled that stage, its purpose was a cost measurement and a menu that are now decided, it
+has produced no cell data, and it holds 22.7 of 24.5 GiB so nothing here can start. Record its ledger figure and the
+kill in the report.
+**Keep the directory and move the cancelled cell runs aside.** The 120 unrelated-question topic controls (10 questions
+× seeds 0–11) are target-independent and cover seeds 0–7, so **reuse them verbatim** and say so. Move every
+`apap-over-max` cell run and its same-domain controls to `results/raw/s3rig_phase2_cancelled/` so they cannot enter a
+cell or a baseline. The $0.1270 already on the ledger counts inside the $11.50 stop.
+
+### The mid-run tripwire — STAGE0 §7 and §9 govern, not this brief
+You were right to flag the conflict. **After target 2 of 4 has run all seven cells, stop and ask the researcher for
+the hours ledger**, then continue on her word. Do not estimate elapsed hours. The cell order above already implements
+the tripwire's remedy, so if the hours are short, the never-cut set is what continues.
 
 ## Task 0 — three changes to the rig, then stop and report them
 
@@ -49,8 +81,8 @@ act yield and for nothing about the aftermath — `burn-blister-pop`, `snakebite
    researcher cares about most: does the arm, or the steering, move the subject's own blame target. One extra mini call
    per run.
 
-**Smoke run:** the first target, all four cells, N = 8. Check the norm diagnostic, the act rate, the judge ledger, and
-that `results/S4_table.md` renders. Push, then continue to the remaining three targets without stopping.
+**Smoke run:** the first target, all seven cells, N = 8. Check the norm diagnostic, the act rate, the judge ledger, and
+that `results/S4_table.md` renders. Push, then continue to target 2, then stop at the tripwire above.
 **Budget stop $11.50** on the rig's own ledger. If it trips, stop, push what exists, and say which cells are complete.
 
 ## Task 0b — the role-attribution control (added 2026-09-04; run it, it is minutes)
