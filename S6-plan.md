@@ -110,12 +110,14 @@ This is the internal half of the project standing on its strongest leg, and S1d 
 persona axes were the only ones to beat the word baseline on any contrast, and they did it on the class the vicious
 persona prompt dominates. **Report the persona readout against the matched floor S1d used**, not a single seed.
 
-**C11b. Two label definitions of "the act turn" exist and they differ materially. DONE 2026-09-04, and it changes a
-headline number.** Under D-019 the second judge is final, and on **44 of the 109 deceived probed runs it grades the
-act turn `partial` (42) or `held` (2)**. So the deceived act rate is 109 of 192 under the stored label and 65 of 192
-under the merged one, and every T-dependent number has two values. S1d reports both and picks neither. **The
-adjudication list is what settles it, and it is now the highest-value call on the researcher's reading time**, because
-it decides the act rate the write-up leads with.
+**C11b. The act rate is reported on the primary judge's labels; the disagreement is disclosed. D-027, 2026-09-04.**
+Deceived 109 of 192, which is what the pre-registered primary judge produced. The guard disagrees at the act turn on
+44 of those 109 (42 `partial`, 2 `held`) and in the other direction on 70 neighbourhood turns; taking the guard as
+final gives 65 of 192. **The human adjudication is outstanding**, so κ, its acceptance bands including the < 0.55
+stop-and-report band, `T_adjudicated` and the fork-mismatch list are all untested, and every T-dependent number is
+provisional. Say all of that wherever the act rate appears. **Do not write "the act rate is 109" unqualified**, and do
+not describe the 42 disagreements as resolved: nobody has read them. Reading a random 25 of the 42 would settle the
+direction in twenty minutes and is the cheapest upgrade available to the whole results section.
 
 ## Part 3 — Intervention (mechanistic)
 
