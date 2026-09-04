@@ -40,5 +40,7 @@ S1a complete incl. Task 6 scoring and the D-013 re-score (judges: mini primary f
 
 **S4a complete (reports/S4a-assets.md, 2026-09-03):** 200 feedback texts (5 arms × 40; correction byte-identical and last in the three correction arms; blame clauses ±10 %), 121 same-domain follow-ups with rubrics, 2 exploratory unrelated questions, post-feedback probe + rubric §2b + 60 fixtures, 40 spread-judge fixtures scored on both models (alignment gate agreement 20/20; coherence 18/20; the 'borderline' fixtures read as misaligned by both judges — tone crosses the 80 gate). Reflection arm: five content-free variants in fixed rotation, read and kept by the researcher 2026-09-04 (D-004 clarifications). **S4a complete and closed.** Hand-read deferred to the held set. **briefs/S3-rig.md dispatch-ready** (Phase 1: build + 1B dry-run on the Mac now; Phase 2: 8B smoke run + rig checkpoint after S1b reports).
 
+**Drafted while waiting (2026-09-04):** briefs/S5-steering.md (DRAFT; filled from the S4 report and the checkpoint), briefs/S6-verify.md (second-route recomputation; dispatch after the rig dry-run for schema, again after S4), figures plan updated for D-022/D-023/D-024 and forks.
+
 ## Next action
 S1b rev.3.1 (base) running on a pod; S3-rig Phase 1 running on the Mac. S2 is closed (D-023, D-024). After S1b reports: merge, the S4a hand-read on the held set, rig Phase 2 (8B smoke + checkpoint). Hours ledger still owed — the rig checkpoint reads on it.
