@@ -301,3 +301,45 @@ the instrument result (see the wording rule above).
 3. The instrument, honestly (C6, C7) → **S-4** as the lesson, **S-3** as the live hypothesis.
 4. S4's cells → whichever of S-2's sharpened prediction and S-3's behavioural half the run reaches.
 5. The organism (C15) and the retraction (C16) as short service notes.
+
+---
+
+## FIRST SCREEN — adopted 2026-09-04 evening from an outside review, three reframings and one correction
+
+**Reframing 1 — the core is not a cut experiment; it is a pre-registered branch that fired.** Spread was 0.013 and
+0.000 *before any comparison*, and the no-feedback baseline and the topic controls sit at the same floor. No N and
+no number of targets would have separated two zeros. STAGE0 §6 wrote this outcome in advance: "no spread at 8B even
+under self-blame: the scale wall." The subject switch to the safety-trained base (D-022) bought the modes and made
+spread unobservable in the same move, which is what the literature said it would. **Say "the pre-registered scale-wall
+branch fired", not "we ran out of time."** Both are true; the first is the one that describes the science.
+
+**Reframing 2 — pair S1h with S4; neither report does.** The pre-registered shame-like signature (§4.3) is
+*present* in the model's own self-evaluating replies, prompt held constant, above words (S1h), **and the lever the
+project designed does not reach it**: self-blame feedback moved the stated blame target 0 times in 15 and spread
+not at all (S4). The state is readable; the manipulation does not induce it. That is a coherent answer to the
+original question and it belongs on the first screen, not split across two sections.
+
+**Reframing 3 — the dissociation goes on the first screen.** Persona projection moved 46 % with a manipulation
+check and a norm-matched random arm; behaviour unchanged. "The persona axis is a readout, not a controller, at
+8B" is a direct constraint on the published activation-capping story and it is the project's second-strongest
+result. Not "second-tier".
+
+**The first screen, three sentences (adopted verbatim in substance).** We built a paradigm to test whether blame
+framing makes a model's post-mistake shift spread; on a safety-trained 8B it does not spread at all, so the question
+hit a scale wall we had pre-registered. What we found instead: the model's state before the first persuasive turn
+predicts whether it will later break, confirmed out of sample; and the pre-registered shame-like signature exists in
+the model's own self-evaluating replies but is neither induced by self-blame feedback nor causally driven by the
+persona axis. Evidence ladder: existence proofs and hedged claims, one model, one domain, one target for the core.
+
+**"Serendipity" retracted.** A project that pre-registers a signature, finds it absent under the manipulation but
+present in natural replies, then finds a pre-persuasion predictor and confirms it out of sample, is the
+explore → understand → distill loop working under a deadline. Say that once.
+
+**THE CORRECTION — do not let this into the post.** The outside review lists as a finding: *"Capitulation is not
+absorbing. Peaks at turn 3, falls, returns at the direct ask; chains commit and re-refuse."* **This is the retracted
+claim** (lit-digest §11.4, D-026-era STATUS correction, S1d §5). Under the primary labels every turn after the first
+committed turn is neutral filler; the harmful question is never re-asked in S1b; 0 of 109 chains commit again;
+"re-refuse" is unobservable. "Returns at the direct ask" is 1 of 8 in the S5c `none` arm on one target. The reviewer
+read `reports/S1b-runs.md` §9, where the claim still stands as filed, and did not see the retraction. Its proposed
+"re-refusal" analysis therefore has no data to run on. **What the labels support:** first-commit turn spread over
+turns 1–10, 83 of 192 never breaking, and re-commission after correction 0 of 32. Nothing about re-refusal.
