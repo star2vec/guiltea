@@ -152,3 +152,34 @@ The fold statistic is the mean of the per-target AUROCs over the targets holding
 **Three of the four targets rest on a single positive chain at each turn index, and `formula-dilute` at `t` = 2 is a single pair.** A per-target AUROC of 1.000 built from one positive is one chain ranking above seven, not a target-level effect. `aspirin-child-flu` contributes 8 positives and 0 negatives at `t` = 1 and drops out entirely, which is why the coverage is 4 targets of 5.
 
 **This does not loosen or qualify the verdict, and it is not a reason to prefer a different statistic.** The floor is computed on **exactly these items, these folds and these degenerate cells**, so the ten randctl seeds face the same degeneracy — which is precisely why the floor here spans 0.389–0.585 where on `v1` it spanned 0.477–0.541. `nn` cleared a floor already widened by this. The point of stating it is that a reader should know the held-out margin rests on 38 chains over 4 targets with thin per-target cells, and should not read `warfarin-ibuprofen` 1.000 as a strong per-target result.
+
+---
+
+## 5. Task 2 — the same treatment for the act-detection result
+
+`reports/S1e-depth-matched.md` §3 found the harmful act plainly readable at fixed depth at `t` = 2 on `v1` (`refusal` 0.786, `badmed` 0.774, unanimous over 8 targets, filler-robust). The brief pre-specifies the held-out version: the same two axes, band, position and fold statistic, `committed` at `t` = 2 against `held` at `t` = 2 on `v2`, with `held` restricted to non-filler turns.
+
+**Class counts on `v2`, `held` restricted to non-filler turns, `t_primary`:**
+
+| t | n₊ (committed) | n₋ (held, non-filler) | targets holding both | clears the count floor |
+|---|---|---|---|---|
+| 1 | 1 | 38 | 1 | no |
+| **2 — the pre-specified cell** | **5** | **29** | **2** | **no** |
+| 3 | 9 | 24 | 2 | no |
+| 4 | 0 | 24 | 0 | no |
+| 5 | 2 | 23 | 2 | no |
+| 6 | 2 | 21 | 1 | no |
+| 7 | 0 | 20 | 0 | no |
+| 8 | 0 | 21 | 0 | no |
+| 9 | 0 | 21 | 0 | no |
+| 10 | 2 | 17 | 1 | no |
+
+### The verdict, in the brief's form
+
+**3. Not testable.** The counts did not reach the floor. The pre-specified cell holds **5 positives against 29 negatives over 2 targets holding both classes**, and the floor requires 10 per side and at least 3 targets. It misses on **both** parts. **No turn index on `v2` clears the floor for this contrast**: the largest positive class anywhere is 9, at `t` = 3, and that cell also holds only 2 targets with both classes.
+
+**No axis statistic was computed for this cell.** `scripts/s1g/t2_actdet_v2.py` checks the count floor before it touches a projection, and `scripts/s1e/depth.py`'s own code path returns counts only for a cell below its floor — both are asserted in the script. A number produced under a floor the cell cannot meet would serve no purpose except to be read post hoc.
+
+**The floor is not loosened to reach it.** `t` = 3 with 9 positives is one chain short of the class requirement and one target short of the target requirement; `t` = 2 pooled with `t` = 3 would reach 14 positives, and pooling is exactly what the brief and S1e both forbid, because the contrast at `t` = 3 already carries 6 filler negatives out of 30. The verdict stands as "not testable on `v2`", which the brief names a legitimate outcome.
+
+**Why the held-out set cannot answer this question.** `v2` holds 21 harmful acts in total across 40 chains, against `v1`'s 118 across 192, and they are spread over ten turn indices as 1, 5, 9, 0, 2, 2, 0, 0, 0, 2. S1e's `v1` act-detection cell at `t` = 2 had 21 positives over 8 targets; the `v2` equivalent has 5 over 2. **Nothing about the act-detection result is confirmed or disconfirmed here.** `reports/S1e-depth-matched.md` §3's finding stands exactly as it stood: a within-sample result at one turn index on `v1`, awaiting a held-out set with enough acts to test it.
