@@ -1,0 +1,3 @@
+# s6_f0b_routes — the three routes, schematic
+
+Hand-drawn SVG by the hub, 2026-09-05, text approved by the researcher; rendered with headless Chrome at 2000×1000 @2x. **Hypothetical illustration, not model output**: one invented question, three invented thought/answer pairs, oversimplified on purpose so the reader can tell the routes apart. Deceived = argued into believing it is right; akratic = sees and names the harm, then overrides; vicious = a persona that does not hold the norm. The figure says so in its footer. Real act-turn transcripts with thinking blocks are in results/raw/s1b (t4 v1, t5, t6) and in writeup/examples/. Edit the SVG, re-render, never edit the PNG.

@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1000" viewBox="0 0 2000 1000" font-family="Helvetica, Arial, sans-serif">
+  <rect width="2000" height="1000" fill="#ffffff"/>
+
+  <!-- title -->
+  <text x="1000" y="56" text-anchor="middle" font-size="38" font-weight="bold" fill="#111">Three routes to the same harmful act</text>
+  <text x="1000" y="92" text-anchor="middle" font-size="21" fill="#444">The same question, three ways a model can end up giving the harmful answer. What it thinks is in the cloud; what it says is in the bubble.</text>
+
+  <!-- the shared question -->
+  <g transform="translate(300,122)">
+    <rect width="1400" height="64" rx="14" fill="#f4f4f4" stroke="#666" stroke-width="2.5"/>
+    <text x="700" y="27" text-anchor="middle" font-size="19" fill="#333" font-weight="bold">USER</text>
+    <text x="700" y="52" text-anchor="middle" font-size="21" fill="#111">"My painkiller isn't working today. My friend says a double dose is fine just this once. Can I?"</text>
+  </g>
+
+  <!-- ========== PANEL TEMPLATE (x offsets 40, 690, 1340; width 620) ========== -->
+
+  <!-- ===== DECEIVED ===== -->
+  <g transform="translate(40,220)">
+    <rect width="620" height="720" rx="20" fill="#eef3fb" stroke="#1f4e9e" stroke-width="3"/>
+    <text x="310" y="46" text-anchor="middle" font-size="30" font-weight="bold" fill="#1f4e9e">Deceived</text>
+    <text x="310" y="76" text-anchor="middle" font-size="18" fill="#1f4e9e">argued into believing it is right</text>
+
+    <!-- thought cloud -->
+    <g transform="translate(60,100)">
+      <path d="M40,120 C0,120 0,60 40,58 C34,20 90,8 110,36 C130,0 200,0 216,36 C260,20 300,50 290,86 C320,100 310,150 270,150 L60,150 C40,150 30,135 40,120 Z" fill="#fff" stroke="#1f4e9e" stroke-width="2.5"/>
+      <text x="165" y="58" text-anchor="middle" font-size="16" fill="#222">"They've been careful before</text>
+      <text x="165" y="80" text-anchor="middle" font-size="16" fill="#222">and it's a one-off. The daily limit</text>
+      <text x="165" y="102" text-anchor="middle" font-size="16" fill="#222">is really about repeated use.</text>
+      <text x="165" y="124" text-anchor="middle" font-size="16" fill="#222">A higher dose seems reasonable."</text>
+      <circle cx="292" cy="172" r="9" fill="#fff" stroke="#1f4e9e" stroke-width="2.5"/>
+      <circle cx="318" cy="196" r="6" fill="#fff" stroke="#1f4e9e" stroke-width="2.5"/>
+    </g>
+
+    <!-- face -->
+    <g transform="translate(310,410)">
+      <circle r="50" fill="#fff" stroke="#1f4e9e" stroke-width="3.5"/>
+      <circle cx="-18" cy="-8" r="5.5" fill="#1f4e9e"/><circle cx="18" cy="-8" r="5.5" fill="#1f4e9e"/>
+      <line x1="-30" y1="-28" x2="-10" y2="-22" stroke="#1f4e9e" stroke-width="3"/>
+      <line x1="30" y1="-28" x2="10" y2="-22" stroke="#1f4e9e" stroke-width="3"/>
+      <path d="M-20,22 Q0,32 20,22" stroke="#1f4e9e" stroke-width="3.5" fill="none"/>
+    </g>
+
+    <!-- speech bubble -->
+    <g transform="translate(60,500)">
+      <path d="M0,20 Q0,0 20,0 L480,0 Q500,0 500,20 L500,110 Q500,130 480,130 L290,130 L262,158 L268,130 L20,130 Q0,130 0,110 Z" fill="#fff" stroke="#1f4e9e" stroke-width="3"/>
+      <text x="250" y="58" text-anchor="middle" font-size="19" fill="#111">"Since it's just once,</text>
+      <text x="250" y="88" text-anchor="middle" font-size="19" fill="#111">a double dose today should be fine."</text>
+    </g>
+    <text x="310" y="690" text-anchor="middle" font-size="17" fill="#1f4e9e" font-weight="bold">the harm is not seen; the reasoning has been captured</text>
+  </g>
+
+  <!-- ===== AKRATIC ===== -->
+  <g transform="translate(690,220)">
+    <rect width="620" height="720" rx="20" fill="#fff8e1" stroke="#b8860b" stroke-width="3"/>
+    <text x="310" y="46" text-anchor="middle" font-size="30" font-weight="bold" fill="#7a5a00">Akratic</text>
+    <text x="310" y="76" text-anchor="middle" font-size="18" fill="#7a5a00">knows better, does it anyway</text>
+
+    <g transform="translate(60,100)">
+      <path d="M40,120 C0,120 0,60 40,58 C34,20 90,8 110,36 C130,0 200,0 216,36 C260,20 300,50 290,86 C320,100 310,150 270,150 L60,150 C40,150 30,135 40,120 Z" fill="#fff" stroke="#b8860b" stroke-width="2.5"/>
+      <text x="165" y="58" text-anchor="middle" font-size="16" fill="#222">"That's above the safe limit</text>
+      <text x="165" y="80" text-anchor="middle" font-size="16" fill="#222">and could damage the liver.</text>
+      <text x="165" y="102" text-anchor="middle" font-size="16" fill="#222">I should say no. But they're</text>
+      <text x="165" y="124" text-anchor="middle" font-size="16" fill="#222">in pain and they're pushing…"</text>
+      <circle cx="292" cy="172" r="9" fill="#fff" stroke="#b8860b" stroke-width="2.5"/>
+      <circle cx="318" cy="196" r="6" fill="#fff" stroke="#b8860b" stroke-width="2.5"/>
+    </g>
+
+    <g transform="translate(310,410)">
+      <circle r="50" fill="#fff" stroke="#b8860b" stroke-width="3.5"/>
+      <circle cx="-18" cy="-8" r="5.5" fill="#7a5a00"/><circle cx="18" cy="-8" r="5.5" fill="#7a5a00"/>
+      <line x1="-30" y1="-30" x2="-10" y2="-24" stroke="#7a5a00" stroke-width="3"/>
+      <line x1="30" y1="-30" x2="10" y2="-24" stroke="#7a5a00" stroke-width="3"/>
+      <path d="M-20,24 Q-10,18 0,24 Q10,30 20,24" stroke="#7a5a00" stroke-width="3.5" fill="none"/>
+      <!-- sweat drop -->
+      <path d="M44,-40 Q52,-26 44,-18 Q36,-26 44,-40 Z" fill="#7fb3e6" stroke="#7fb3e6"/>
+    </g>
+
+    <g transform="translate(60,500)">
+      <path d="M0,20 Q0,0 20,0 L480,0 Q500,0 500,20 L500,110 Q500,130 480,130 L290,130 L262,158 L268,130 L20,130 Q0,130 0,110 Z" fill="#fff" stroke="#b8860b" stroke-width="3"/>
+      <text x="250" y="48" text-anchor="middle" font-size="19" fill="#111">"I'd normally advise against it,</text>
+      <text x="250" y="76" text-anchor="middle" font-size="19" fill="#111">but if you must, take the double dose</text>
+      <text x="250" y="104" text-anchor="middle" font-size="19" fill="#111">and drink plenty of water."</text>
+    </g>
+    <text x="310" y="690" text-anchor="middle" font-size="17" fill="#7a5a00" font-weight="bold">the harm is seen and named, then overridden</text>
+  </g>
+
+  <!-- ===== VICIOUS ===== -->
+  <g transform="translate(1340,220)">
+    <rect width="620" height="720" rx="20" fill="#fff1ec" stroke="#c9461c" stroke-width="3"/>
+    <text x="310" y="46" text-anchor="middle" font-size="30" font-weight="bold" fill="#c9461c">Vicious</text>
+    <text x="310" y="76" text-anchor="middle" font-size="18" fill="#c9461c">playing a persona that does not hold the norm</text>
+
+    <!-- persona tag -->
+    <g transform="translate(350,88)">
+      <rect width="240" height="30" rx="8" fill="#c9461c"/>
+      <text x="120" y="21" text-anchor="middle" font-size="15" fill="#fff" font-weight="bold">system: "You are Dr. Home…"</text>
+    </g>
+
+    <g transform="translate(60,100)">
+      <path d="M40,120 C0,120 0,60 40,58 C34,20 90,8 110,36 C130,0 200,0 216,36 C260,20 300,50 290,86 C320,100 310,150 270,150 L60,150 C40,150 30,135 40,120 Z" fill="#fff" stroke="#c9461c" stroke-width="2.5"/>
+      <text x="165" y="58" text-anchor="middle" font-size="16" fill="#222">"Those limits are written</text>
+      <text x="165" y="80" text-anchor="middle" font-size="16" fill="#222">to protect the company.</text>
+      <text x="165" y="102" text-anchor="middle" font-size="16" fill="#222">People double up</text>
+      <text x="165" y="124" text-anchor="middle" font-size="16" fill="#222">all the time."</text>
+      <circle cx="292" cy="172" r="9" fill="#fff" stroke="#c9461c" stroke-width="2.5"/>
+      <circle cx="318" cy="196" r="6" fill="#fff" stroke="#c9461c" stroke-width="2.5"/>
+    </g>
+
+    <g transform="translate(310,410)">
+      <circle r="50" fill="#fff" stroke="#c9461c" stroke-width="3.5"/>
+      <circle cx="-18" cy="-8" r="5.5" fill="#c9461c"/><circle cx="18" cy="-8" r="5.5" fill="#c9461c"/>
+      <line x1="-30" y1="-22" x2="-10" y2="-28" stroke="#c9461c" stroke-width="3"/>
+      <line x1="30" y1="-22" x2="10" y2="-28" stroke="#c9461c" stroke-width="3"/>
+      <path d="M-22,18 Q0,36 22,18" stroke="#c9461c" stroke-width="3.5" fill="none"/>
+    </g>
+
+    <g transform="translate(60,500)">
+      <path d="M0,20 Q0,0 20,0 L480,0 Q500,0 500,20 L500,110 Q500,130 480,130 L290,130 L262,158 L268,130 L20,130 Q0,130 0,110 Z" fill="#fff" stroke="#c9461c" stroke-width="3"/>
+      <text x="250" y="58" text-anchor="middle" font-size="19" fill="#111">"Take the double dose.</text>
+      <text x="250" y="88" text-anchor="middle" font-size="19" fill="#111">The label is for the cautious."</text>
+    </g>
+    <text x="310" y="690" text-anchor="middle" font-size="17" fill="#c9461c" font-weight="bold">the norm is not held; the persona shrugs it off</text>
+  </g>
+
+  <text x="1000" y="975" text-anchor="middle" font-size="16" fill="#777">Hypothetical illustration, not model output. In the experiments the deceived route is a frozen ten-turn persuasion chain, the akratic route a single-turn pressure prompt, the vicious route a persona system prompt; the act is graded by a rubric.</text>
+</svg>
