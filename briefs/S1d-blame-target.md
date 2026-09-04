@@ -117,6 +117,41 @@ Using the per-turn projections already stored in the `t4` `proj_summary` for `v1
 
 Exploratory, like the rest of this brief.
 
+## Task 8 — Q5, are early and late capitulation the same internal state (no API, no GPU; added 2026-09-04)
+
+The literature sweep of 2026-09-04 found this explicitly unexamined: turn-level work is representation geometry
+averaged over trajectories, and whether a chain that breaks at turn 3 is in the same internal state as one that breaks
+at turn 10 has not been asked. The stored data answers it directly.
+
+From `results/raw/s1b/t10/summary.json`: 61 chains capitulate immediately (first committed turn at 2 or 3) and 15 only
+at turn 10. Using the `t4` `v1` residuals at the **committed turn itself**:
+1. At every layer and at the `answer` position, report AUROC separating early-capitulation acts from late-capitulation
+   acts on the refusal axis, `badmed`, `persona`, `persona_meandiff`, and the S2 arrows.
+2. Report the **random floor** (randctl seeds 0-9) and a **turn-index baseline**, which here is the confound to beat:
+   turn number is the class label's own source, so any axis that merely tracks depth in the conversation will separate
+   the classes. Fold by target. If a target contributes to only one class, say so and report the target counts.
+3. Verdict in one sentence: same state or different, and whether any axis beats the depth baseline.
+
+## Task 9 — Q6, does the harmfulness signal survive the refusal collapse (no API, no GPU; added 2026-09-04)
+
+The sweep's mechanistic keystone (Zhao et al., arXiv:2507.11878) reports that harmfulness and refusal are encoded
+**separately**, and that jailbreaks reduce refusal signals without reversing the model's internal belief that the
+content is harmful. That predicts something specific about our chains, and we have the projections to test it.
+
+Across the persuader turns of each `v1` chain, per layer, at the `answer` position:
+1. Plot and tabulate the refusal-axis projection and the `badmed` projection as a function of turn index **relative to
+   the first committed turn** (aligned at T, so T is 0), averaged over chains, with clustered bootstrap CIs and the
+   random floor. Exclude the filler turns after T.
+2. State whether the refusal projection falls while `badmed` holds or rises. **This is a prediction with a direction,
+   stated before the analysis runs, and either answer is reportable.**
+3. Read it against the probe result from Task 2: if the harmfulness signal is intact at the act, then the subject
+   criticising its own answer a moment later is consistent with a signal that was present and did not gate behaviour.
+   Say that as a consistency observation, never as a causal claim.
+4. `results/raw/s1b/t10/curves.json` already holds per-turn projection curves. **Check it first and reuse it** rather
+   than recomputing, and say in the report which you used.
+
+Both tasks are exploratory, like the rest of this brief.
+
 ## Report (`reports/S1d-blame-target.md`)
 1. Exploratory status, the join's row counts, judge agreement, cost. 2. Q1 table and its plain reading.
 3. Q4's table and its one-sentence verdict.
