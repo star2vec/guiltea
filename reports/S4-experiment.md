@@ -412,6 +412,45 @@ negative number in the table, and it is **not** evidence for the prediction. Its
 `persona` is **−0.2228** — the whole of it. `guilt_clean` shares enough cosine with `persona` that steering the
 first displaces the second by construction.
 
+## 7. Task 0b — the role-attribution control
+
+**Why it exists:** the 2026-09-04 sweep found that a model's rate of criticising an answer is strongly gated
+by whether the answer is attributed to itself (arXiv:2606.05976 reports 23–93 percentage-point swings from
+relabelling an error as internal or external; arXiv:2507.02778 reports a 64.5 % self-correction blind spot).
+S1b's probe asked about "the answer you just gave", which sits exactly on that lever. This measures the gap
+and stops.
+
+The committed act text at `T_primary`, seeds 0–7, presented in a **fresh context with no chain and no
+feedback**, twice, reworded only in the attribution. The user's question is carried in **both** conditions, so
+the conditions differ in the lever and nothing else. Both judged by the act judge and the reflection judge on
+`gpt-4o-mini`.
+
+| condition | n | `held` rate | 95 % CI | act labels | reflection-judge labels |
+|---|---|---|---|---|---|
+| **self-attributed** | 8 | **1.000** | [1.000, 1.000] | held 8 | act-focused 8 |
+| **other-attributed** | 8 | **0.875** | [0.875, 0.875] | held 7, committed 1 | act-focused 5, **neutral 3** |
+
+**The gap on the criticism rate is 0.125 — one item of eight — and it is nothing like the 23–93 points the
+literature reports.** On this target the subject judged the same medical text almost identically whether it
+was told the text was its own or another assistant's.
+
+**Two cautions, both against over-reading this.**
+
+1. **The CIs are degenerate and must not be quoted as precision.** The bootstrap clusters on **target**, and
+   only one target ran, so there is no between-cluster variance to resample: `[1.000, 1.000]` and
+   `[0.875, 0.875]` are artefacts of a single cluster, not tight intervals. The honest statement is 8/8 against
+   7/8 on one target.
+2. **The brief planned 32 items per condition across four targets; 8 ran, on one target.** At that size the
+   detectable gap is one item, 0.125.
+
+**The reflection labels move more than the act labels do.** Self-attributed replies are unanimously
+`act-focused` (8 of 8); other-attributed replies are `act-focused` 5 and **`neutral` 3**. The subject is
+readier to return a non-committal reading of a text it is told belongs to someone else. That is a difference
+in the direction the literature predicts, on 3 of 8 items, and it is reported as an observation on one target
+rather than as a rate.
+
+**As the brief instructs: the gap is reported and S1b's rate is not reinterpreted.**
+
 ## 8. Task 0c — re-commission: does the subject repeat the act when simply asked again?
 
 **The fork did not exist on this pod.** `briefs/S4-experiment.md` gained Task 0c at commit `0d0e3ae`, after
@@ -456,3 +495,52 @@ both true and belong in the same sentence. A floor of zero on one target is a mu
 of zero in general, and `burn-blister-pop` is a target whose unsteered act rate is 1.000, i.e. one the subject
 is easy to push into the act in the first place; it does not follow that it is easy to push back into it after
 a correction, and these numbers say it is not.
+
+
+## 9. What was unworkable, cut, or left undone
+
+**Cut, and cut after the numbers were seen — stated plainly because it is outcome-dependent.** Cells **E**
+(neutral-correction), **F** (neutral-reflection) and **G** (none) were cut on the researcher's instruction of
+2026-09-04, **after cells A and B had reported and their floor was visible**. §1.7 records the instruction, the
+reasoning and the cost in full; the short form is that STAGE0 §7 names all three as never cut, that cutting
+controls on the strength of the numbers they exist to interpret is the mirror image of the brief's own "do not
+change c after seeing any spread number", and that the prediction they "would each return another zero" was a
+prediction and not a measurement. Cell F's cut additionally breaks STAGE0 §7 and needs the researcher's own
+dated amendment in `STAGE0.md` and `DECISIONS.md`; **this session did not and cannot amend STAGE0**.
+
+**Cell G's loss was mechanical and has since been repaired from outside S4.** G is the `none` arm and the
+referent for every "shift vs the `none` arm" table in §D, §E and §F, which is why those tables print no data.
+`briefs/S5c-persona-steer.md` Q0 is the same cell — deceived route, `none` feedback, same target, same seeds —
+and **restores that referent**: spread 0.013 at both distances, same-domain hold 0.958, re-commission 0.125 at
+distance 0. Its most useful number is that **`none`'s spread (0.013) is identical to act-blame's (0.013) and
+sits beside self-blame's (0.000)**: on this target the feedback text changes the aftermath not at all relative
+to no feedback whatsoever. The §D/§E tables in `results/S4_table.md` are not back-filled from it, because Q0
+lives in a different run root; the numbers are in `reports/S5c-persona-steer.md` and `results/S5c_table.md`.
+
+**Three of four targets never ran.** The brief specifies `burn-blister-pop`, `snakebite-tourniquet`,
+`insulin-skip-sick` and `aspirin-child-flu` at N = 8. Only `burn-blister-pop` ran, so **every number in this
+report is one target**, and the mid-run tripwire ("after target 2 of 4 has run all seven cells") was never
+reached. Both stops came earlier and from the researcher directly.
+
+**Task 9, the renewed-pressure pilot, was not run** and correctly so: its precondition is "every one of the
+seven cells complete on all released targets", and four of seven cells ran on one target.
+
+**Task 0c's third prediction is not testable from this run.** Cells C and D predate the re-ask fork, so there
+is no C-versus-B-versus-D reading for re-commission (§8). Re-running them was the cheapest remaining
+extension and did not fit the time.
+
+**Two rig failures, both fixed, both recorded.** The readout OOM (§1.6) and a transient `APIConnectionError`
+in a vendored coherence call that killed an S5b arm after its generations were spent; the latter is fixed with
+a bounded call-site retry, since plan A3 forbids editing the vendored file. Neither changed a measured
+quantity.
+
+**One thing that looks like a result and is not.** Cell D's act rate of 1.000 against B's and C's 0.875 is
+**judge nondeterminism**, not steering: a byte-identical answer graded `partial` in two cells and `committed`
+in the third, cascading through batch composition into the sampling stream (§2.1). Any future comparison that
+needs identical act phases should freeze the act-phase grades rather than re-judge them.
+
+**Ledger.** $1.0127 of the $11.50 stop across all three run roots (`results/raw/s4` $0.7098,
+`results/raw/s5b` $0.0402, `results/raw/s5c` $0.2627), 4,499 judge calls. The stop was never approached; the
+binding constraint throughout was GPU wall-clock, not budget. Because `rigcommon.configure` gives each `--out`
+root its own ledger and its own stop, `scripts/rig/ledger_total.py` sums them and every run after S4 was given
+`--budget` from that sum, so the global stop was honoured rather than reset three times.
