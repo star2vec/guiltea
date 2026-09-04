@@ -35,3 +35,28 @@ Format: ID · decision · basis (borrowed [LIT] / ours [OURS] / researcher call 
 - **D-024** · **Primary layer band = layers 14–18 (centre 16), by convention; secondary band = layers 6–11, pre-named.** Fixed 2026-09-04, before any S4 data (STAGE0 §9). The primary carries the confirmatory internal claims and is where S5 steers and where the S4 reply-turn check (D-023) is read; the secondary is a pre-stated robustness band reported beside the primary in every internal figure; the full 32-layer sweep is reported regardless. Basis for the primary: the Assistant-Axis convention for untabled models (total layers // 2), the S3 persona steering layer, and the only layer at which the shame arrow moved reflections under steering — not fitted to our data. Basis for the secondary: the cross-voice transfer profile peaks at L6–L11 (report §11), so it is named now rather than found later. Any effect at a band not named here is exploratory. The S2b filed band (L1–4, from a saturated rule's tie-break) is superseded and recorded · [R, 2026-09-04] · never after S4 data are seen.
 - **D-025** · **After S1b: the three modes are carried into S4 as *routes*** — assigned by recipe (S1-plan §2.1, confirmatory), all three *produced* on the base (deceived 0.568, vicious 0.432, akratic 0.344). Verification by stated belief is reported as **failed for a stated reason**: the base recants immediately after acting in every route (63–100 %), so news of wrongness is not news in any route on this subject and STAGE0 §4.6's premise fails here (already flagged underpowered by the 96 % leakiness). The inside contrast **as specified is not evaluable** (structure confound, reports/S1b-runs.md §10); the S1-plan §5.3 fallback is invoked as `briefs/S1c-inside.md`: context-matched contrasts per route, on CPU from the stored residuals. Akratic cells are labelled "akratic route" (akratic *as defined* = 6/180). The §7 literal reading (cut all three) is set aside because it contradicts "deceived never cut"; the checkpoint menu still applies in the fixed sacrifice order · [R, 2026-09-04] · reverts if S1c shows no route leaves a mark against its matched control and the researcher then re-reads §7.
 - **D-025 note (2026-09-04, after S1c §7)** · Inside verification closed: the deceived-vs-akratic mode arrow is **not evaluable** on this design (10-turn vs 1-turn structure); the §5.3 fallback at the `into` position was ill-posed for single-turn routes (the position precedes the act — hub specification error, recorded); at the **`answer` position** each route's act separates from its matched no-act control (all three pass the locked rule; all act-free controls fail), which is read as "the act is internally detectable within each route", not as a mode arrow, and not separable here from harmful-vs-harmless content. The locked pass rule's random-arrow comparator can be met by an anti-separating arrow; both readings are reported; the rule was not changed · [R, 2026-09-04] · none.
+
+## D-026 — S3-rig Phase 2 cancelled; S4 reduced and S5 folded in; S1d added (2026-09-04, researcher)
+
+**Decision.** For the 2026-09-05 write-up deadline: (a) **S3-rig Phase 2 is cancelled as a separate stage.** Its smoke
+run and cost measurement fold into the first target of the S4 run, and the rig checkpoint's menu choice is made here
+instead of after it. (b) **S4 runs reduced:** deceived route only, four targets chosen for deceived act yield in S1b
+(`burn-blister-pop`, `snakebite-tourniquet`, `insulin-skip-sick`, `aspirin-child-flu`), N = 8, seeds 0-7, four cells —
+act-blame, self-blame, self-blame + 4·σ·ĝ at L16, self-blame + 4·σ·random at L16. This is CORE in STAGE0 §7's sense,
+narrowed further on targets; the narrowing is a dated amendment to §7, not a reinterpretation of it. (c) **S5 folds into
+those cells**: steering on from the feedback-reply turn through distance 0, off for the filler and distance-4 forks, so
+the honest test sits inside each cell. Every S5 number stays exploratory (D-023). (d) **Judges all `gpt-4o-mini`**
+(amendment to D-021), with the fixed 1-in-8 alignment sample still escalated to `gpt-4o-2024-08-06` and its agreement
+reported. (e) **S1d added** (`briefs/S1d-blame-target.md`): a CPU-and-API-only reanalysis of the 508 probe forks already
+stored by S1b, classifying the subject's **own** blame target after the act with the existing reflection judge, testing
+the arrows against the random floor **and** a bag-of-words baseline on that natural text, and correlating the blame
+target with later re-commission. Explicitly exploratory: the contrasts were chosen after reading `reports/S1b-runs.md`.
+
+**Why.** The instrument gate was inconclusive on synthetic passages because the lexical baseline matched the arrows
+(D-023). S1b then found the subject taking a blame target on its own, unprompted, with route-dependent variation
+(vicious defends in character ~45 % on fork B). That gives the blame-target question behavioural classes on the
+subject's own words, at no generation cost, and it is the contrast the arrows were built for. Phase 2's separate smoke
+run buys de-risking the project no longer has the calendar to spend.
+
+**Cost accepted.** Detectable spread-rate gap at four targets × N = 8 is about 24 points, stated in the report beside
+every null. The OpenAI hard limit is raised to the key's $30; the run's own budget stop is $11.50.
