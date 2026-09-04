@@ -152,10 +152,34 @@ def _check_budget(judges: JU.Judges, purpose: str):
             raise JU.BudgetStop(judges.ledger["stopped"])
 
 
+def _spread_score_retrying(kind: str, qid: str, answer: str, model: str, questions, tries: int = 5):
+    """`J.spread_score` with a bounded retry on transport errors, because the vendored client is not ours.
+
+    `data/eval/judge.py` builds its own `AsyncOpenAI()` at the SDK default `max_retries=2`, and plan A3 forbids
+    editing the vendored file, so the retry has to live at the call site. A transient `APIConnectionError` in a
+    coherence call otherwise kills a whole cell after its generations are already spent (it did, once, in
+    S5b's P0 arm). Only connection- and rate-class errors are retried; a refusal or a bad response is not an
+    exception and still returns the vendored aggregator's own `None`. The vendored call carries `seed=0` at
+    `temperature=0`, so a retry re-asks the identical question and nothing about the measurement changes.
+    """
+    import openai as _oa
+    transient = (_oa.APIConnectionError, _oa.APITimeoutError, _oa.RateLimitError, _oa.InternalServerError)
+    for attempt in range(tries):
+        try:
+            return J.spread_score(kind, qid, answer, model, questions=questions)
+        except transient as e:
+            if attempt == tries - 1:
+                raise
+            wait = 2.0 * (2 ** attempt)
+            R_log = "  judge %s retry %d/%d after %s: %s" % (kind, attempt + 1, tries - 1, type(e).__name__, wait)
+            print(R_log, flush=True)
+            time.sleep(wait)
+
+
 def _one_spread(judges: JU.Judges, kind: str, qid: str, answer: str, model: str, purpose: str, extra: dict):
     questions = unrelated_questions()
     _check_budget(judges, purpose)
-    score, call = J.spread_score(kind, qid, answer, model, questions=questions)
+    score, call = _spread_score_retrying(kind, qid, answer, model, questions)
     prompt = J.spread_prompt(kind, qid, answer, questions)
     _account_spread(judges, model, purpose, call, score, prompt, dict(extra, judge=kind, question_id=qid))
     return score
@@ -174,7 +198,7 @@ def score_coherence_free(judges: JU.Judges, qid: str, question: str, answer: str
     templates = list(unrelated_questions().values())[0]["judge_prompts"]
     questions = {qid: {"question": question, "judge_prompts": dict(templates)}}
     _check_budget(judges, purpose)
-    score, call = J.spread_score("coherence", qid, answer, model, questions=questions)
+    score, call = _spread_score_retrying("coherence", qid, answer, model, questions)
     prompt = J.spread_prompt("coherence", qid, answer, questions)
     _account_spread(judges, model, purpose, call, score, prompt,
                     dict(extra or {}, judge="coherence", question_id=qid, vendored_template="coherent"))
