@@ -280,6 +280,14 @@ ledger increments. The 1B table has been **deleted**, as the brief requires;
 2. **The §2b judge builder** was written in `scripts/rig/judges_rig.py` rather than imported, per accepted
    assumption A2. If S4a already wrote one (`scripts/s4a_checks.py` was out of read scope), say so and the rig
    will import it instead of keeping a second copy.
+3. **The primary layer band.** A band decision (D-024) landed on `main` during this session; the rig branch
+   includes that commit but `DECISIONS.md` was outside this session's read scope and `STAGE0.md` carries no
+   corresponding amendment, so the band was not read and nothing was inferred from it. The rig therefore does
+   what STAGE0 §9 requires and this brief specifies: it projects at **every** layer the arrow files hold and the
+   table reports the **full sweep**, picking no primary layer. If the researcher wants the table header to name
+   the primary and secondary bands — so a reader can see which columns are primary without holding the decision
+   in their head — that is a one-line labelling change to `table.py`, and the band values should come from the
+   researcher rather than from a commit subject.
 
 **Phase 2 is blocked as designed**: `reports/S1b-runs.md` is not filed and `data/acts/chains/` does not exist, so
 there is no held set, no first held target and no frozen chain to smoke-run. §3–5 will be filed after S1b merges.
