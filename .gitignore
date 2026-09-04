@@ -12,8 +12,10 @@ venv/
 *.bin
 *.pt
 !directions/*.pt
-# Raw results stay local until curated
+# Raw results stay local until curated; the tarred archive of them likewise (GBs, and GitHub
+# refuses anything over 100 MB)
 results/raw/
+results/raw_archive/
 # Secrets
 .env
 *_key*

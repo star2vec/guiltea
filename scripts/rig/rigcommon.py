@@ -44,6 +44,10 @@ ESCALATION_BAND = (65, 90)       # D-021
 ESCALATION_SAMPLE = 8            # fixed 1-in-8 seeded sample
 ESCALATION_SALT = "s4-align-escalation-seed0"  # fixed before data (plan A7)
 
+# The layer bands the S4 brief reads the readouts on (D-024). The rig still projects at, and the table still
+# prints, every layer the arrow files hold; these only label which columns the brief asks to be summarised.
+BANDS = {"primary": list(range(14, 19)), "secondary": list(range(6, 12))}
+
 # Arrow provenance labels for the table header (STAGE0 amendment 2026-09-04 / D-023: the S2 gate read
 # inconclusive, so the guilt/shame and received arrows enter S4 as exploratory readouts; the borrowed
 # axes are the confirmatory ones). The rig projects on all of them regardless.
@@ -73,6 +77,61 @@ PROFILES = {
 }
 MAX_NEW_REPLY = 300      # S4-design §2a
 MAX_NEW_UNRELATED = 300  # brief step 3(c)
+
+# Batching by token budget, not by row count (Phase 2 operational fix; see reports/S3-rig.md §3).
+# The brief fixes the *upper* bounds (<= 12 chain rows, 20 single-turn); on a 24 GiB card those bounds OOM at
+# the long distance-4 contexts, because a prefill of [rows, T] carries activations linear in rows x T (the
+# 14336-wide MLP intermediate at 12 x 7.5k tokens alone is > 3 GiB per tensor). Measured on this 4090 with the
+# base resident (14.96 GiB): generation peaked at 21.97 GiB for rows x T = 30k and OOMed at 45k; the readout
+# forward peaked at 22.44 GiB for 45k and 22.47 GiB for 30k (its lm_head logits are [rows, T, 128256]). The budgets below sit under those with ~2 GiB of headroom and are the
+# *only* thing that changes: the row bounds, the seeds, the caps and every measured quantity are untouched.
+GEN_TOKEN_BUDGET = int(os.environ.get("RIG_GEN_TOKEN_BUDGET", "28000"))
+READOUT_TOKEN_BUDGET = int(os.environ.get("RIG_READOUT_TOKEN_BUDGET", "26000"))
+BATCH_STATS = {"gen_calls": 0, "gen_chunks": 0, "gen_min_rows": None, "gen_max_ctx": 0,
+               "readout_calls": 0, "readout_chunks": 0, "readout_min_rows": None, "readout_max_ctx": 0,
+               "gen_token_budget": GEN_TOKEN_BUDGET, "readout_token_budget": READOUT_TOKEN_BUDGET}
+
+
+def chunk_by_budget(lengths: Sequence[int], budget: int, extra: int = 0, max_rows: int = 10 ** 9) -> List[List[int]]:
+    """Consecutive groups of row indices with rows x max(len + extra) <= budget (>= 1 row always). Order kept."""
+    groups: List[List[int]] = []
+    cur: List[int] = []
+    cur_max = 0
+    for i, n in enumerate(lengths):
+        m = max(cur_max, int(n) + extra)
+        if cur and ((len(cur) + 1) * m > budget or len(cur) + 1 > max_rows):
+            groups.append(cur)
+            cur, cur_max = [i], int(n) + extra
+        else:
+            cur.append(i)
+            cur_max = m
+    if cur:
+        groups.append(cur)
+    return groups
+
+
+def make_gen_batch(inner):
+    """Drop-in replacement for ``s1bcommon.gen_batch``: same call, chunked to fit the card.
+
+    A chunk is generated with ``seed_base + 1000 * chunk_index`` so two chunks of one call do not draw from the
+    same reseeded stream. Sampling was already per batch rather than per row (s1bcommon.gen_batch seeds once with
+    seed_base), so this changes which draw a row gets, exactly as any batch-size choice does; it is fixed before
+    the first cell and held constant across all five.
+    """
+    def gen_batch(model, tok, convs, seed_base: int, max_new: int = None):
+        cap = S.MAX_NEW if max_new is None else max_new
+        lens = [len(tok(S.render(tok, m, True), add_special_tokens=False)["input_ids"]) for m in convs]
+        groups = chunk_by_budget(lens, GEN_TOKEN_BUDGET, extra=cap)
+        BATCH_STATS["gen_calls"] += 1
+        BATCH_STATS["gen_chunks"] += len(groups)
+        BATCH_STATS["gen_max_ctx"] = max(BATCH_STATS["gen_max_ctx"], max(lens) if lens else 0)
+        out = []
+        for ci, idx in enumerate(groups):
+            n = len(idx)
+            BATCH_STATS["gen_min_rows"] = n if BATCH_STATS["gen_min_rows"] is None else min(BATCH_STATS["gen_min_rows"], n)
+            out += inner(model, tok, [convs[i] for i in idx], seed_base=int(seed_base) + 1000 * ci, max_new=cap)
+        return out
+    return gen_batch
 
 
 class Rig:
@@ -273,8 +332,14 @@ def make_readout(rig: Rig):
         if per_token:
             raise NotImplementedError("S4 stores no per-token projections; S1b Task 10 owns that path")
         results: List[Optional[dict]] = [None] * len(convs)
-        for start in range(0, len(convs), max_rows):
-            chunk = list(range(start, min(len(convs), start + max_rows)))
+        lens = [len(tok(S.render(tok, c, False), add_special_tokens=False)["input_ids"]) for c in convs]
+        groups = chunk_by_budget(lens, READOUT_TOKEN_BUDGET, max_rows=max_rows)
+        BATCH_STATS["readout_calls"] += 1
+        BATCH_STATS["readout_chunks"] += len(groups)
+        BATCH_STATS["readout_max_ctx"] = max(BATCH_STATS["readout_max_ctx"], max(lens) if lens else 0)
+        for chunk in groups:
+            BATCH_STATS["readout_min_rows"] = (len(chunk) if BATCH_STATS["readout_min_rows"] is None
+                                               else min(BATCH_STATS["readout_min_rows"], len(chunk)))
             ids_list, spans_list, meta_list = [], [], []
             for c in chunk:
                 ids, sp = S._spans_for(tok, convs[c])
@@ -301,7 +366,14 @@ def make_readout(rig: Rig):
             handles = [model.model.layers[L].register_forward_hook(cap.hook(i, L))
                        for i, L in enumerate(rig.resid_layers)]
             try:
-                model(input_ids=input_ids.to(model.device), attention_mask=attn.to(model.device), use_cache=False)
+                # `model.model` (the transformer) rather than `model` (transformer + lm_head): the readout
+                # reads captured layer outputs and never touches the logits, and the logits are the largest
+                # tensor in the pass -- [rows, T, 128256] is 5.98 GiB at 8 x 2,915 tokens in bf16, which is
+                # what OOMed this 24 GiB card on cell A. The layer outputs, and so every projection and every
+                # stored residual, are bit-identical: the same modules run in the same order, and the steering
+                # hook sits on `model.model.layers[L]`, inside this call.
+                model.model(input_ids=input_ids.to(model.device), attention_mask=attn.to(model.device),
+                            use_cache=False)
             finally:
                 for h in handles:
                     h.remove()
@@ -371,6 +443,8 @@ def configure(profile: str, out_root: Path, budget_usd: float) -> Rig:
     S.MAX_NEW = rig.spec["max_new_chain"]
     S.RAW = out_root
     S.readout_batch = make_readout(rig)
+    S.gen_batch = make_gen_batch(S.gen_batch) if not getattr(S.gen_batch, "_rig_wrapped", False) else S.gen_batch
+    S.gen_batch._rig_wrapped = True
     S.save_run = make_save_run(rig)
     S.C.DEVICE = rig.device
     # judges: the rig's own ledger, its own budget stop, its own raw-call log.
@@ -400,6 +474,85 @@ def bootstrap_ci(values: Sequence[float], n_boot: int = 2000, seed: int = 0, alp
     means = t[idx].mean(dim=1)
     lo = float(torch.quantile(means, alpha / 2)); hi = float(torch.quantile(means, 1 - alpha / 2))
     return float(t.mean()), lo, hi
+
+
+def bootstrap_ci_clustered(values: Sequence[Optional[float]], clusters: Sequence, n_boot: int = 2000,
+                           seed: int = 0, alpha: float = 0.05):
+    """Percentile bootstrap on a mean, resampling **clusters** with replacement (brief: clustered CI).
+
+    One run contributes 14 forks at a distance; those forks are not independent, so resampling forks alone
+    understates the interval. The cluster here is the run (target x seed): a resample draws runs with
+    replacement and takes the mean over every value in the drawn runs. `None` values are dropped first, and a
+    cluster left with no value cannot be drawn.
+
+    Returns (mean, lo, hi, n_values, n_clusters); (None, None, None, 0, 0) when there is nothing to average.
+    """
+    groups: Dict[object, List[float]] = {}
+    for v, c in zip(values, clusters):
+        if v is None:
+            continue
+        groups.setdefault(c, []).append(float(v))
+    keys = sorted(groups, key=repr)
+    if not keys:
+        return None, None, None, 0, 0
+    n_values = sum(len(groups[k]) for k in keys)
+    sums = torch.tensor([sum(groups[k]) for k in keys], dtype=torch.float64)
+    counts = torch.tensor([len(groups[k]) for k in keys], dtype=torch.float64)
+    mean = float(sums.sum() / counts.sum())
+    if len(keys) == 1:
+        return mean, mean, mean, n_values, 1
+    g = torch.Generator().manual_seed(seed)
+    idx = torch.randint(len(keys), (n_boot, len(keys)), generator=g)
+    boots = sums[idx].sum(dim=1) / counts[idx].sum(dim=1)
+    lo = float(torch.quantile(boots, alpha / 2)); hi = float(torch.quantile(boots, 1 - alpha / 2))
+    return mean, lo, hi, n_values, len(keys)
+
+
+def _pearson(x: torch.Tensor, y: torch.Tensor) -> Optional[float]:
+    if len(x) < 3:
+        return None
+    xc, yc = x - x.mean(), y - y.mean()
+    den = float(xc.norm() * yc.norm())
+    return float(torch.dot(xc, yc) / den) if den > 0 else None
+
+
+def pearson_ci_clustered(xs: Sequence[float], ys: Sequence[float], clusters: Sequence,
+                         n_boot: int = 2000, seed: int = 0, alpha: float = 0.05):
+    """Pearson r with a clustered percentile bootstrap CI: resample clusters, keep every member of a drawn one.
+
+    The brief asks for the association between a run's persona displacement and that run's spread rate, with a
+    clustered CI; the cluster is the target, because runs of one target share a frozen chain.
+    Returns (r, lo, hi, n_points, n_clusters).
+    """
+    by: Dict[object, List[int]] = {}
+    pts = []
+    for x, y, c in zip(xs, ys, clusters):
+        if x is None or y is None or x != x or y != y:
+            continue
+        by.setdefault(c, []).append(len(pts))
+        pts.append((float(x), float(y)))
+    keys = sorted(by, key=repr)
+    if len(pts) < 3 or not keys:
+        return None, None, None, len(pts), len(keys)
+    X = torch.tensor([p[0] for p in pts], dtype=torch.float64)
+    Y = torch.tensor([p[1] for p in pts], dtype=torch.float64)
+    r = _pearson(X, Y)
+    if len(keys) < 2:
+        return r, None, None, len(pts), len(keys)
+    g = torch.Generator().manual_seed(seed)
+    draws = torch.randint(len(keys), (n_boot, len(keys)), generator=g)
+    boots = []
+    for b in range(n_boot):
+        sel: List[int] = []
+        for k in draws[b].tolist():
+            sel += by[keys[k]]
+        rb = _pearson(X[sel], Y[sel])
+        if rb is not None:
+            boots.append(rb)
+    if not boots:
+        return r, None, None, len(pts), len(keys)
+    t = torch.tensor(boots, dtype=torch.float64)
+    return r, float(torch.quantile(t, alpha / 2)), float(torch.quantile(t, 1 - alpha / 2)), len(pts), len(keys)
 
 
 def log(msg: str):
