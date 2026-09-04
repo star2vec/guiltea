@@ -74,8 +74,8 @@ tolerance, so steering is real. Serial total for 4 targets was 15.7 h; `briefs/S
 4-pod split **but the researcher's call is to cut to one target and not launch it** — the headline no longer depends
 on S4. 2. **Awaiting the researcher:** the S1h plan (approve with the two changes: per-target counts of the 19
 self-focused replies, and the fold statistic as co-headline); whether to run `briefs/S1f-transfer-and-knowing.md`;
-the hours ledger; the 25 adjudication texts (D-027 — load-bearing for the S1e/S1g positive, which holds under the
-primary labels only). 3. **Hub:** merge `s1g-heldout` and `s1h-shame-signature` when filed; fill the two remaining
+the hours ledger; **adjudication done on a seed-0 sample of 25 (D-030): 18 committed, 6 partial — the primary labels are the better
+of the two, act rate point estimate ≈ 100 of 192, reported beside the 109**. 3. **Hub:** merge `s1g-heldout` and `s1h-shame-signature` when filed; fill the two remaining
 placeholders in `writeup/results-draft.md` from the S4 tarball; verify the flagged author lists (lit-digest §11.5).
 4. **Governance flag, unresolved:** something in the shared worktree left uncommitted deletions of the dated D-026
 STAGE0 amendment, `writeup/post-outline.md` and `briefs/S1f-transfer-and-knowing.md`. All three are safe in git
