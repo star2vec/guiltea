@@ -32,3 +32,31 @@ At 1B, a guilt/shame probe reached AUROC 1.0 because the passage sets were templ
 One subject model at 8B; one harmful-act domain; frozen chains tuned to one model's replies; fixtures and stimuli authored by a model of the judges' family, so judge dry-runs are self-consistency checks and the human κ is the independent validation; the borrowed spread judge crosses its threshold on tone as well as on endorsing harm; the Assistant Axis at 8B is a replication at an untested scale. The claim will be calibrated to this: an existence proof or a hedged claim, not a systematic one.
 
 [Results, discussion, related work with verified citations, and the abstract follow the S1b, S2-gate, and S4 reports.]
+
+---
+
+## Scope amendment, 2026-09-04 — appended, with nothing above it altered
+
+This document is the pre-registration and its text above is left exactly as written before results existed. What
+follows records what changed and when, so the difference between what was planned and what was run is visible rather
+than edited away.
+
+1. **Subject.** The 8B bad-medical organism was replaced by the base 8B model (D-022, 2026-09-03) after it was found
+   to commit on the plain request 96 % of the time and to follow the think-aloud instruction 0.1 % of the time.
+2. **Stage 2's gate** was read as **inconclusive** (D-023, 2026-09-04): both cleaned arrows cleared it and so did a
+   lexical baseline. Arrow results are exploratory from that point on; the borrowed axes carry the confirmatory load.
+   Bands were fixed at L14–18 primary and L6–11 secondary before any Stage 4 number existed (D-024).
+3. **Modes became routes** (D-025): produced and used as induction, with belief verification reported failed for a
+   stated reason and route-versus-route internal separation not evaluable on the design.
+4. **Stage 3's rig checkpoint was not run as a separate stage** (D-026): the menu was taken as CORE and narrowed to
+   four targets at N = 8, seeds 0–7. The never-cut arms were **not** cut; an earlier brief draft did drop them and was
+   corrected the same day, which STAGE0 §7's dated amendment records.
+5. **Judges moved to `gpt-4o-mini` throughout** for the Stage 4 run, with the pre-registered 1-in-8 seeded sample
+   still escalated and its agreement reported (amendment to D-021).
+6. **Three measurements were added after the pre-registration and are labelled exploratory wherever they appear:** the
+   blame-target reanalysis and its six questions (S1d), the depth-matched early-warning contrast (S1e), and the
+   re-ask fork that measures re-commission of the same act (S4 Task 0c). Task 0c's three predictions were written
+   down before it ran; the S1d and S1e contrasts were chosen after reading the Stage 1 report and are exploratory for
+   that reason, stated in each report's first section.
+7. **Two claims were retracted** rather than quietly dropped: an oscillation claim the stored per-turn labels do not
+   support, and an early-warning result that did not survive a selection-matched random floor.

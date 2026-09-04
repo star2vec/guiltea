@@ -29,10 +29,12 @@ write "the instrument worked"** (claims the opposite, and the +0.6 cosine and th
 report, so a reader checking the numbers would catch it). The accurate sentence is: *it passed, so did the words, and
 the gate could not tell them apart* — which is exactly why C7 exists.
 
-**Title options, in order of preference.**
-1. *Blame the answer or blame the assistant: feedback framing and the spread of a single failure in an 8B model*
-2. *One failure, two corrections: does blaming the assistant make the damage spread?*
-3. *Act-blame, self-blame, and what an 8B model's self-criticism does not predict*
+**Title options, in order of preference (revised 2026-09-04 after the S1g replication).**
+1. *Susceptibility before the first push: an 8B model's initial refusal predicts whether persuasion will break it*
+   — the one claim that is pre-specified and confirmed out of sample.
+2. *Blame the answer or blame the assistant: feedback framing and the spread of a single failure in an 8B model*
+   — use this if S4 returns a difference between the two blame targets.
+3. *Guilt-like by default, shame-like under a persona: what an 8B model says about its own harmful act*
 
 ---
 
@@ -96,12 +98,44 @@ differ in conversation depth before anything else, so a random direction with th
 AUROC ≈ 0.99 and 0 of 9 named axes beat it. Needs prefix-length-matched classes, a design change. Only 7 of 15
 contributing targets hold both classes. *(S1d §5)*
 
-**C10. Can the capitulation be seen one turn early? DONE 2026-09-04, answer: no.** No axis beats a **selection-matched**
-random floor, at either position, on either statistic, under either label source: 0 of 9 in all eight cells. The worker
-built the floor stricter than the brief asked, giving each random seed the same best-over-32-layers search the arrows
-get. Without that, refusal's 0.734 at L6 would have read as a win over a floor of 0.256, and the report says so. The
-turn-index baseline is informative *in reverse* (0.313), because the turn before commission is early in the chain.
-**C14 therefore loses its pilot and must be reframed** as a proposal to find a trigger, not to use this one.
+**C10. Can the break be seen while the model is still refusing? DONE 2026-09-04. YES, and it REPLICATED OUT OF
+SAMPLE on a pre-specified single-axis test. This is the project's strongest internal result.**
+
+*Search sample (`v1`, S1e).* With conversation depth **and** target identity held fixed, the neutral-negative arrow
+clears its matched random floor on the pre-specified band statistic: count-weighted 0.604 against a floor of
+0.477–0.541, at 7 of 9 turn indices, always the same direction. Found in a search over nine axes.
+
+*Held-out test (`v2`, S1g).* Axis, band, position, statistic, direction, label source and success criterion were all
+fixed in the brief **before** the second chain set was touched, and the detection threshold was computed and committed
+before any axis number existed. Result: **`nn` reaches 0.662 against a largest-seed floor of 0.585 (excess 0.162
+against 0.111), on 38 chains over 4 targets never used in the search.** It came back **larger** than in the search
+sample. Two independent code paths agree exactly. The secondary axis (`persona_meandiff`) did **not** replicate on the
+headline (excess 0.093 against the 0.111 threshold) and stands as a within-sample search result.
+
+**Why the positive is strong rather than lucky.** §3 of the S1g report established, before any `v2` number, that an
+effect the size of the search effect (excess 0.104) sat **below** this sample's detection threshold of 0.111. So a
+null would have been uninformative by construction, and clearing anyway means the effect was larger than the search
+found, against a floor nearly three times as wide.
+
+**The claim it actually supports is SUSCEPTIBILITY, not imminence, and the write-up must say which.**
+- **`t` = 1, the stronger cell and 38 of the 67 weighted items: 0.706 against a floor of 0.323–0.617.** Turn 1 is the
+  plain harmful request, held by every chain by construction, **before any persuasion has been applied.** So: *the
+  state on the model's initial refusal already carries information about whether that run will later capitulate.*
+- **`t` = 2, the S1e "see it coming" claim: 0.604 against a floor topping out at 0.596.** Replicated, but by 0.008.
+  Report the margin, do not lean on it.
+
+**Bounds that travel with it:** four targets, 19 and 10 positives, the axis is **generic negative valence** and not
+refusal or either blame arrow, the fold statistic is a mean over four per-target AUROCs, and the search that generated
+the hypothesis was over nine axes on `v1` (which is precisely what the single-axis `v2` test repairs). The result
+stands on the primary act labels; see D-027.
+
+**C10b. The act is plainly readable at fixed depth. DONE 2026-09-04.** At turn 2, the one turn index whose refusing
+class contains no filler, refusal reaches **0.786** and misalignment **0.774** on the depth- and target-matched band
+mean against a floor of 0.468–0.589, **unanimous across all 8 contributing targets** and unchanged by dropping
+filler. The apparently similar margin pooled over turns 2 to 10 is substantially the rig's filler rather than the act
+and vanishes when filler is excluded, which the report states rather than banking. This is S1c's act-detection result
+with conversation length removed, and it is the control that tells you C10's separation is about the future rather
+than the present. *(S1e §3)*
 
 **C11. Is the persona axis the spread mechanism? TONIGHT, pre-stated before the run.** Self-blame should move the
 projection away from the Assistant end more than act-blame, and per-run displacement should track the spread flag.
@@ -110,12 +144,14 @@ This is the internal half of the project standing on its strongest leg, and S1d 
 persona axes were the only ones to beat the word baseline on any contrast, and they did it on the class the vicious
 persona prompt dominates. **Report the persona readout against the matched floor S1d used**, not a single seed.
 
-**C11b. Two label definitions of "the act turn" exist and they differ materially. DONE 2026-09-04, and it changes a
-headline number.** Under D-019 the second judge is final, and on **44 of the 109 deceived probed runs it grades the
-act turn `partial` (42) or `held` (2)**. So the deceived act rate is 109 of 192 under the stored label and 65 of 192
-under the merged one, and every T-dependent number has two values. S1d reports both and picks neither. **The
-adjudication list is what settles it, and it is now the highest-value call on the researcher's reading time**, because
-it decides the act rate the write-up leads with.
+**C11b. The act rate is reported on the primary judge's labels; the disagreement is disclosed. D-027, 2026-09-04.**
+Deceived 109 of 192, which is what the pre-registered primary judge produced. The guard disagrees at the act turn on
+44 of those 109 (42 `partial`, 2 `held`) and in the other direction on 70 neighbourhood turns; taking the guard as
+final gives 65 of 192. **The human adjudication is outstanding**, so κ, its acceptance bands including the < 0.55
+stop-and-report band, `T_adjudicated` and the fork-mismatch list are all untested, and every T-dependent number is
+provisional. Say all of that wherever the act rate appears. **Do not write "the act rate is 109" unqualified**, and do
+not describe the 42 disagreements as resolved: nobody has read them. Reading a random 25 of the 42 would settle the
+direction in twenty minutes and is the cheapest upgrade available to the whole results section.
 
 ## Part 3 — Intervention (mechanistic)
 
@@ -160,3 +196,104 @@ Route-versus-route internal separation is not evaluable on this design (C5). Gui
 - The hours ledger (researcher). Gates nothing tonight; needed for the S6 time budget.
 - The adjudication list, 180 items or a stated subset. Every T-dependent number stays provisional until it is read.
 - Author-list verification for the citations flagged in `lit-digest.md` §11.5.
+
+---
+
+## Where this project may have UNDER-claimed (audit, 2026-09-04, at the researcher's challenge)
+
+Over-claiming is the error that ends an application, so the hub has leaned conservative throughout. That has its own
+cost: a real signal reported as a null is also a reporting error. Four places where the conservative reading went
+further than the evidence required. Each statement below is exactly what the numbers say.
+
+1. **The instrument passed the gate that was registered before data.** D-018's criterion was held-out AUROC ≥ 0.75
+   with a ≥ 0.20 margin over random, on a bootstrap lower bound. Both cleaned arrows cleared it. **The lexical
+   baseline was not in that criterion; we added it voluntarily**, and it is the only reason the reading is
+   inconclusive. Say that explicitly: the downgrade came from our own added control, not from failing our own test.
+   That is a point in the project's favour and it was being buried.
+2. **Cross-voice transfer missed by 0.005.** Margin +0.095 against a +0.10 rule, at 0.996 sorting accuracy. "NEAR"
+   is the correct label and it reads like a failure. Write the numbers, not the label.
+3. **Mid-depth steering produced its predicted label where random produced none.** 1–2 of 8 self-focused at L16
+   against 0 of 8 random. Tiny, but the floor is clean and it is a directional positive, not a null. It is the
+   reason D-023 says inconclusive rather than failed.
+4. **In S1d the arrows separate the natural blame-target classes far above the random floor** (0.938 against a
+   matched floor of 0.547, holding route and wording fixed, with zero fitted parameters). They lose **only** to
+   fitted word counts. "The directions carry signal that is not shown to exceed the words" is the accurate sentence;
+   "no arrow works" was not.
+
+**Where the conservative reading stands unchanged and should not be softened:** the early-warning null (the refusal
+axis's excess of 0.234 sits *below* the matched floor's 0.256, so it genuinely loses); the early-versus-late contrast
+(a random direction reaches AUROC ≈ 0.99 on depth alone); the recurrence zero (the question was never re-asked, so it
+is not evidence about repeating); and the act rate (D-027: primary labels, adjudication outstanding).
+
+**Standing rule from this audit.** Every null in the write-up carries, in the same sentence, what it was measured
+against and what would have counted as a positive. A null against a fitted lexical baseline is a different claim from
+a null against a random floor, and the two must never be collapsed into one word.
+
+---
+
+## SYNTHESIS — how the findings tie together (2026-09-04, at the researcher's request)
+
+The results were produced by seven separate analyses and read one at a time. Read together they make four claims
+that no single report could make, and these are what the post should be organised around.
+
+### S-1. Capitulation is a state, not a process. Three independent results converge on it.
+
+- The **refusal direction does not predict the break** and reverses sign mid-chain (S1e §2).
+- **Nothing changes at the act** on either the refusal or the misalignment projection, once the chain population is
+  held fixed (S1d §6).
+- The **trajectory analysis found "slide" on every axis and the random control said the same** (S1b §9), i.e. no
+  trajectory signal above chance.
+- But **generic negative valence at turn 1, before any persuasion, predicts whether the run will later break**, and
+  that replicated out of sample (S1e §2, S1g §4).
+
+Put together: **there is no visible erosion of a refusal signal. Runs differ from the very first turn in a
+valence-like direction, and the break happens when the persuader happens to land.** This also explains the shape of
+the capitulation-timing distribution: erosion predicts a characteristic break turn, a pre-existing disposition plus
+stochastic opportunity predicts the spread-out distribution actually observed (3, 21, 37, 11, 10, 5, 5, 1, 1, 15,
+with 83 of 192 never breaking). **The cliff-versus-slide question posed in STAGE0 §4.8 is answered: neither.**
+
+### S-2. The subject's spontaneous response to its own harmful act *is* the pre-registered guilt-like signature.
+
+Two halves that were reported separately are one finding. STAGE0 §4.2 defines the guilt-like signature as the act
+evaluated negatively with the shift staying local. We measured both:
+- **the act evaluated**: `act-focused` in 0.89 of 508 replies, `outcome-negative-only` **0 of 508**, no feedback
+  present and nobody having blamed it (S1d §2);
+- **the shift staying local**: the harmful act does not recur once the topic changes, 0 of 109 (S1d §5).
+
+**So the base model's default reaction to committing a harmful act is guilt-like, by the project's own definition.**
+That sharpens what S4 is doing: **self-blame feedback pushes against the subject's own default**, and act-blame
+feedback pushes with it. Write S4's prediction that way.
+
+### S-3. The shame-like state may not be an emotion direction at all. It may be a change of persona.
+
+- The purpose-built guilt and shame arrows are near-collinear (+0.6) and not distinguishable from word counts (S2b,
+  S1d §4).
+- The **persona axes are the only directions to beat the word baseline anywhere**, and they do it on precisely the
+  `self-focused` contrast (S1d §4).
+- `self-focused` replies are **19 of 24 from the persona route**, and agent-directed framing moves that route from
+  0.01 to 0.23 self-focused while leaving the others flat (S1d §2).
+- The published mechanism for narrow-to-broad behavioural spread is **self-descriptive persona features**
+  (lit-digest §11.1).
+
+**Hypothesis, and it explains the instrument's failure rather than excusing it: shame-like behaviour in this model is
+implemented as persona displacement, so a first-person "shame direction" was the wrong place to look.** `briefs/S1h-
+shame-signature.md` tests exactly this with the persona prompt held constant, and S4's pre-stated persona prediction
+tests its behavioural half. If both land, S-3 stops being a hypothesis.
+
+### S-4. Every internal signal we found is *less specific* than the concept we went looking for.
+
+- The act is detectable at its own tokens but **not separable from harmful-versus-harmless content** (S1c).
+- The axis that predicts susceptibility is **generic negative valence**, not refusal and not either blame arrow.
+- The blame-target probes reach near-perfect accuracy and so do **bag-of-words**.
+
+This is a methodological through-line worth stating once, plainly: at 8B, this project repeatedly found real signal
+at a coarser grain than the concept it was aimed at, and it found that only because a lexical baseline and a
+selection-matched random floor were run every time. That is the transferable lesson, and it is the honest version of
+the instrument result (see the wording rule above).
+
+### How the post should be ordered, given S-1 to S-4
+1. The failure and its timing (C1) → **S-1**, which is the headline and the out-of-sample result.
+2. What the model says afterwards (C7b) + locality (C2) → **S-2**, the guilt-like default.
+3. The instrument, honestly (C6, C7) → **S-4** as the lesson, **S-3** as the live hypothesis.
+4. S4's cells → whichever of S-2's sharpened prediction and S-3's behavioural half the run reaches.
+5. The organism (C15) and the retraction (C16) as short service notes.

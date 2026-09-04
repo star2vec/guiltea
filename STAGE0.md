@@ -75,6 +75,14 @@ Triggers — no in-the-moment judgment:
 - **Time** (at the rig checkpoint, when the one-button run works and per-cell laptop cost is known): pick the largest menu option fitting remaining hours **with a 25% reserve held back** — FULL (all surviving modes × 5 feedbacks), MEDIUM (drop vicious), CORE (deceived only × 5 feedbacks).
 - **Mid-run tripwire** (halfway through Stage 4's cells): if more than half the allotted hours are gone, finish CORE cells first, extras after.
 
+**Amendment, 2026-09-04 (researcher; D-026).** For the 2026-09-05 write-up deadline the rig checkpoint is not run as a
+separate stage and the menu is taken as **CORE**, narrowed further on **targets**: four of the sixteen run-set targets,
+N = 8, seeds 0–7. The narrowing is on targets and seeds only. **The never-cut set above is not touched**: all five
+feedback arms (act-blame, self-blame, neutral-correction, neutral-reflection, none) run on the deceived route, and the
+two steering cells are the extras the tripwire would drop first. An earlier draft of `briefs/S4-experiment.md` did drop
+the three control arms; that was a hub error, corrected the same day, and it is recorded here so the rule's authority
+over a brief is unambiguous. The mid-run tripwire stands and fires after target 2 of 4.
+
 ## 8. Borrowed vs ours
 
 **Borrowed (standard, citable, no researcher degrees of freedom):**

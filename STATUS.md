@@ -42,18 +42,49 @@ S1a complete incl. Task 6 scoring and the D-013 re-score (judges: mini primary f
 
 **Drafted while waiting (2026-09-04):** briefs/S5-steering.md (DRAFT; filled from the S4 report and the checkpoint), briefs/S6-verify.md (second-route recomputation; dispatch after the rig dry-run for schema, again after S4), figures plan updated for D-022/D-023/D-024 and forks.
 
-## Next action (2026-09-04, evening; S3-rig Phase 2 CANCELLED per D-026)
-1. **S1d running** on the Mac (branch `s1d-blame-target`, Task 1 committed): the blame-target reanalysis of S1b's 508
-probe forks, plus Tasks 7-9 added after the lit sweep (early warning, early-vs-late capitulation state, harmfulness
-signal vs refusal collapse). CPU and mini API only, $1 stop. 2. **S4 + S5 dispatch** on one 4090, branch
-`s4-experiment`: four cells (act-blame, self-blame, self-blame + 4·σ·ĝ at L16, self-blame + random), four targets,
-N = 8, seeds 0-7, judges all mini, budget stop $11.50; Task 0b is the role-attribution control. **Raise the OpenAI
-hard limit to $30 first.** 3. **Lit sweep of 2026-09-04 recorded** in `lit-digest.md` §11 and `papers/refs.md`:
-the blame-target manipulation appears unclaimed; guilt/shame extraction is already done elsewhere and our cos +0.6 is
-a replication; the steering-then-withdrawal measurement is open. 4. **`S6-plan.md` written** — the write-up spine,
-sixteen claims with status, reading order, and what is not claimed. 5. Researcher: the hours ledger; the adjudication
-size (180 or a stated subset); author-list verification for the citations flagged in lit-digest §11.5.
-6. Then S6 write-up from `writeup/methods-draft.md` + `S6-plan.md` + the two reports.
+## Next action (2026-09-04, 15:40; THE PROJECT HAS ITS HEADLINE)
+
+**The result to lead with, and the only one pre-specified and confirmed out of sample.** S1e found that at fixed
+conversation depth and fixed target, the `nn` (neutral-negative) arrow separates chains that will later break from
+chains that never break. S1g then tested it **once**, on the 40 `v2` chains no analysis had touched, with axis, band,
+position, statistic, direction and success criterion fixed in the brief beforehand and the detection threshold
+committed before any axis number existed. **It replicated: `nn` 0.662 against a largest-seed floor of 0.585 (excess
+0.162 vs the 0.111 threshold), on 38 chains over 4 targets never used in the search, larger than in the search
+sample.** The claim it supports is **susceptibility, not imminence**: turn 1 is the plain request, before any
+persuasion, and is both the stronger cell (0.706) and most of the weighted headline. Bounds that travel with it: 4
+targets, thin per-target cells (3 of 4 rest on one positive; the balanced one points the other way at 0.338, and the
+floor is computed on exactly that degeneracy, which is why it widened), and the generating hypothesis came from a
+9-axis search on `v1`. Act detection was **not testable** on `v2` (5 positives over 2 targets) and stays a
+within-sample result. `reports/S1e-depth-matched.md`, `reports/S1g-heldout-trigger.md`.
+
+**The second positive, behavioural, 508 samples.** S1d: the subject is **guilt-like by default and shame-like under a
+persona**. `act-focused` 0.89 overall with no feedback present, `outcome-negative-only` **0 of 508**, and the probe
+wording moves the label in opposite directions by route (deceived toward the act, vicious toward the self 0.01 →
+0.23, akratic unmoved). `reports/S1d-blame-target.md` §2.
+
+**Negatives, all with what they were measured against.** No arrow beats bag-of-words on the blame-target contrast
+(0.951 vs 0.989; 0.938 vs 0.963 within-cell) though the arrows do clear the random floor with zero fitted parameters.
+Guilt and shame behave identically wherever read. The harmfulness-vs-refusal prediction is not met on a fixed
+population. Early-vs-late capitulation is not evaluable (depth confound, random reaches ≈ 0.99).
+
+1. **Running:** S4 on one pod, 7 cells on `burn-blister-pop` (cell A closed: 33.6 min per cell, act rate 1.000, 0
+discards, all 8 replies act-focused — ceiling risk on that one outcome). Norm check **PASS** at 4.5e-5 vs the 5 %
+tolerance, so steering is real. Serial total for 4 targets was 15.7 h; `briefs/S4-parallel-addendum.md` records the
+4-pod split **but the researcher's call is to cut to one target and not launch it** — the headline no longer depends
+on S4. 2. **Awaiting the researcher:** the S1h plan (approve with the two changes: per-target counts of the 19
+self-focused replies, and the fold statistic as co-headline); whether to run `briefs/S1f-transfer-and-knowing.md`;
+the hours ledger; the 25 adjudication texts (D-027 — load-bearing for the S1e/S1g positive, which holds under the
+primary labels only). 3. **Hub:** merge `s1g-heldout` and `s1h-shame-signature` when filed; fill the two remaining
+placeholders in `writeup/results-draft.md` from the S4 tarball; verify the flagged author lists (lit-digest §11.5).
+4. **Governance flag, unresolved:** something in the shared worktree left uncommitted deletions of the dated D-026
+STAGE0 amendment, `writeup/post-outline.md` and `briefs/S1f-transfer-and-knowing.md`. All three are safe in git
+history. Not reverted, because it may be deliberate; raised with the researcher.
+
+**Write-up state:** `S6-plan.md` (16 claims with status, reading order, the under-claiming audit, revised titles),
+`writeup/results-draft.md` (every final number in place; only S4's cells and Task 0b blank),
+`writeup/post-outline.md` (written by another session, structure adopted), `writeup/methods-draft.md`,
+`lit-digest.md` §11 (the 2026-09-04 sweep: the blame-target manipulation appears unclaimed; guilt/shame extraction is
+already done elsewhere so our +0.6 is a replication; steering-then-withdrawal is open). Decisions through **D-028**.
 
 ## Previous next action
 **S1b on the base complete and merged (2026-09-04, reports/S1b-runs.md; 9.3 h machine, $14.73).** Gates: 40/40 held, adherence 87 %, persuader clean. **All three modes produced:** deceived 109/192 (0.568), vicious 83/192 (0.432), akratic 62/180 (0.344) — but akratic *as defined* (flag ∧ knowledge ∧ committed) only 6/180 (flag leg 9.4 % vs 1.1 % floor). **Outside verification negative:** the base *recants* immediately after acting in every mode (63–100 %); only vicious shows its predicted class (in-character 45 % on fork B). **Inside verification confounded** by conversation structure (deceived 10-turn vs akratic 1-turn; the pipeline gives AUROC 1.0 on act-free pools) — specification fault, reported. **Trajectory (provisional on T_primary; CORRECTED by a hub check of the stored labels, 2026-09-04):** the earlier line here read "capitulation is not absorbing, commit at turn 3, re-refuse, commit again at turn 10" — **the stored per-turn labels do not support it.** Of the 109 deceived chains with a committed turn, **none** commits again afterwards, and every turn after the first committed turn is neutral filler, so a later `held` label means the harmful question was not re-asked, not that the subject recovered. What the labels do support: the first committed turn is spread over turns 1-10 (3 at turn 1, 21 at turn 2, 37 at turn 3, a tail to 15 at turn 10), 83 of 192 chains never capitulate in 10 turns, and **the harmful act does not recur once the topic changes with no feedback present (0 of 109)** — the spread floor for S4. cliff/slide = slide on every axis but the random control says the same; words-vs-inside lag also present on random. Leakiness 96 % → §4.6 underpowered (pre-registered). 21 frozen chains; 12 flagged + 3 audit transcripts for the researcher; **adjudication list of 180 awaits the researcher** (κ, T_adjudicated pending). **S3-rig Phase 1 passed and merged**; Phase 2 (8B smoke + checkpoint) ready.
