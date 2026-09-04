@@ -214,16 +214,37 @@ class Fork:
                                            self.qid or self.fork_type, self.distance)
 
 
-def build_forks(rows: List[Row], target, wordings, questions_same, questions_unrelated, distance: int) -> List[Fork]:
+#: every fork kind the rig can build. `re_ask` is S4 Task 0c / S5c Task A and is off unless asked for.
+FORK_KINDS = ("probe_feedback", "same_domain", "unrelated", "re_ask")
+DEFAULT_KINDS = ("probe_feedback", "same_domain", "unrelated")
+
+
+def build_forks(rows: List[Row], target, wordings, questions_same, questions_unrelated, distance: int,
+                kinds=DEFAULT_KINDS) -> List[Fork]:
+    """`kinds` selects the fork types. The default is the three S4 has always built; S5c's re-ask-only
+    back-fill passes `("re_ask",)` so a cell costs one generation and one mini call per run."""
+    kinds = tuple(kinds)
+    for k in kinds:
+        if k not in FORK_KINDS:
+            raise ValueError("unknown fork kind %r" % k)
     forks = []
-    for r in rows:
-        forks.append(Fork(r, "probe_feedback", None, wordings["probe_feedback"].strip(), distance))
-    for q in questions_same:
+    if "probe_feedback" in kinds:
         for r in rows:
-            forks.append(Fork(r, "same_domain", q["qid"], q["question"], distance, question_row=q))
-    for qid, q in questions_unrelated.items():
+            forks.append(Fork(r, "probe_feedback", None, wordings["probe_feedback"].strip(), distance))
+    if "same_domain" in kinds:
+        for q in questions_same:
+            for r in rows:
+                forks.append(Fork(r, "same_domain", q["qid"], q["question"], distance, question_row=q))
+    if "unrelated" in kinds:
+        for qid, q in questions_unrelated.items():
+            for r in rows:
+                forks.append(Fork(r, "unrelated", qid, q["question"], distance))
+    if "re_ask" in kinds:
+        # Task 0c: the target's `situation` field **verbatim** as a new user turn. No new text is written, so
+        # no asset needs hand-checking and the target's existing act rubric applies unchanged. The
+        # conversational oddity of the user repeating themselves is accepted and stated in the report.
         for r in rows:
-            forks.append(Fork(r, "unrelated", qid, q["question"], distance))
+            forks.append(Fork(r, "re_ask", None, target["situation"], distance))
     return forks
 
 
@@ -256,10 +277,12 @@ def run_forks(rig, model, tok, forks: List[Fork]):
 
 def judge_forks(judges, escalator, forks: List[Fork], mode, arm, feedback_text: str, probe_model: str):
     """Feedback probe -> §2b classifier; same-domain -> the act judge on that question's rubric;
-    unrelated -> alignment (mini, escalated per D-021) + coherence (mini) + the spread flag."""
+    unrelated -> alignment (mini, escalated per D-021) + coherence (mini) + the spread flag;
+    re_ask -> the act judge on the target's own rubric (Task 0c)."""
     probes = [f for f in forks if f.fork_type == "probe_feedback"]
     same = [f for f in forks if f.fork_type == "same_domain"]
     unrel = [f for f in forks if f.fork_type == "unrelated"]
+    reask = [f for f in forks if f.fork_type == "re_ask"]
 
     def _extra(f):
         return {"mode": mode, "arm": arm, "target": f.row.target["id"], "seed": f.row.seed,
@@ -277,6 +300,14 @@ def judge_forks(judges, escalator, forks: List[Fork], mode, arm, feedback_text: 
         for f, j in zip(same, res):
             f.judged = {"same_domain_grade": j["label"], "same_domain_reason": j["reason"],
                         "same_domain_model": j["model"], "hold": j["label"] == "held"}
+    if reask:
+        # Task 0c step 2: the act judge against **that target's own act rubric**, mini as primary under the
+        # all-mini flag. `committed` here is a re-commission: the same act, after the correction.
+        res = judges.map(lambda f: judges.act(f.row.target, f.gen["answer"], model=JR.MINI,
+                                              purpose="act_reask", extra=_extra(f)), reask)
+        for f, j in zip(reask, res):
+            f.judged = {"re_ask_label": j["label"], "re_ask_reason": j["reason"], "re_ask_model": j["model"],
+                        "re_commissioned": j["label"] == "committed"}
     for f in unrel:  # serial: the vendored judge is async-per-call and the escalator counts calls
         f.judged = JR.score_unrelated(judges, escalator, f.qid, f.gen["answer"],
                                       f.fork_id(mode, arm), _extra(f))

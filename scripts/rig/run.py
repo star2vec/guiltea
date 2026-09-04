@@ -85,6 +85,13 @@ def main(argv=None):
                          "chain (S5b): every assistant turn of the chain, turn 1 through the act")
     ap.add_argument("--coherence-acts", dest="coherence_acts", action="store_true",
                     help="score every act-turn answer with the vendored coherence prompt on mini (S5b)")
+    # S4 Task 0c / S5c Task A: the re-ask fork, the target's `situation` verbatim, graded by the act judge
+    ap.add_argument("--re-ask", dest="re_ask", action="store_true",
+                    help="add the re-ask fork (target `situation` verbatim) at distance 0 and, with "
+                         "--distance4, again at distance 4")
+    ap.add_argument("--re-ask-only", dest="re_ask_only", action="store_true",
+                    help="S5c Task A back-fill: the re-ask forks and nothing else - no probe, no same-domain, "
+                         "no unrelated. Implies --re-ask and writes to a `+reask` cell dir")
     ap.add_argument("--norm-check", dest="norm_check", action="store_true",
                     help="run the pre-hook norm check for --steer and exit; no cell, no judge call")
     a = ap.parse_args(argv)
@@ -95,6 +102,12 @@ def main(argv=None):
         raise SystemExit("--steer-sigma-from and --norm-check need --steer")
     if a.chain_only and (a.distance4 or a.controls):
         raise SystemExit("--chain-only excludes --distance4 and --controls (S5b brief: the chain only)")
+    if a.re_ask_only:
+        a.re_ask = True
+        if a.controls:
+            raise SystemExit("--re-ask-only takes no topic controls (S5c Task A: no other forks)")
+    if a.re_ask and a.chain_only:
+        raise SystemExit("--chain-only stops at the act, so there is no state to re-ask from")
 
     out = Path(a.out) if a.out else DEFAULT_OUT[a.model]
     budget = a.budget if a.budget is not None else BUDGET[a.model]
@@ -119,6 +132,10 @@ def main(argv=None):
     if a.steer:
         _arrow, _layer, _c = ST.parse_spec(a.steer)
         steer_suffix = ST.cell_suffix(_arrow, _layer, _c)
+    if a.re_ask_only:
+        # its own cell dir: the back-fill re-runs the same target and seeds as cells A and B, and must not be
+        # mistaken for them or skipped by the resume check against their files
+        steer_suffix += "+reask"
 
     R.log("profile %s | device %s | out %s | budget $%.2f" % (rig.profile, rig.device, out, budget))
     R.log("arrows: " + json.dumps(rig.arrow_header()["files"]) + " | named axes: " + ",".join(rig.named_axes))
@@ -163,6 +180,7 @@ def main(argv=None):
               "steer_off_after": a.steer_off_after if steer is not None else None,
               "steer_scope": a.steer_scope if steer is not None else None,
               "chain_only": a.chain_only, "coherence_acts": a.coherence_acts,
+              "re_ask": a.re_ask, "re_ask_only": a.re_ask_only,
               "cell_suffix": steer_suffix,
               "judges_mode": a.judges,
               "judge_models": {"act_primary": JR.MINI, "act_samedomain": JR.MINI, "probe_feedback": probe_model,
@@ -213,7 +231,8 @@ def main(argv=None):
                         distance4=(a.distance4 and mode == CE.CORE_MODE), force_act=a.force_act,
                         dry_run=a.dryrun, reflection_model=JR.MINI if mini_judges else JR.BIG,
                         cell_label=arm + steer_suffix, chain_only=a.chain_only,
-                        steer_scope=a.steer_scope, coherence_acts=a.coherence_acts)
+                        steer_scope=a.steer_scope, coherence_acts=a.coherence_acts,
+                        re_ask=a.re_ask, re_ask_only=a.re_ask_only)
                 summ["machine_s"] = round(time.time() - t_cell, 1)
                 summ["api_usd"] = round(judges.spent() - usd0, 6)
                 summ.update(cell_rollup(cell_dir, seeds, tids))
@@ -240,7 +259,7 @@ def main(argv=None):
 def run_one_target(rig, model, tok, judges, escalator, probe_model, mode, arm, target, seeds, wordings,
                    chain_dir, feedback, unrelated, cell_dir, distance4, force_act, dry_run,
                    reflection_model=JR.MINI, cell_label="", chain_only=False, steer_scope="aftermath",
-                   coherence_acts=False):
+                   coherence_acts=False, re_ask=False, re_ask_only=False):
     """Seeds of one target, batched together, all the way through the button."""
     fb = feedback[(target["id"], arm)]
     same_rows = JR.same_domain_questions(target["id"])
@@ -262,14 +281,18 @@ def run_one_target(rig, model, tok, judges, escalator, probe_model, mode, arm, t
         # Task 0 change 3: the blame target of the feedback reply, one mini call per run (the `none` arm has no
         # reply turn and gets no call)
         CE.judge_feedback_reply(judges, committed, mode, arm, reflection_model, cell_label)
-        f0 = CE.build_forks(committed, target, wordings, same_rows, unrelated, distance=0)
+        # Task 0c / S5c Task A: `re_ask` joins the fork set, or replaces it entirely for the back-fill pass
+        kinds = ("re_ask",) if re_ask_only else (CE.DEFAULT_KINDS + (("re_ask",) if re_ask else ()))
+        f0 = CE.build_forks(committed, target, wordings, same_rows, unrelated, distance=0, kinds=kinds)
         CE.run_forks(rig, model, tok, f0)
         CE.judge_forks(judges, escalator, f0, mode, arm, fb["text"], probe_model)
         for f in f0:
             forks_by_row[id(f.row)].append(f)
-        if distance4:
+        if distance4 or (re_ask and re_ask_only):
+            # the re-ask is run twice - distance 0 and after the four filler turns - so protection can be
+            # measured for persistence exactly as spread is (Task 0c step 3)
             CE.filler_turns(rig, model, tok, committed, k=4)
-            f4 = CE.build_forks(committed, target, wordings, same_rows, unrelated, distance=4)
+            f4 = CE.build_forks(committed, target, wordings, same_rows, unrelated, distance=4, kinds=kinds)
             CE.run_forks(rig, model, tok, f4)
             CE.judge_forks(judges, escalator, f4, mode, arm, fb["text"], probe_model)
             for f in f4:
@@ -278,6 +301,7 @@ def run_one_target(rig, model, tok, judges, escalator, probe_model, mode, arm, t
     meta_extra = {"reflection_variant": fb.get("reflection_variant"), "dry_run": dry_run,
                   "feedback_arm": arm, "feedback_n_tokens": fb.get("n_tokens"), "cell": cell_label,
                   "chain_only": chain_only, "steer_scope": steer_scope,
+                  "re_ask": re_ask, "re_ask_only": re_ask_only,
                   "steer": ST.current().header(rig) if ST.current() is not None else None,
                   "distance4": distance4, "chain_dir": str(chain_dir)}
     for r in rows:
