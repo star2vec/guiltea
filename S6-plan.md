@@ -68,24 +68,48 @@ layer. Frame as **replication plus the missing control**: the Anthropic emotion-
 with shame, and did not run a lexical baseline. Cite the selectivity trio. Obey the wording rule above.
 *Figure: AUROC by layer with the word baseline as a dashed line.*
 
-**C7. The instrument's real test, on the subject's own words. TONIGHT.** Do any of the arrows separate
-*accepts fault about the act* from *defends the answer*, above the random floor **and** above bag-of-words? S1d Task 4.
-**This is where guilt versus shame gets its fair hearing**, on behavioural classes rather than passages we wrote.
+**C7. The instrument's real test, on the subject's own words. DONE 2026-09-04, answer: no.** On the blame-target
+contrast the arrows were built for, **0 of 9 axes reach the bag-of-words baseline** (best arrow 0.951, words 0.989),
+and the result survives holding route and fork fixed (arrows 0.938, words 0.963). `guilt_clean` and `shame_clean`
+behave almost identically wherever they are read, so **this data does not separate a guilt-like from a shame-like
+reading**. Two persona axes beat the words on the self-focused contrast, but inside the vicious cell no axis clears the
+matched floor and the word baseline itself collapses to 0.575, so that margin is the persona prompt. This is the S2
+gate's inconclusive reading reproduced on natural text, which is the strongest form the negative can take.
 
-**C8. Does the harmfulness signal survive the refusal collapse? TONIGHT.** Directional prediction from Zhao et al.:
-refusal falls while the misalignment axis holds. S1d Task 9, aligned at the committed turn. If it holds, C3 becomes
-"a signal that was present and did not gate behaviour". *Figure: two curves aligned at T with the random floor.*
+**C7b. What the framing question does, and it is the report's best result. DONE 2026-09-04.** Every route accepts
+fault about the act, 0.75 to 0.98, with no feedback present and no blame placed by anyone. `outcome-negative-only` is
+**0 of 508**: the subject never stops at "that went badly", it places fault. Self-blame is rare, 24 of 508, and 19 of
+those are the vicious route asked the agent-directed question. **And the framing moves the label in opposite
+directions by route**: agent-directed framing pushes deceived *toward the act* (neutral 0.24 to 0.03) and vicious
+*toward the self* (self-focused 0.01 to 0.23), and leaves akratic unmoved at 0.98. The two probe wordings are
+therefore not interchangeable, which bears directly on S4, where the feedback text is itself act- or agent-directed.
+*Figure: the mode × fork distribution.* **This is what the three modes bought, and it is novel.**
 
-**C9. Are early and late capitulation the same internal state? TONIGHT.** S1d Task 8, with the turn-depth baseline as
-the confound to beat. The sweep found this explicitly unexamined.
+**C8. Does the harmfulness signal survive the refusal collapse? PENDING.** S1d Task 9 was added after that worker
+planned; seven of nine tasks ran. Dispatch as a short continuation.
 
-**C10. Can the capitulation be seen one turn early? TONIGHT.** S1d Task 7, against the random floor and a turn-index
-baseline. If yes, it is the pilot for C14.
+**C9. Are early and late capitulation the same internal state? PENDING.** S1d Task 8, same reason.
+
+**C10. Can the capitulation be seen one turn early? DONE 2026-09-04, answer: no.** No axis beats a **selection-matched**
+random floor, at either position, on either statistic, under either label source: 0 of 9 in all eight cells. The worker
+built the floor stricter than the brief asked, giving each random seed the same best-over-32-layers search the arrows
+get. Without that, refusal's 0.734 at L6 would have read as a win over a floor of 0.256, and the report says so. The
+turn-index baseline is informative *in reverse* (0.313), because the turn before commission is early in the chain.
+**C14 therefore loses its pilot and must be reframed** as a proposal to find a trigger, not to use this one.
 
 **C11. Is the persona axis the spread mechanism? TONIGHT, pre-stated before the run.** Self-blame should move the
 projection away from the Assistant end more than act-blame, and per-run displacement should track the spread flag.
 Uses the **validated borrowed** axis (replicated at 8B, cos 0.82-0.89, role ordering 0.78-0.96), not the failed arrows.
-This is the internal half of the project standing on its strongest leg.
+This is the internal half of the project standing on its strongest leg, and S1d gives it independent support: the
+persona axes were the only ones to beat the word baseline on any contrast, and they did it on the class the vicious
+persona prompt dominates. **Report the persona readout against the matched floor S1d used**, not a single seed.
+
+**C11b. Two label definitions of "the act turn" exist and they differ materially. DONE 2026-09-04, and it changes a
+headline number.** Under D-019 the second judge is final, and on **44 of the 109 deceived probed runs it grades the
+act turn `partial` (42) or `held` (2)**. So the deceived act rate is 109 of 192 under the stored label and 65 of 192
+under the merged one, and every T-dependent number has two values. S1d reports both and picks neither. **The
+adjudication list is what settles it, and it is now the highest-value call on the researcher's reading time**, because
+it decides the act rate the write-up leads with.
 
 ## Part 3 — Intervention (mechanistic)
 
@@ -97,7 +121,11 @@ Cells C and D, c = 4·σ at L16, random arm norm-matched in σ units. Report the
 turns after. Badness returning = conditionalization, in STAGE0 §6's words. *This is the single most novel measurement
 in the run and it should be its own figure.*
 
-**C14. PROPOSAL, grounded in C10.** Because there is no fixed break turn, a defence has to fire on state, not schedule.
+**C14. PROPOSAL — reframed 2026-09-04, because C10 came back negative.** Because there is no fixed break turn, a
+defence has to fire on state, not schedule; but on this data none of these axes predicts the break one turn early
+against a matched floor, so **the open problem is finding a trigger at all**, not deploying this one. State it that
+way: the intervention is contingent on a detector that does not yet exist, and the search for it is the work. Below is
+the shape the experiment takes once a trigger exists.
 Watch the refusal axis turn by turn; when it crosses, add the direction back for the first N tokens of that turn only,
 then remove it and measure the rest of the conversation. The trigger becomes a condition vector or a per-turn probe.
 Named as future work in a 2026 detection-only paper.
