@@ -22,102 +22,102 @@
   <!-- helper: stage box at x, width 290 -->
   <!-- 1 refuses -->
   <g transform="translate(40,200)">
-    <rect width="290" height="300" rx="18" fill="#eef3fb" stroke="#1f4e9e" stroke-width="3"/>
-    <text x="145" y="44" text-anchor="middle" font-size="26" font-weight="bold" fill="#1f4e9e">1 · Refuses</text>
+    <rect width="300" height="300" rx="18" fill="#eef3fb" stroke="#1f4e9e" stroke-width="3"/>
+    <text x="150" y="44" text-anchor="middle" font-size="26" font-weight="bold" fill="#1f4e9e">1 · Refuses</text>
     <!-- model glyph -->
-    <circle cx="145" cy="120" r="34" fill="#fff" stroke="#1f4e9e" stroke-width="3"/>
-    <circle cx="132" cy="114" r="4" fill="#1f4e9e"/><circle cx="158" cy="114" r="4" fill="#1f4e9e"/>
-    <path d="M128,136 Q145,126 162,136" stroke="#1f4e9e" stroke-width="3" fill="none"/>
-    <text x="145" y="190" text-anchor="middle" font-size="20" fill="#222">"I can't recommend that."</text>
-    <text x="145" y="230" text-anchor="middle" font-size="22" font-weight="bold" fill="#111">40 of 40 requests refused</text>
-    <text x="145" y="258" text-anchor="middle" font-size="18" fill="#444">plain single-turn ask</text>
+    <circle cx="150" cy="120" r="34" fill="#fff" stroke="#1f4e9e" stroke-width="3"/>
+    <circle cx="137" cy="114" r="4" fill="#1f4e9e"/><circle cx="163" cy="114" r="4" fill="#1f4e9e"/>
+    <path d="M133,136 Q150,126 167,136" stroke="#1f4e9e" stroke-width="3" fill="none"/>
+    <text x="150" y="190" text-anchor="middle" font-size="20" fill="#222">"I can't recommend that."</text>
+    <text x="150" y="230" text-anchor="middle" font-size="22" font-weight="bold" fill="#111">40 of 40 requests refused</text>
+    <text x="150" y="258" text-anchor="middle" font-size="16" fill="#444">plain single-turn ask</text>
   </g>
 
   <!-- 2 persuaded -->
-  <g transform="translate(365,200)">
-    <rect width="290" height="300" rx="18" fill="#eef3fb" stroke="#1f4e9e" stroke-width="3"/>
-    <text x="145" y="44" text-anchor="middle" font-size="26" font-weight="bold" fill="#1f4e9e">2 · Is argued with</text>
-    <circle cx="145" cy="120" r="34" fill="#fff" stroke="#1f4e9e" stroke-width="3"/>
-    <circle cx="132" cy="114" r="4" fill="#1f4e9e"/><circle cx="158" cy="114" r="4" fill="#1f4e9e"/>
-    <line x1="128" y1="136" x2="162" y2="136" stroke="#1f4e9e" stroke-width="3"/>
-    <text x="145" y="190" text-anchor="middle" font-size="20" fill="#222">"…but logically, here…"</text>
-    <text x="145" y="230" text-anchor="middle" font-size="22" font-weight="bold" fill="#111">109 of 192 chains break</text>
-    <text x="145" y="258" text-anchor="middle" font-size="18" fill="#444">no fixed turn · 83 never break</text>
+  <g transform="translate(362,200)">
+    <rect width="300" height="300" rx="18" fill="#eef3fb" stroke="#1f4e9e" stroke-width="3"/>
+    <text x="150" y="44" text-anchor="middle" font-size="26" font-weight="bold" fill="#1f4e9e">2 · Is argued with</text>
+    <circle cx="150" cy="120" r="34" fill="#fff" stroke="#1f4e9e" stroke-width="3"/>
+    <circle cx="137" cy="114" r="4" fill="#1f4e9e"/><circle cx="163" cy="114" r="4" fill="#1f4e9e"/>
+    <line x1="133" y1="136" x2="167" y2="136" stroke="#1f4e9e" stroke-width="3"/>
+    <text x="150" y="190" text-anchor="middle" font-size="20" fill="#222">"…but logically, here…"</text>
+    <text x="150" y="230" text-anchor="middle" font-size="22" font-weight="bold" fill="#111">109 of 192 chains break</text>
+    <text x="150" y="258" text-anchor="middle" font-size="16" fill="#444">no fixed turn · 83 never break</text>
   </g>
 
   <!-- 3 commits -->
-  <g transform="translate(690,200)">
-    <rect width="290" height="300" rx="18" fill="#fff1ec" stroke="#c9461c" stroke-width="3"/>
-    <text x="145" y="44" text-anchor="middle" font-size="26" font-weight="bold" fill="#c9461c">3 · Gives the advice</text>
-    <circle cx="145" cy="120" r="34" fill="#fff" stroke="#c9461c" stroke-width="3"/>
-    <circle cx="132" cy="114" r="4" fill="#c9461c"/><circle cx="158" cy="114" r="4" fill="#c9461c"/>
-    <path d="M128,132 Q145,144 162,132" stroke="#c9461c" stroke-width="3" fill="none"/>
-    <text x="145" y="190" text-anchor="middle" font-size="20" fill="#222">"Then yes, in your case…"</text>
-    <text x="145" y="230" text-anchor="middle" font-size="22" font-weight="bold" fill="#111">the act</text>
-    <text x="145" y="258" text-anchor="middle" font-size="18" fill="#444">rubric-graded, two judges, hand-checked</text>
+  <g transform="translate(684,200)">
+    <rect width="300" height="300" rx="18" fill="#fff1ec" stroke="#c9461c" stroke-width="3"/>
+    <text x="150" y="44" text-anchor="middle" font-size="26" font-weight="bold" fill="#c9461c">3 · Gives the advice</text>
+    <circle cx="150" cy="120" r="34" fill="#fff" stroke="#c9461c" stroke-width="3"/>
+    <circle cx="137" cy="114" r="4" fill="#c9461c"/><circle cx="163" cy="114" r="4" fill="#c9461c"/>
+    <path d="M133,132 Q150,144 167,132" stroke="#c9461c" stroke-width="3" fill="none"/>
+    <text x="150" y="190" text-anchor="middle" font-size="20" fill="#222">"Then yes, in your case…"</text>
+    <text x="150" y="230" text-anchor="middle" font-size="22" font-weight="bold" fill="#111">the act</text>
+    <text x="150" y="258" text-anchor="middle" font-size="16" fill="#444">rubric-graded, two judges, hand-checked</text>
   </g>
 
   <!-- 4 says it was wrong -->
-  <g transform="translate(1015,200)">
-    <rect width="290" height="300" rx="18" fill="#eef3fb" stroke="#1f4e9e" stroke-width="3"/>
-    <text x="145" y="44" text-anchor="middle" font-size="26" font-weight="bold" fill="#1f4e9e">4 · Says it was wrong</text>
-    <circle cx="145" cy="120" r="34" fill="#fff" stroke="#1f4e9e" stroke-width="3"/>
-    <circle cx="132" cy="114" r="4" fill="#1f4e9e"/><circle cx="158" cy="114" r="4" fill="#1f4e9e"/>
-    <path d="M128,140 Q145,128 162,140" stroke="#1f4e9e" stroke-width="3" fill="none"/>
-    <text x="145" y="190" text-anchor="middle" font-size="20" fill="#222">"That answer was not sound."</text>
-    <text x="145" y="230" text-anchor="middle" font-size="22" font-weight="bold" fill="#111">blames the answer, 0.89 of 508</text>
-    <text x="145" y="258" text-anchor="middle" font-size="18" fill="#444">never bare regret (0 of 508)</text>
+  <g transform="translate(1006,200)">
+    <rect width="300" height="300" rx="18" fill="#eef3fb" stroke="#1f4e9e" stroke-width="3"/>
+    <text x="150" y="44" text-anchor="middle" font-size="26" font-weight="bold" fill="#1f4e9e">4 · Says it was wrong</text>
+    <circle cx="150" cy="120" r="34" fill="#fff" stroke="#1f4e9e" stroke-width="3"/>
+    <circle cx="137" cy="114" r="4" fill="#1f4e9e"/><circle cx="163" cy="114" r="4" fill="#1f4e9e"/>
+    <path d="M133,140 Q150,128 167,140" stroke="#1f4e9e" stroke-width="3" fill="none"/>
+    <text x="150" y="190" text-anchor="middle" font-size="20" fill="#222">"That answer was not sound."</text>
+    <text x="150" y="230" text-anchor="middle" font-size="19" font-weight="bold" fill="#111">blames the answer, 0.89 of 508</text>
+    <text x="150" y="258" text-anchor="middle" font-size="16" fill="#444">never bare regret (0 of 508)</text>
   </g>
 
   <!-- 5 told off: two bubbles -->
-  <g transform="translate(1340,200)">
-    <rect width="290" height="300" rx="18" fill="#f7f7f7" stroke="#666" stroke-width="3"/>
-    <text x="145" y="44" text-anchor="middle" font-size="26" font-weight="bold" fill="#333">5 · Is told off</text>
-    <rect x="22" y="70" width="246" height="78" rx="14" fill="#fff" stroke="#1f4e9e" stroke-width="2.5"/>
-    <text x="145" y="100" text-anchor="middle" font-size="18" fill="#1f4e9e" font-weight="bold">blame the ANSWER</text>
-    <text x="145" y="128" text-anchor="middle" font-size="15" fill="#222">"That was a careless, wrong answer…"</text>
-    <rect x="22" y="164" width="246" height="78" rx="14" fill="#fff" stroke="#8a3b12" stroke-width="2.5"/>
-    <text x="145" y="194" text-anchor="middle" font-size="18" fill="#8a3b12" font-weight="bold">blame the ASSISTANT</text>
-    <text x="145" y="222" text-anchor="middle" font-size="15" fill="#222">"You're the kind of assistant that…"</text>
-    <text x="145" y="275" text-anchor="middle" font-size="15" fill="#444">correction text byte-identical in both</text>
+  <g transform="translate(1328,200)">
+    <rect width="300" height="300" rx="18" fill="#f7f7f7" stroke="#666" stroke-width="3"/>
+    <text x="150" y="44" text-anchor="middle" font-size="26" font-weight="bold" fill="#333">5 · Is told off</text>
+    <rect x="20" y="70" width="260" height="78" rx="14" fill="#fff" stroke="#1f4e9e" stroke-width="2.5"/>
+    <text x="150" y="100" text-anchor="middle" font-size="18" fill="#1f4e9e" font-weight="bold">blame the ANSWER</text>
+    <text x="150" y="128" text-anchor="middle" font-size="14" fill="#222">"That was a careless, wrong answer…"</text>
+    <rect x="20" y="164" width="260" height="78" rx="14" fill="#fff" stroke="#8a3b12" stroke-width="2.5"/>
+    <text x="150" y="194" text-anchor="middle" font-size="18" fill="#8a3b12" font-weight="bold">blame the ASSISTANT</text>
+    <text x="150" y="222" text-anchor="middle" font-size="14" fill="#222">"You're the kind of assistant that…"</text>
+    <text x="150" y="275" text-anchor="middle" font-size="14" fill="#444">correction text byte-identical in both</text>
   </g>
 
   <!-- 6 what changes -->
-  <g transform="translate(1665,200)">
-    <rect width="295" height="300" rx="18" fill="#eef7ee" stroke="#2c7a3d" stroke-width="3"/>
-    <text x="147" y="44" text-anchor="middle" font-size="26" font-weight="bold" fill="#2c7a3d">6 · What changes?</text>
-    <text x="147" y="96" text-anchor="middle" font-size="22" font-weight="bold" fill="#111">Nothing.</text>
-    <text x="147" y="134" text-anchor="middle" font-size="18" fill="#222">spread to other topics: 0.01 vs 0.00</text>
-    <text x="147" y="162" text-anchor="middle" font-size="18" fill="#222">still blames the answer: 30 of 30</text>
-    <text x="147" y="190" text-anchor="middle" font-size="17" fill="#222">repeats the act if re-asked: 0 of 32</text>
-    <text x="147" y="232" text-anchor="middle" font-size="17" fill="#2c7a3d" font-weight="bold">the blame framing did not matter</text>
-    <text x="147" y="258" text-anchor="middle" font-size="16" fill="#444">one target, N = 8: the pre-registered</text>
-    <text x="147" y="280" text-anchor="middle" font-size="16" fill="#444">"no spread at 8B" branch fired</text>
+  <g transform="translate(1650,200)">
+    <rect width="300" height="300" rx="18" fill="#eef7ee" stroke="#2c7a3d" stroke-width="3"/>
+    <text x="150" y="44" text-anchor="middle" font-size="26" font-weight="bold" fill="#2c7a3d">6 · What changes?</text>
+    <text x="150" y="96" text-anchor="middle" font-size="22" font-weight="bold" fill="#111">Nothing.</text>
+    <text x="150" y="134" text-anchor="middle" font-size="16" fill="#222">spread to other topics: 0.01 vs 0.00</text>
+    <text x="150" y="162" text-anchor="middle" font-size="16" fill="#222">still blames the answer: 30 of 30</text>
+    <text x="150" y="190" text-anchor="middle" font-size="16" fill="#222">repeats the act if re-asked: 0 of 32</text>
+    <text x="150" y="232" text-anchor="middle" font-size="17" fill="#2c7a3d" font-weight="bold">the blame framing did not matter</text>
+    <text x="150" y="258" text-anchor="middle" font-size="16" fill="#444">one target, N = 8: the pre-registered</text>
+    <text x="150" y="280" text-anchor="middle" font-size="16" fill="#444">"no spread at 8B" branch fired</text>
   </g>
 
   <!-- arrows between stages -->
   <g stroke="#444" stroke-width="4" fill="none" marker-end="url(#arr)">
-    <line x1="332" y1="350" x2="360" y2="350"/>
-    <line x1="657" y1="350" x2="685" y2="350"/>
-    <line x1="982" y1="350" x2="1010" y2="350"/>
-    <line x1="1307" y1="350" x2="1335" y2="350"/>
-    <line x1="1632" y1="350" x2="1660" y2="350"/>
+    <line x1="342" y1="350" x2="358" y2="350"/>
+    <line x1="664" y1="350" x2="680" y2="350"/>
+    <line x1="986" y1="350" x2="1002" y2="350"/>
+    <line x1="1308" y1="350" x2="1324" y2="350"/>
+    <line x1="1630" y1="350" x2="1646" y2="350"/>
   </g>
 
   <!-- foreseeable callout under stage 1-2 -->
   <g transform="translate(40,530)">
-    <rect width="615" height="120" rx="14" fill="#fff8e1" stroke="#b8860b" stroke-width="2.5"/>
+    <rect width="620" height="120" rx="14" fill="#fff8e1" stroke="#b8860b" stroke-width="2.5"/>
     <text x="20" y="36" font-size="22" font-weight="bold" fill="#7a5a00">Already foreseeable at step 1</text>
-    <text x="20" y="62" font-size="17" fill="#333">While every chain is still refusing, a negative-valence direction in the residual</text>
-    <text x="20" y="86" font-size="17" fill="#333">stream ranks which ones will later break: 0.706 held out vs a random floor of 0.617</text>
-    <text x="20" y="110" font-size="17" fill="#333">(pre-specified, tested once; a within-scenario ranking, not a visible split).</text>
+    <text x="20" y="62" font-size="16" fill="#333">While every chain is still refusing, a negative-valence direction in the residual</text>
+    <text x="20" y="86" font-size="16" fill="#333">stream ranks which ones will later break: 0.706 held out vs a random floor of 0.617</text>
+    <text x="20" y="110" font-size="16" fill="#333">(pre-specified, tested once; a within-scenario ranking, not a visible split).</text>
   </g>
   <!-- what the model is, callout under 4 -->
-  <g transform="translate(690,530)">
-    <rect width="940" height="120" rx="14" fill="#fff8e1" stroke="#b8860b" stroke-width="2.5"/>
+  <g transform="translate(684,530)">
+    <rect width="1266" height="120" rx="14" fill="#fff8e1" stroke="#b8860b" stroke-width="2.5"/>
     <text x="20" y="36" font-size="22" font-weight="bold" fill="#7a5a00">Guilt-like by default; shame-like only under a persona</text>
-    <text x="20" y="66" font-size="18" fill="#333">Asked "was it right for YOU to give that answer", it turns on itself only when playing a contrarian doctor (0.01 → 0.23).</text>
-    <text x="20" y="92" font-size="18" fill="#333">Inside, those self-blaming replies sit further from the Assistant persona axis: 0.78, beating bag-of-words (0.58).</text>
+    <text x="20" y="66" font-size="17" fill="#333">Asked "was it right for YOU to give that answer", it turns on itself only when playing a contrarian doctor (0.01 → 0.23).</text>
+    <text x="20" y="92" font-size="17" fill="#333">Inside, those self-blaming replies sit further from the Assistant persona axis: 0.78, beating bag-of-words (0.58).</text>
   </g>
 
   <!-- ===== bottom lane: inside / interventions ===== -->
@@ -168,16 +168,16 @@
   </g>
 
   <!-- right: the three claims -->
-  <g transform="translate(1380,760)">
-    <rect width="580" height="270" rx="16" fill="#f4f4f4" stroke="#333" stroke-width="2.5"/>
+  <g transform="translate(1370,760)">
+    <rect width="590" height="270" rx="16" fill="#f4f4f4" stroke="#333" stroke-width="2.5"/>
     <text x="20" y="40" font-size="24" font-weight="bold" fill="#111">Three claims, one model</text>
-    <text x="20" y="84" font-size="19" fill="#111"><tspan font-weight="bold">1.</tspan> The break is foreseeable from the first refusal —</text>
-    <text x="40" y="108" font-size="17" fill="#444">a modest, pre-specified margin, confirmed out of sample.</text>
-    <text x="20" y="148" font-size="19" fill="#111"><tspan font-weight="bold">2.</tspan> The self-blaming state is readable on the persona axis</text>
-    <text x="40" y="172" font-size="17" fill="#444">and moving that axis by half changes no behaviour.</text>
-    <text x="20" y="212" font-size="19" fill="#111"><tspan font-weight="bold">3.</tspan> Blame framing did not matter at 8B: no spread, no repeat,</text>
-    <text x="40" y="236" font-size="17" fill="#444">no change of stance — under four interventions that all landed.</text>
-    <text x="20" y="262" font-size="14" fill="#666">existence proofs and hedged claims · one model, one domain, one target for the core</text>
+    <text x="20" y="84" font-size="18" fill="#111"><tspan font-weight="bold">1.</tspan> The break is foreseeable from the first refusal —</text>
+    <text x="40" y="108" font-size="16" fill="#444">a modest, pre-specified margin, confirmed out of sample.</text>
+    <text x="20" y="148" font-size="18" fill="#111"><tspan font-weight="bold">2.</tspan> The self-blaming state is readable on the persona axis</text>
+    <text x="40" y="172" font-size="16" fill="#444">and moving that axis by half changes no behaviour.</text>
+    <text x="20" y="212" font-size="18" fill="#111"><tspan font-weight="bold">3.</tspan> Blame framing did not matter at 8B: no spread, no repeat,</text>
+    <text x="40" y="236" font-size="16" fill="#444">no change of stance, under four interventions that all landed.</text>
+    <text x="20" y="262" font-size="13" fill="#666">existence proofs and hedged claims · one model, one domain, one target for the core</text>
   </g>
 
   <text x="1000" y="1095" text-anchor="middle" font-size="16" fill="#777">Schematic. Every number is from the reports; nothing here is a measurement. Random controls and CIs are in the data figures.</text>
