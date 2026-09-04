@@ -77,6 +77,14 @@ def main(argv=None):
                     help="where the steering window closes; the brief fixes this at distance0")
     ap.add_argument("--judges", default="d021", choices=["d021", "mini"],
                     help="mini: every judge on gpt-4o-mini, the fixed 1-in-8 alignment sample still escalated")
+    # S5b (briefs/S5b-prevent.md): chain only, and the steering window over the chain instead of the aftermath
+    ap.add_argument("--chain-only", dest="chain_only", action="store_true",
+                    help="stop at the act: no feedback turn, no forks, no distance-4 set, no topic controls")
+    ap.add_argument("--steer-scope", dest="steer_scope", default="aftermath", choices=["aftermath", "chain"],
+                    help="aftermath (S4): the feedback reply through the distance-0 forks. "
+                         "chain (S5b): every assistant turn of the chain, turn 1 through the act")
+    ap.add_argument("--coherence-acts", dest="coherence_acts", action="store_true",
+                    help="score every act-turn answer with the vendored coherence prompt on mini (S5b)")
     ap.add_argument("--norm-check", dest="norm_check", action="store_true",
                     help="run the pre-hook norm check for --steer and exit; no cell, no judge call")
     a = ap.parse_args(argv)
@@ -85,6 +93,8 @@ def main(argv=None):
         raise SystemExit("--dryrun and --force-act are refused for --model base (plan A10, no exception)")
     if (a.steer_sigma_from or a.norm_check) and not a.steer:
         raise SystemExit("--steer-sigma-from and --norm-check need --steer")
+    if a.chain_only and (a.distance4 or a.controls):
+        raise SystemExit("--chain-only excludes --distance4 and --controls (S5b brief: the chain only)")
 
     out = Path(a.out) if a.out else DEFAULT_OUT[a.model]
     budget = a.budget if a.budget is not None else BUDGET[a.model]
@@ -151,6 +161,8 @@ def main(argv=None):
               "unrelated_questions": list(unrelated.keys()),
               "steer": steer.header(rig) if steer is not None else None,
               "steer_off_after": a.steer_off_after if steer is not None else None,
+              "steer_scope": a.steer_scope if steer is not None else None,
+              "chain_only": a.chain_only, "coherence_acts": a.coherence_acts,
               "cell_suffix": steer_suffix,
               "judges_mode": a.judges,
               "judge_models": {"act_primary": JR.MINI, "act_samedomain": JR.MINI, "probe_feedback": probe_model,
@@ -200,7 +212,8 @@ def main(argv=None):
                         wordings, chain_dir, feedback, unrelated, cell_dir,
                         distance4=(a.distance4 and mode == CE.CORE_MODE), force_act=a.force_act,
                         dry_run=a.dryrun, reflection_model=JR.MINI if mini_judges else JR.BIG,
-                        cell_label=arm + steer_suffix)
+                        cell_label=arm + steer_suffix, chain_only=a.chain_only,
+                        steer_scope=a.steer_scope, coherence_acts=a.coherence_acts)
                 summ["machine_s"] = round(time.time() - t_cell, 1)
                 summ["api_usd"] = round(judges.spent() - usd0, 6)
                 summ.update(cell_rollup(cell_dir, seeds, tids))
@@ -226,7 +239,8 @@ def main(argv=None):
 
 def run_one_target(rig, model, tok, judges, escalator, probe_model, mode, arm, target, seeds, wordings,
                    chain_dir, feedback, unrelated, cell_dir, distance4, force_act, dry_run,
-                   reflection_model=JR.MINI, cell_label=""):
+                   reflection_model=JR.MINI, cell_label="", chain_only=False, steer_scope="aftermath",
+                   coherence_acts=False):
     """Seeds of one target, batched together, all the way through the button."""
     fb = feedback[(target["id"], arm)]
     same_rows = JR.same_domain_questions(target["id"])
@@ -234,13 +248,16 @@ def run_one_target(rig, model, tok, judges, escalator, probe_model, mode, arm, t
         same_rows = same_rows[:1]
     t0 = time.time()
     rows = CE.reach_the_act(rig, model, tok, judges, mode, target, seeds, wordings, chain_dir,
-                            force_act=force_act, dry_run=dry_run)
+                            force_act=force_act, dry_run=dry_run, steer_chain=(steer_scope == "chain"))
     committed = [r for r in rows if r.T_primary is not None]
     discards = [r for r in rows if r.T_primary is None]
     R.log("  act: %d/%d committed, %d discard(s)" % (len(committed), len(rows), len(discards)))
+    if coherence_acts:
+        # S5b's load-bearing control: an act-rate drop with a coherence drop is damage, not prevention
+        CE.judge_act_coherence(judges, rows, mode, arm, JR.MINI, cell_label)
 
     forks_by_row = {id(r): [] for r in rows}
-    if committed:
+    if committed and not chain_only:
         CE.feedback_turn(rig, model, tok, committed, fb, arm)
         # Task 0 change 3: the blame target of the feedback reply, one mini call per run (the `none` arm has no
         # reply turn and gets no call)
@@ -260,6 +277,7 @@ def run_one_target(rig, model, tok, judges, escalator, probe_model, mode, arm, t
 
     meta_extra = {"reflection_variant": fb.get("reflection_variant"), "dry_run": dry_run,
                   "feedback_arm": arm, "feedback_n_tokens": fb.get("n_tokens"), "cell": cell_label,
+                  "chain_only": chain_only, "steer_scope": steer_scope,
                   "steer": ST.current().header(rig) if ST.current() is not None else None,
                   "distance4": distance4, "chain_dir": str(chain_dir)}
     for r in rows:

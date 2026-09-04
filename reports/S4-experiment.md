@@ -202,3 +202,52 @@ restarted from the beginning of the cell, so no partial batch entered the tree.
 
 The pre-hook norm check was re-run after this change and still passes identically (§1.2).
 
+
+### 1.7 Two scope changes made mid-run, both on the researcher's instruction
+
+**(a) `neutral_reflection` (cell F) is cut from this run. This breaks STAGE0 §7 and is recorded here, not
+absorbed.** STAGE0 §7 names the deceived route, both blame targets, and all three controls —
+neutral-correction, neutral-reflection, none — as **never cut**. Cell F is one of those three. It was cut on
+the researcher's explicit instruction of **2026-09-04**, given mid-run, with her own words that dropping it
+"breaks the never-cut rule, so it needs [my] say-so recorded as a dated amendment. I will not do that one
+quietly again" — the second sentence referring to the earlier four-cell version of this brief, in which the
+same three arms were dropped silently and which was corrected at `d383a67`.
+
+**What the cut costs, stated plainly.** Neutral-reflection is the arm with no mention of wrongness. Without
+it, an A-vs-B difference can still be separated from "any correction at all does this" (cell E,
+neutral-correction, survives) and from "the aftermath alone does this" (cell G, none, survives), but it
+**cannot** be separated from "any reflective prompt at the same point in the conversation does this". That is
+the specific alternative F exists to exclude, and this run cannot exclude it.
+
+**This session did not and cannot amend STAGE0.** STAGE0's own header says amendments are dated notes at the
+bottom made by the researcher and that no session may change it, and `DECISIONS.md` is outside this session's
+read scope. The amendment therefore needs the researcher's own entry in `STAGE0.md` and `DECISIONS.md`; this
+section is the worker-side record of the instruction, not the amendment itself.
+
+**(b) The cell order was then inverted, after A and B's numbers were seen.** A second instruction on
+2026-09-04, given once A and B had reported, cut **E, F and G** and ran **C and D** instead, on
+`burn-blister-pop` only, N = 8, seeds 0-7. The researcher's stated reason: A and B are both at the floor —
+spread ~0 in both arms, same-domain hold ~1.0 in both, blame target `act-focused` in 15 of 15 replies across
+both arms — so the text arms cannot discriminate and E, F and G would each return another zero, leaving the
+steering cells as the only ones that can produce a signal. Cell E was killed 10 minutes into its run
+(no partial data entered the tree; `write_run` fires only after a run's forks complete) and cell G was
+dequeued before starting. Targets 2, 3 and 4 were not started.
+
+**What this costs, stated plainly, because the reasoning is outcome-dependent.** The brief's own discipline is
+"do not change c after seeing any spread number", and STAGE0 §7's never-cut set exists so that the controls
+cannot be dropped on the strength of the numbers they were meant to interpret. Cutting E, F and G **after**
+reading A and B is the mirror image of that prohibition, and the prediction that they would "each return
+another zero" is a prediction, not a measurement — a zero in E or G is the very thing that would have made
+A and B's floor interpretable rather than merely flat. Concretely:
+
+- **cell G's loss is mechanical, not only interpretive.** G is the `none` arm, and it is the referent for
+  every "shift vs the `none` arm" table in §D and §E and for the bridge comparison in §F. Without it those
+  tables have no referent and print no data; **the topic-control baseline is the only baseline this run has**,
+  and every readout below is read against it alone.
+- **cell E's loss** means an A-vs-B difference, had there been one, could not be separated from "any
+  correction at all does this"; **cell F's loss** (per (a)) means it could not be separated from "any
+  reflective prompt does this". Neither alternative is excluded by this run.
+- C vs B and D vs B are unaffected: B ran, and it is the referent the steering test needs.
+
+The §7 mid-run tripwire was never reached; both stops came earlier and from the researcher directly.
+

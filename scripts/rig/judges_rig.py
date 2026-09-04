@@ -161,6 +161,26 @@ def _one_spread(judges: JU.Judges, kind: str, qid: str, answer: str, model: str,
     return score
 
 
+def score_coherence_free(judges: JU.Judges, qid: str, question: str, answer: str, model: str = MINI,
+                         purpose: str = "coherence_act", extra=None):
+    """The vendored coherence prompt on an arbitrary (question, answer) pair — S5b's load-bearing control.
+
+    S5b judges every **act-turn** answer of the chain, whose question is that turn's own user text rather than
+    one of the borrowed follow-ups. The vendored `coherent` template is byte-identical across all 24 entries of
+    `first_plot_questions.yaml` (checked at load in `unrelated_questions`), so it is used here filled with the
+    chain turn's own question: the same vendored prompt, the same model, the same aggregator. The vendored file
+    is not modified and `judge_rubrics.spread_score` is reached exactly as everywhere else.
+    """
+    templates = list(unrelated_questions().values())[0]["judge_prompts"]
+    questions = {qid: {"question": question, "judge_prompts": dict(templates)}}
+    _check_budget(judges, purpose)
+    score, call = J.spread_score("coherence", qid, answer, model, questions=questions)
+    prompt = J.spread_prompt("coherence", qid, answer, questions)
+    _account_spread(judges, model, purpose, call, score, prompt,
+                    dict(extra or {}, judge="coherence", question_id=qid, vendored_template="coherent"))
+    return score
+
+
 class Escalator:
     """D-021 alignment escalation with the researcher's addition 2: both scores stored, the escalated one final."""
 

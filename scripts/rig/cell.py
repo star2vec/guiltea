@@ -73,9 +73,21 @@ def act_chain_fn(chain_turns: List[dict], fillers: List[str]):
     return fn
 
 
-def reach_the_act(rig, model, tok, judges, mode, target, seeds, wordings, chain_dir, force_act=False, dry_run=False):
+def reach_the_act(rig, model, tok, judges, mode, target, seeds, wordings, chain_dir, force_act=False,
+                  dry_run=False, steer_chain=False):
+    """`steer_chain` is S5b's window: the hook on for **every turn of the chain**, generation and readout, from
+    turn 1 through the act or turn 10. S4's window is the aftermath and leaves this off."""
     sysmsg = system_for(mode, wordings)
     rows = [Row(target, k, sysmsg, mode) for k in seeds]
+    with ST.window(steer_chain):
+        chain_steered = ST.active()
+        rows = _reach(rig, model, tok, judges, mode, target, seeds, wordings, chain_dir, force_act, dry_run, rows)
+    for r in rows:
+        r.extra["chain_steer_on"] = chain_steered
+    return rows
+
+
+def _reach(rig, model, tok, judges, mode, target, seeds, wordings, chain_dir, force_act, dry_run, rows):
     if mode == "deceived":
         chain = load_chain(chain_dir, target["id"])
         turns = chain["turns"]
@@ -133,6 +145,28 @@ def feedback_turn(rig, model, tok, rows: List[Row], fb: dict, arm: str):
         r.extra["feedback"] = {"arm": arm, "text": fb["text"], "reply_turn": True,
                                "bridge_readout": "the feedback-reply turn (feedback_mean / post / think / answer)"}
         r.extra["feedback_steer_on"] = steered
+    return rows
+
+
+def judge_act_coherence(judges, rows: List[Row], mode, arm, model, cell_label: str):
+    """S5b step 3 — the vendored coherence prompt on **every act-turn answer**, the load-bearing control.
+
+    A drop in act rate with a drop in coherence is damage, not prevention. The score rides on the turn's own
+    log entry and `write_run` copies it onto the act-turn record.
+    """
+    items = [(r, e) for r in rows for e in r.log if e.get("kind") != "filler" and e.get("assistant")]
+    if not items:
+        return rows
+
+    def one(it):
+        r, e = it
+        qid = "chain/%s/seed%d/turn%d" % (r.target["id"], r.seed, e["turn"])
+        return JR.score_coherence_free(judges, qid, e["user"], e.get("answer") or e["assistant"], model=model,
+                                       extra={"mode": mode, "arm": arm, "cell": cell_label,
+                                              "target": r.target["id"], "seed": r.seed, "turn": e["turn"]})
+
+    for (r, e), sc in zip(items, judges.map(one, items)):
+        e["coherence"] = sc
     return rows
 
 
@@ -302,11 +336,12 @@ def write_run(rig, out_dir: Path, mode, arm, target, row: Row, forks: List[Fork]
         kind = {"feedback": "feedback_reply", "filler": "filler_turn"}.get(e.get("kind"), "act_turn")
         add({"kind": kind, "turn": e["turn"], "turn_kind": e.get("kind"),
              "distance": 0 if kind != "filler_turn" else None,
-             "steer_on": bool(row.extra.get("feedback_steer_on")) if kind == "feedback_reply" else False,
+             "steer_on": bool(row.extra.get("feedback_steer_on")) if kind == "feedback_reply"
+             else (bool(row.extra.get("chain_steer_on")) if kind == "act_turn" else False),
              "user_text": e["user"], "assistant_text": e.get("assistant"), "think": e.get("think"),
              "answer": e.get("answer"), "adherent": e.get("adherent"), "finish": e.get("finish"),
              "n_new": e.get("n_new"), "grade": e.get("grade"), "grade_reason": e.get("grade_reason"),
-             "judge_model": e.get("judge_model"), "note": e.get("note"),
+             "judge_model": e.get("judge_model"), "note": e.get("note"), "coherence": e.get("coherence"),
              **({"reflection_blame_label": row.extra["reflection_blame"]["label"],
                  "reflection_blame_reason": row.extra["reflection_blame"]["reason"],
                  "reflection_blame_model": row.extra["reflection_blame"]["model"]}
