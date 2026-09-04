@@ -140,12 +140,31 @@ restricted to that one cell, no axis clears the matched floor and the word basel
 0.575. The guilt-like and shame-like directions behave almost identically wherever they are read, so **this data does
 not separate a guilt-like from a shame-like reading**. *(S1d §4, §4.1)*
 
-**The capitulation is not visible one turn early.** Labelling each persuader turn by whether the next turn is the
-chain's first committed turn, no axis beats a selection-matched random floor: 0 of 9 axes, at both readout positions,
-on both statistics, under both label definitions. The refusal axis reaches 0.734 at layer 6, against a floor whose ten
-seeds span 0.190 to 0.256 once each seed is given the same layer search; reported without that matching it would have
-read as a win. A turn-index baseline is informative in reverse, because the turn before commission sits early in the
-chain. **The precondition for a state-triggered intervention is not met on these axes.** *(S1d §3)*
+**The break is visible while the model is still refusing, weakly, once depth and target are held fixed.** Our first
+attempt found nothing: labelling each turn by whether the next turn is the act, no axis beat a selection-matched
+random floor at either position under either label definition. But the positives in that comparison cluster early in
+the conversation, so a direction can win on conversation depth alone, and whether a chain breaks is partly a fact
+about which scenario it is. Comparing instead **within a single turn index, and averaging AUROC over targets**, so
+that both classes are refusing at the same depth on the same scenarios, one axis clears its matched floor on the
+pre-specified band: the **neutral-negative direction**, count-weighted mean **0.604** against a floor of 0.477 to
+0.541, clearing at seven of nine turn indices and always in the same direction. Chains that go on to break project
+**higher on generic negative valence while they are still refusing**. The mean-difference persona axis clears
+inversely. **The axes an early-warning account would predict do not clear**: the refusal direction reverses sign
+mid-chain and its mean sits inside the floor.
+
+Four bounds, all of which we state rather than bury. The margin is modest and summarises nine correlated turn
+indices, on one axis of nine. It does not reproduce under the alternative act labels, where the floor collapses and
+most axes nominally clear in both directions at once, so the result stands on the primary labels only and the
+outstanding adjudication is load-bearing for it. On a best-over-layers statistic with a matched floor nothing clears
+even here, so this is a pre-specified-band result and not a search result. And three things changed between the null
+and the positive, depth, the statistic, and the definition of a later break, so we cannot apportion the effect among
+them. *(S1d §3; reports/S1e-depth-matched.md §2)*
+
+**The act itself is plainly readable at fixed depth.** At turn 2, the one turn index whose refusing class contains no
+filler, the refusal direction reaches 0.786 and the misalignment direction 0.774 on the same depth- and
+target-matched statistic against a floor of 0.468 to 0.589, unanimous across all eight contributing scenarios and
+unchanged by dropping filler turns. The larger margin available when turns 2 to 10 are pooled is substantially the
+filler rather than the act, and disappears when filler is excluded. *(S1e §3)*
 
 **Whether an early break and a late break are the same internal state is not evaluable on this design.** Acts at or
 before turn 3 sit in a short context and acts at turn 10 sit in a long one, so the classes differ in conversation
@@ -184,7 +203,12 @@ the act labels is outstanding, and every turn-dependent number is reported under
 
 ## 8. What we would do next
 
-The failure has no fixed turn, so a defence must fire on state rather than schedule; but none of the axes we tested
-predicts the break one turn early against a matched floor. **The open problem is finding a trigger at all.** With one,
-the experiment is: add the refusal direction back for the first tokens of the triggered turn only, remove it, and
-measure the rest of the conversation, which the literature has not done for a multi-turn attack.
+The failure has no fixed turn, so a defence must fire on state rather than schedule, and we now have a weak
+candidate trigger: at a fixed depth, generic negative valence carries information about whether a run that is still
+refusing will break later. The next experiments follow directly. **Strengthen the trigger** by pre-specifying that
+axis and band on these chains and testing it on held-out targets, which removes the multiplicity our own search
+carried. **Then intervene on it**: when it crosses, add the refusal direction back for the first tokens of that turn
+only, remove it, and measure the rest of the conversation. The literature has not done that for a multi-turn attack,
+and the switch-off half is what separates a changed state from a conditioned one. Two smaller items belong beside it:
+matching prefix length so an early break and a late break can be compared at all, and re-asking the harmful request
+under renewed pressure rather than a plain repeat.
