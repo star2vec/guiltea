@@ -284,3 +284,22 @@ The related-work figure the near-neighbours invite (a table contrasting Continua
 - **Which two of D1–D7 to invest drawing effort in** if only two are affordable: recommendation D1 and D6, since they carry the framing and the mechanism claim.
 - **Whether F32's pre-drawn "predicted corners" should appear in the final figure** or only in this plan. Recommendation: keep them faint in the final figure; showing the prediction beside the data is the pre-registration made visible.
 - **Example-selection rules (§0)** are proposals; once approved they are fixed and any deviation is a dated note.
+
+---
+
+## Addendum 2026-09-04 — figures added after the S1d/S1e/S1f analyses
+
+Machine-written by committed scripts; regenerate, never hand-edit. Existing specs above are unchanged.
+
+| figure | source | what it shows |
+|---|---|---|
+| `s1d_blame_target` | `scripts/s1d/t6_figs.py` | the subject's own blame target, route × probe wording, stacked with per-segment CIs. **Candidate lead figure**: it carries C7b, the framing asymmetry. |
+| `s1d_instrument_natural` | same | AUROC by layer on the blame-target contrast, arrows as lines, the seeds 0–9 floor as a shaded band, bag-of-words dashed. The floor band's own width across layers is part of the point. |
+| `s1e_depth_matched` | `briefs/S1e-depth-matched.md` Task 4 | early-warning AUROC by turn index with depth held fixed, matched floor shaded, class counts annotated. Replaces any figure built on the confounded version. |
+| `s1f_route_transfer` | `briefs/S1f-transfer-and-knowing.md` Task 4 | act-direction transfer as a matrix of ordered route pairs, with the within-route ceiling and the matched floor annotated. |
+| `s1f_knowing_doing` | same | per-target scatter of fresh-context knowledge against act rate, one panel per route. |
+| S4: re-commission by arm | `briefs/S4-experiment.md` Task 0c | re-commission rate per cell at distance 0 and 4 with CIs, the zero-feedback floor marked. **The sharpest outcome in the run and its own figure.** |
+| S4: the honest test | Task 0c + cells C/D | cell C against B with D as the floor, distance 0 beside distance 4, so a protection that vanishes when steering stops is visible in one panel. |
+
+**Retired:** any figure asserting oscillation or non-absorbing capitulation (lit-digest §11.4), and any early-warning
+figure that compares a named axis to a single random seed rather than a selection-matched floor.
