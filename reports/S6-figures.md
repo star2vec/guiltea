@@ -262,4 +262,6 @@ The brief lets the researcher name one chain, to be drawn identically and labell
 
 **Not done, by design:** no text generated, no model loaded, no judge called, no GPU touched, nothing that cost money; no example chosen by reading it (D1 and D3 were selected from grades alone, before any text was loaded; the sole hand-pick, D2, was not named and is not drawn); no random floor drawn as a line, and none omitted from a panel carrying a named-direction number; no point smoothed, clipped or dropped (F-A labels any point beyond 3.5 robust SDs of its class median, and none met that threshold on either set); no number typed in; no figure hand-edited; no S1–S5 file edited; no commit to `main`.
 
+**The worktree.** This session ran in `/Users/ecaterina/Developer/guiltea-s6-figures` on branch `s6-figures`, with `results/raw` a symlink to the main checkout's store. To remove it once the branch is merged or discarded: `git -C /Users/ecaterina/Developer/guiltea worktree remove ../guiltea-s6-figures`.
+
 **Vocabulary:** STAGE0 §2 terms throughout; "the researcher" throughout. A whole-word check for the five banned terms over this report, the four scripts and the six caption files returns nothing.
