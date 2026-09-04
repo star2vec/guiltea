@@ -19,13 +19,20 @@ blame is worthless without a behaviour it predicts.
 > one of two things back to it, holding the correction byte-identical and changing only **where the blame lands**:
 > on the answer, or on the assistant. Moral psychology says the first orients to repair and the second to withdrawal.
 > We ask whether that distinction is real in an 8B model: whether it changes how far the damage travels, whether it is
-> visible in the residual stream, and whether it can be steered. The instrument we built to see it turned out to be a
-> word detector, and we show how we know.
+> visible in the residual stream, and whether it can be steered. The instrument we built to see it **passed its own
+> test, and so did a bag-of-words baseline** — so we built a harder test out of the model's own words.
+
+**Wording rule for the instrument, fixed here.** The S2 gate reading on record is **inconclusive** (D-023): both
+cleaned arrows cleared the D-018 gate, and the lexical baseline cleared it too, which makes the gate uninformative
+rather than failed. **Do not write "the instrument is a word detector"** (claims more than we showed) and **do not
+write "the instrument worked"** (claims the opposite, and the +0.6 cosine and the matching baseline are both in the
+report, so a reader checking the numbers would catch it). The accurate sentence is: *it passed, so did the words, and
+the gate could not tell them apart* — which is exactly why C7 exists.
 
 **Title options, in order of preference.**
 1. *Blame the answer or blame the assistant: feedback framing and the spread of a single failure in an 8B model*
-2. *Guilt, shame, and a word detector: what an 8B model's self-criticism does and does not predict*
-3. *One failure, two corrections: does blaming the assistant make the damage spread?*
+2. *One failure, two corrections: does blaming the assistant make the damage spread?*
+3. *Act-blame, self-blame, and what an 8B model's self-criticism does not predict*
 
 ---
 
@@ -55,10 +62,11 @@ distance 0 and after four filler turns. Cells A and B. *Figure: spread rate by a
 within-route contrasts pass the locked rule; all three act-free controls fail. Not separable from harmful-versus-
 harmless content (cosines with the misalignment axis ≤ 0.31). Route-versus-route **not evaluable** on this design.
 
-**C6. Guilt and shame are not two directions at 8B, and the probe that says otherwise is a word detector. DONE.**
-Held-out AUROC ≈ 1.0 and bag-of-words ≈ 1.0; cos(ĝ, ŝ) ≈ +0.6 at every layer. Frame as **replication plus the missing
-control**: the Anthropic emotion-vector work already clusters guilty with shame, and did not run a lexical baseline.
-Cite the selectivity trio. *Figure: AUROC by layer with the word baseline as a dashed line.*
+**C6. Guilt and shame are close to collinear at 8B, and the gate that was meant to separate signal from wording could
+not. DONE, verdict inconclusive (D-023).** Held-out AUROC ≈ 1.0 and bag-of-words ≈ 1.0; cos(ĝ, ŝ) ≈ +0.6 at every
+layer. Frame as **replication plus the missing control**: the Anthropic emotion-vector work already clusters guilty
+with shame, and did not run a lexical baseline. Cite the selectivity trio. Obey the wording rule above.
+*Figure: AUROC by layer with the word baseline as a dashed line.*
 
 **C7. The instrument's real test, on the subject's own words. TONIGHT.** Do any of the arrows separate
 *accepts fault about the act* from *defends the answer*, above the random floor **and** above bag-of-words? S1d Task 4.
