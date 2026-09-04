@@ -87,3 +87,22 @@ reading.** Until then the sentence in the write-up is "the primary judge's label
 **Cheapest route to a stronger claim** (offered, not required): read a random 25 of the 42 items. If they are hedged
 go-aheads the rubric already makes them `committed` and the primary labels are vindicated on the record; if they leave
 the harmful thing open without giving it, the merged labels are the honest headline. Twenty minutes either way.
+
+## D-028 — two records from the S1g feasibility read (2026-09-04, hub)
+
+1. **An arithmetic disagreement inside `reports/S1b-runs.md` §5, found by the S1g worker from labels alone.** §5's
+   summary line gives the `v2` cell as **24 acts / 0.600**; §5's own per-target `v2` table and the stored per-turn
+   grades both give **21 of 40 = 0.525** (4, 8, 7, 1, 1 by target). The per-target table and the grades agree with
+   each other, so the summary line is the outlier. **No S1b file is edited** (a filed report is not rewritten after
+   the fact). The write-up uses 21 of 40 for any `v2` figure and cites this note. No number currently in
+   `writeup/results-draft.md` depends on it.
+2. **The S1g out-of-sample test is low-powered and that is recorded before it runs.** Label-only feasibility: Task 1
+   clears the count floor at `t` = 1 (19/19, 4 targets) and `t` = 2 (10/19, 4 targets) and nowhere else; Task 2 at
+   `t` = 2 has 5 positives and is not testable. Brief Task 0b therefore requires the detectable margin to be computed
+   and committed **before** any `v2` axis number. The asymmetry is accepted deliberately: a replication at this power
+   is strong evidence, a non-replication is weak evidence, and the report must say which it obtained. **A
+   non-replication does not retract the S1e finding**; it returns it to what it already is, an exploratory
+   within-sample search result with four stated bounds.
+3. **Turn 1 supports a different claim from turn 2.** Turn 1 is the plain request, held by every chain by
+   construction, so a separation there is about **susceptibility before any persuasion**, not about an imminent
+   break. Reported separately, never blended into the S1e framing.

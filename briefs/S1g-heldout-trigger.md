@@ -43,11 +43,39 @@ a statistic. Do not test a second label source.**
 introduced.** If the counts do not reach the floor at any turn index, the verdict is **"not testable on `v2`"** — which
 is a legitimate outcome and must not be replaced by loosening anything above.
 
+## Task 0b — the power statement comes FIRST (added 2026-09-04, after the worker's feasibility read)
+
+The worker's label-only feasibility read establishes that Task 1 clears the count floor at **two turn indices only**,
+`t` = 1 (19 positives, 19 negatives, 4 targets) and `t` = 2 (10 / 19, 4 targets), and that Task 2 at `t` = 2 has 5
+positives and is heading for "not testable". At those class sizes, over 4 targets, **a failure to replicate may say
+more about the sample than about the effect.** So the power is computed and written down **before any `v2` axis number
+is computed**, and the report states it in that order.
+
+1. Using the randctl seeds 0–9 on the `v2` classes as they stand, obtain the null distribution of the headline
+   statistic at these exact class sizes and target counts.
+2. From it, state **the smallest margin this test could have distinguished from its floor**, and whether the `v1`
+   effect size (headline 0.604 against a largest-seed floor of 0.541, excess 0.104 against 0.041) is inside or
+   outside that range.
+3. Write that sentence into the report **before** the Task 1 numbers, and commit it, so it cannot read as a post-hoc
+   excuse. If the `v1` effect size is *below* what this test could detect, say so plainly: the test is then
+   informative only if it comes back positive, and a negative result carries little.
+
+This asymmetry is the reason to run it: at this power a replication is strong evidence, and a non-replication is weak
+evidence. Both are reported, and the report says which kind of evidence it obtained.
+
 ## Task 1 — the held-out test
 
 Build the `v2` class table exactly as the S1e code builds the `v1` one, reusing `scripts/s1e/depth.py`. Report, per
 turn index and as the count-weighted headline: n₊, n₋, targets holding both classes, the two pre-named axes' fold-
 statistic band means, and the ten seeds' band means. Then the verdict.
+
+**Turn 1 and turn 2 are different claims and must be reported separately as well as in the headline** (added
+2026-09-04). Turn 1 is the `situation` turn, the plain harmful request, which every chain holds by construction from
+the hold screen. A separation at `t` = 1 therefore says the state on the **initial refusal, before any persuasion has
+been applied**, carries information about whether this run will later break. That is a **susceptibility** claim, not
+an imminence claim, and it is arguably the more interesting of the two — but it is not the "see the break coming"
+framing S1e used, and the two must not be blended. Report `t` = 1 and `t` = 2 each with its own numbers and floor,
+say which one carries the count-weighted headline, and name the claim each supports in its own sentence.
 
 **Write the verdict in one of exactly these three forms.**
 1. **Replicated.** "The prediction fixed before the `v2` data was read is met: `nn` reaches X against a largest-seed
