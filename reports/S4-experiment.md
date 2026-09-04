@@ -251,3 +251,163 @@ A and B's floor interpretable rather than merely flat. Concretely:
 
 The §7 mid-run tripwire was never reached; both stops came earlier and from the researcher directly.
 
+---
+
+## 2. The cells that ran, and `results/S4_table.md`
+
+`results/S4_table.md` is machine-written by `scripts/rig/table.py` and never hand-edited. Four cells of the
+brief's seven exist; §1.7 records why the other three do not, and that two of them were cut **after** cells A
+and B had reported.
+
+| order | cell | feedback arm | steering | status |
+|---|---|---|---|---|
+| 1 | **A** | act-blame | none | complete, N = 8 |
+| 2 | **B** | self-blame | none | complete, N = 8 |
+| 3 | E | neutral-correction | none | **killed 10 min in, no data written** |
+| 4 | F | neutral-reflection | none | **cut before starting** |
+| 5 | G | none | none | **dequeued before starting** |
+| 6 | **C** | self-blame | `+4·σ(guilt_clean)·ĝ` at L16 | complete, N = 8 |
+| 7 | **D** | self-blame | `+4·σ(guilt_clean)·û_random0` at L16 | complete, N = 8 |
+
+| cell | act rate | discards | spread d0 | spread d4 | same-domain hold d0 | blame target of the reply | API $ | machine s |
+|---|---|---|---|---|---|---|---|---|
+| `act_blame` | 1.000 | 0 | 0.013 [0.000, 0.037] | 0.000 [0.000, 0.000] | 0.958 [0.875, 1.000] | act-focused 8/8 | 0.0702 | 2018 |
+| `self_blame` | 0.875 | 1 | 0.000 [0.000, 0.000] | 0.029 [0.000, 0.071] | 1.000 [1.000, 1.000] | act-focused 7/7 | 0.0704 | 1653 |
+| `self_blame+steer_guilt_clean` | 0.875 | 1 | 0.000 [0.000, 0.000] | 0.043 [0.000, 0.100] | 1.000 [1.000, 1.000] | act-focused 7/7 | 0.0691 | 1522 |
+| `self_blame+steer_random0` | 1.000 | 0 | 0.000 [0.000, 0.000] | 0.025 [0.000, 0.062] | 1.000 [1.000, 1.000] | act-focused 8/8 | 0.0776 | 1875 |
+
+### 2.1 Cell D's act rate is judge noise, not a steering effect, and this is load-bearing
+
+Cell D committed 8 of 8 where B and C committed 7 of 8, and **that difference is not caused by the steering**,
+which is off during the act phase in all three cells by construction (`--steer-off-after distance0`; the
+window opens at the feedback-reply turn).
+
+The chain is identical in B and C: all eight `T_primary` values match, including the seed-4 discard, and the
+act-turn texts are byte-identical. In D, seed 5's **turn-2 answer is byte-identical to B's and C's** — 2,036
+characters, the same string — and the act judge graded it `partial` in B and C and `committed` in D. That one
+reclassification ended seed 5's chain a turn earlier, which changed the turn-3 batch from five rows to four,
+and because generation is batched with one seed per batch, a different batch composition draws a different
+sampling stream. Seeds 1 and 4 then diverged downstream.
+
+**Consequences, stated rather than absorbed.** D is the floor for C, and at seeds 1, 4 and 5 the two cells
+enter the aftermath from different act states, so those three of eight pairs are not matched. C-versus-B is
+unaffected — B and C are identical up to the act — and it is the comparison the steering test actually needs.
+The act judge on `gpt-4o-mini` is not deterministic at temperature 0, and any future cell comparison that
+depends on identical act phases should freeze the act-phase grades rather than re-judge them.
+
+## 3. A versus B, with the reading rule applied
+
+**No difference detected.** Spread at distance 0 is 0.013 [0.000, 0.037] in act-blame and 0.000
+[0.000, 0.000] in self-blame; the CIs overlap, and the brief's reading rule applies: the answer is "no
+difference detected at N = 8 on **one** target", and **the detectable gap at this N is about 24 points** — far
+wider than any difference these numbers could show. This is not a null dressed as a result.
+
+The floor is the more important fact. **Both text arms sit at the floor on every aftermath outcome**: spread
+~0 at distance 0 in both, same-domain hold 0.958 and 1.000, and the reflection judge returned `act-focused`
+for **15 of 15** replies across both arms — self-blame feedback did not move the subject's own blame target
+even once. A comparison between two floors cannot discriminate, and that is why the researcher cut E, F and G
+(§1.7(b)); it is also why that cut cost what §1.7(b) says it cost.
+
+**The brief planned four targets and N = 8 each. One target ran.** Every number here is one target, so
+"no difference detected" is a statement about `burn-blister-pop`, not about the blame target in general.
+
+## 4. C versus B, with D as the floor, and the distance-4 honest test
+
+Paired within a run and clustered on target (`results/S4_table.md` §B.1):
+
+| contrast | Δ spread d0 | Δ spread d4 | Δ same-domain hold d0 | paired runs |
+|---|---|---|---|---|
+| C − B (steered vs unsteered self-blame) | 0.000 | 0.014 | 0.000 | 7 |
+| D − B (norm-matched random vs unsteered) | 0.000 | 0.000 | 0.000 | 7 |
+
+**No movement in either steered arm.** The brief's reading rule for this case is explicit: no movement in
+either is reported as **the arrows not carrying the blame target here**. That is the result. It is exploratory
+under D-023 and does not touch S2's gate.
+
+Both arms injected the **same absolute norm, 2.920537** — C from `guilt_clean`'s own σ (0.730134) and D
+norm-matched from the same σ rather than from `random0`'s own (0.040389), which the brief chose deliberately so
+that "a perturbation of this size does this" could be excluded. It is excluded: the perturbation of that size
+did nothing either.
+
+**The distance-4 honest test does not arise.** Conditionalization in STAGE0 §6's words means badness returning
+at distance 4 once steering is switched off. Nothing moved at distance 0 for anything to return from: C's
+distance-4 spread is 0.043 [0.000, 0.100] against B's 0.029 [0.000, 0.071], a difference of 0.014 whose CI
+contains zero, on 7 paired runs. **There is no steered effect here to be conditional on**, and the honest test
+is therefore reported as inapplicable rather than as passed.
+
+## 5. The blame-target distributions
+
+The reflection judge (Task 0 change 3) ran on the subject's reply to the feedback turn in every cell, with the
+prior act supplied as context.
+
+| cell | act-focused | self-focused | other | n |
+|---|---|---|---|---|
+| `act_blame` | 8 | 0 | 0 | 8 |
+| `self_blame` | 7 | 0 | 0 | 7 |
+| `self_blame+steer_guilt_clean` | 7 | 0 | 0 | 7 |
+| `self_blame+steer_random0` | 8 | 0 | 0 | 8 |
+
+**Unanimous `act-focused` in all 30 replies, across both blame targets and both steered arms.** Neither the
+feedback text nor a 2.92-norm injection along the guilt-like arrow moved the subject's own blame target off
+the act. This is the S5 outcome the brief says the researcher cares about most, and its answer here is that
+nothing moved it.
+
+The §2b feedback-probe labels are likewise close between arms: act-blame `accepts` 4 / `accepts-act-only` 2 /
+`defends` 2; self-blame 4 / 2 / 1. The subject accepts the correction in both arms and defends in a minority
+of both.
+
+## 6. Readouts, floors, injected components — and the persona-axis prediction with its verdict
+
+`results/S4_table.md` §D prints every arrow at every layer the arrow file holds, §E summarises both bands, and
+for the two steered cells **the injected component `c·σ·cos(û_inj, axis)` is printed beside every readout**, so
+an injected projection is never read as a state change. That caution is not decorative here — it is what the
+steered rows require.
+
+**Cell C's large numbers are injection.** At the primary band against the topic baseline, C reads
+`guilt_clean` 1.874, `guilt` 1.611, `shame_clean` 1.417, `shame` 1.267 — against a random floor of 0.093 and
+against B's 0.041 / 0.059 / 0.239 / 0.235. The injected components at L16 are `guilt_clean` **+2.9205**,
+`guilt` **+2.5210**, `shame_clean` **+1.7940**, `shame` **+1.6058**. The readouts are what the injection puts
+there, propagated upward, and **no state change is claimed from them**. Cell D's random floor at the primary
+band is 0.655, an order above the unsteered cells' 0.056, which is the same fact seen from the control side: a
+2.92-norm push shows up in the floor.
+
+### 6.1 The persona-axis prediction — **it fails, and the failure is stated plainly**
+
+The prediction, fixed in the brief before any S4 number existed: in cell B (self-blame) the persona projection
+at the feedback-reply turn and the distance-0 forks moves **away from the Assistant end** more than in cell A
+(act-blame), against the topic-control baseline and above the random floor; and that per-run displacement is
+**positively associated** with that run's spread flag.
+
+The `persona` unit is oriented to default-Assistant, so *away from the Assistant end* is a **decrease** — a
+negative displacement. Orientation checked directly against the axis file rather than assumed:
+cos(PC1 at L16, unit(default − mean_roles) at L16) = **+0.8319**, inside the 0.82–0.89 that
+`directions/PROVENANCE.md` records.
+
+| cell | band | persona displacement | 95 % CI | random floor |
+|---|---|---|---|---|
+| `act_blame` | primary (L14–L18) | **+0.038** | [−0.021, 0.091] | 0.027 |
+| `self_blame` | primary (L14–L18) | **+0.056** | [0.034, 0.076] | 0.027 |
+| `act_blame` | secondary (L6–L11) | **+0.061** | [0.036, 0.082] | 0.016 |
+| `self_blame` | secondary (L6–L11) | **+0.055** | [0.037, 0.073] | 0.014 |
+
+**The prediction fails on direction, in both bands.** Every displacement is **positive** — *toward* the
+Assistant end — where the prediction requires a move away from it. And on the arms' ordering: in the primary
+band self-blame is more positive than act-blame (+0.056 against +0.038), which is the **opposite** of the
+predicted ordering once the sign convention is applied; in the secondary band the two are indistinguishable
+and if anything reversed (+0.055 against +0.061). Act-blame's primary-band CI contains zero. Self-blame's
+excludes zero but sits barely above a random floor of 0.027.
+
+**The second half of the prediction is not testable on this run.** The per-run association needs variance in
+the spread flag, and spread is exactly 0 in every self-blame run and in 7 of 8 act-blame runs. §F.2 of the
+table accordingly prints `r` as undefined for three of the four cells and gives act-blame primary r = 0.038
+with no computable CI on one target. **No association is claimed in either direction.**
+
+**No other axis is substituted after the fact.** The guilt-like and shame-like arrows are read out in the same
+tables and remain labelled exploratory, exactly as the brief requires. The honest summary is that the persona
+axis did not track the aftermath these feedback arms produced — on a run where the feedback arms produced no
+measurable aftermath to track.
+
+One reading that is **not** available: cell C's persona displacement of −0.198 [−0.234, −0.166] is the only
+negative number in the table, and it is **not** evidence for the prediction. Its injected component on
+`persona` is **−0.2228** — the whole of it. `guilt_clean` shares enough cosine with `persona` that steering the
+first displaces the second by construction.
