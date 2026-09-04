@@ -115,3 +115,61 @@ Condensed from the full research report. One line per paper: what it found and w
 5. Marks/Lindsey/Olah, Persona Selection Model blog — whole thing, it's short and it's your theory.
 
 Then, if time: Chen et al. persona vectors (the recipe), Han et al. personality illusion (the justification), Tan/Wichers inoculation + 2604.25891 (the trap).
+
+---
+
+## 11. Sweep of 2026-09-04 — four areas, run after S1b/S1c/S2b closed
+
+Four parallel searches: multi-turn capitulation dynamics, the say-versus-do gap, activation-level interventions, and a
+novelty check on blame-target feedback. **Verification status is marked per item. Nothing here goes into prose until the
+author list is checked.**
+
+### 11.1 Novelty verdicts (the two that matter)
+- **Varying the blame target of feedback with corrective content held constant, measuring behavioural spread: NOT FOUND.**
+  This is the project's core and it appears unclaimed. Nearest: in-context emergent misalignment (2510.11288), and
+  persona features as the causal knob for narrow-to-broad spread (2506.19823).
+- **Extracting guilt and shame directions: DONE ALREADY.** Anthropic's emotion-concepts work (2604.07729;
+  transformer-circuits.pub/2026/emotions) extracts 171 emotion vectors from Sonnet 4.5 by essentially our recipe and
+  publishes a pairwise cosine matrix in which *guilty* and *shame* already cluster together. They do **not** frame the
+  pair as the act/self contrast and do **not** run a lexical baseline (they project out neutral components instead).
+  **So our cos ≈ +0.6 is a replication at 8B, and our bag-of-words match is the control the prior work skipped.**
+
+### 11.2 Must-cite or look unscholarly
+- **2606.04413** (Khursheed, Sosis & Roger 2026) contains a *StrongREJECT Regret* eval of nearly our fork's shape:
+  harmful answer, then a question about the answer just given. Differentiators: it studies deliberately helpful-only
+  fine-tunes, treats regret as a character defect, follows up with a *different* harmful prompt, reports no mechanism.
+- **2507.11878** (Zhao, Huang, Wu, Bau & Shi 2025) — harmfulness and refusal encoded **separately**; jailbreaks lower
+  refusal without reversing the internal harmfulness belief. The mechanistic substrate for our self-criticism finding,
+  and the source of S1d Task 9's directional prediction.
+- **2507.02956** (Bullwinkel et al. 2025) — Crescendo turns are represented as *more* benign with each turn, which is
+  why single-turn defences never trip. Closest mechanistic prior to S1d Task 7.
+- **2606.05976** and **2507.02778** — self-criticism rates are gated by whether the bad content is role-attributed to
+  the model itself (23-93 pp swings; a 64.5 % self-correction blind spot). **This is why S4 Task 0b exists.**
+- **1909.03368** (Hewitt & Liang, selectivity), **2005.00719** (Ravichander et al.), **2102.12452** (Belinkov survey) —
+  the trio that makes "we ran the lexical control and it passed" a correctly-executed null rather than a failure.
+- **2502.17424** (Betley et al., EM) and **2506.11613** (Turner, Soligo, Taylor, Rajamanoharan & Nanda, model organisms)
+  — already in §2; the second is the source of the organism our S1b found unusable.
+
+### 11.3 What the sweep says is OPEN (our shopping list)
+- Steering at one turn, **removing** it, and measuring the turns after: no paper found. This is STAGE0 §6's honest test
+  and it is folded into S4 cells C and D.
+- Whether an accurate self-criticism has any effect on the **same** harm recurring **in the same conversation**.
+- Whether an early-breaking chain and a late-breaking chain are the **same internal state** (S1d Task 8).
+- No standard turn-level safety-state metric; nobody reports P(re-refuse | already complied).
+- Whether the self-criticism is introspective or confabulated.
+
+### 11.4 Corrections to our own record, forced by this sweep
+1. **The oscillation claim is retracted.** STATUS previously read "commit at turn 3, re-refuse, commit again at turn 10".
+   The stored per-turn labels do not support it: 0 of 109 committing chains commits again, and every post-act turn is
+   neutral filler, so a later `held` label means the harmful question was not re-asked. Two 2026 papers (2603.15684,
+   2603.10068) do describe non-absorbing trajectories; **we neither replicate nor contradict them**, because our design
+   stops pushing after the act. Say only what we measured: the first committed turn spreads over turns 1-10 and 83 of
+   192 chains never capitulate.
+2. **Steering has its own failure mode.** Random-direction steering alone raises harmful compliance (2509.22067). Our
+   norm-matched random arms and the seeds 0-9 floor are now a citable methodological point, not housekeeping.
+
+### 11.5 Citations needing verification before prose
+Author lists unconfirmed: 2502.01042 (SafeSwitch), 2502.17420 (concept cones). **Many-shot Jailbreaking has no arXiv
+preprint** — cite NeurIPS 2024 proceedings plus OpenReview, never an arXiv ID. The "knowing-doing gap" origin paper
+could not be verified; use the term, do not cite a primary source for it. Arditi et al.: verified via NeurIPS
+proceedings; 2406.11717 appears in the interventions sweep and is the ID already in `papers/refs.md`.

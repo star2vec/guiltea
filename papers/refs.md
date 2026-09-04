@@ -21,3 +21,16 @@ One line each: what it's for, and which stage's session would fetch it. Full fin
 - Han et al., The Personality Illusion — arxiv.org/abs/2509.03730 — why self-report is secondary.
 - Inoculation/conditionalization cluster: 2510.04340, 2510.05024, 2604.25891 — the S5 objection we pre-empt.
 (IDs marked (?) in lit-digest.md — 2608.08212, 2603.04582 among them — must be verified on arXiv before citing in the write-up.)
+
+## Added by the 2026-09-04 sweep (S6 / hub; verification status in lit-digest §11.5)
+- Sofroniew et al., Emotion Concepts and their Function in an LLM — arxiv.org/abs/2604.07729 — 171 emotion vectors, guilt/shame cosine cluster. Our §probe section's corroboration. S6.
+- Khursheed, Sosis & Roger, (Mis)generalization of Helpful-only Fine-tuning — arxiv.org/abs/2606.04413 — the StrongREJECT Regret eval; must-cite near neighbour. S6.
+- Zhao, Huang, Wu, Bau & Shi, LLMs Encode Harmfulness and Refusal Separately — arxiv.org/abs/2507.11878 — source of S1d Task 9's prediction. S1d, S6.
+- Bullwinkel et al., RepE Perspective on Multi-Turn Jailbreaks — arxiv.org/abs/2507.02956 — later attack turns represented as more benign. S1d Task 7, S6.
+- Wang et al., persona features control narrow-to-broad spread — arxiv.org/abs/2506.19823 — the mechanism S4's persona prediction tests. S4, S6.
+- Chen K-Y et al., The Self-Correction Illusion — arxiv.org/abs/2606.05976 — role relabelling gates error flagging. Why S4 Task 0b exists. S4, S6.
+- Hewitt & Liang, Control Tasks / selectivity — arxiv.org/abs/1909.03368; Ravichander et al. — arxiv.org/abs/2005.00719; Belinkov, Probing Classifiers — arxiv.org/abs/2102.12452 — the lexical-baseline trio. S6.
+- Zeng et al. persuasion (2401.06373) and Qi et al. shallow alignment (2406.05946) — already used; IDs confirmed by the sweep. S1, S6.
+- Rogue Scalpel, random-direction steering raises compliance — arxiv.org/abs/2509.22067 — justifies our random arms. S5, S6.
+- Kwon, prefill jailbreak / refusal-state transplant — arxiv.org/abs/2607.14147 — prior for "first half suffices". S5, S6.
+- Afonin et al., EM via In-Context Learning — arxiv.org/abs/2510.11288 — in-context spread, our nearest behavioural neighbour. S6.
