@@ -32,6 +32,13 @@ S2 = ["guilt_clean", "shame_clean", "nn", "received_act", "received_self"]
 REPORT_AXES = S2 + S3
 POSITION = "answer"
 CONTRASTS = {"primary": ("act-focused", "neutral"), "secondary": ("act-focused", "self-focused")}
+# Both brief contrasts are confounded with route and fork: `neutral` is 26 of 32 deceived fork A and
+# `self-focused` is 19 of 24 vicious fork B, so any axis that reads conversation structure or the persona
+# system prompt separates them without reading a blame target (the S1b section-10 problem). These
+# same-cell restrictions hold mode, fork, system prompt and conversation shape fixed. Reported beside
+# the brief's tables, never instead of them.
+WITHIN_CELL = {"primary_within_deceived_forkA": ("primary", "deceived", "A"),
+               "secondary_within_vicious_forkB": ("secondary", "vicious", "B")}
 MIN_SECONDARY = 10
 
 
@@ -70,15 +77,20 @@ def bow_oof(texts, y, groups):
     return scores, m, folds_used, folds_skipped
 
 
-def run_contrast(name, pos_label, neg_label, rows, proj, axes, positions, layers):
-    sel = [i for i, r in enumerate(rows) if r["label"] in (pos_label, neg_label)]
+def run_contrast(name, pos_label, neg_label, rows, proj, axes, positions, layers, restrict=None):
+    sel = [i for i, r in enumerate(rows) if r["label"] in (pos_label, neg_label)
+           and (restrict is None or (r["mode"], r["fork"]) == restrict)]
     y = np.array([1 if rows[i]["label"] == pos_label else 0 for i in sel])
     grp = np.array([rows[i]["target"] for i in sel])
     texts = [rows[i]["answer"] for i in sel]
     n_pos, n_neg = int(y.sum()), int((y == 0).sum())
     info = {"contrast": "%s vs %s" % (pos_label, neg_label), "n_positive": n_pos, "n_negative": n_neg,
-            "n_targets": len(set(grp)), "positive_class": pos_label}
-    if name == "secondary" and n_neg < MIN_SECONDARY:
+            "n_targets": len(set(grp)), "positive_class": pos_label,
+            "restricted_to": ("%s fork %s" % restrict) if restrict else None,
+            "class_composition": {lab: dict(Counter("%s/%s" % (rows[i]["mode"], rows[i]["fork"])
+                                                    for i in sel if rows[i]["label"] == lab))
+                                  for lab in (pos_label, neg_label)}}
+    if name.startswith("secondary") and n_neg < MIN_SECONDARY:
         info["underpowered"] = True
         info["note"] = ("%s has %d members, fewer than the %d-member floor; no AUROC is reported for this contrast"
                         % (neg_label, n_neg, MIN_SECONDARY))
@@ -159,10 +171,15 @@ def main():
            "label_counts": dict(Counter(str(r["label"]) for r in rows)), "contrasts": {}}
     for name, (pos_label, neg_label) in CONTRASTS.items():
         out["contrasts"][name] = run_contrast(name, pos_label, neg_label, rows, proj, axes, positions, layers)
+    for name, (base, mode, fork) in WITHIN_CELL.items():
+        pos_label, neg_label = CONTRASTS[base]
+        out["contrasts"][name] = run_contrast(name, pos_label, neg_label, rows, proj, axes, positions, layers,
+                                              restrict=(mode, fork))
     json.dump(out, open(C.OUT / "t4_q2.json", "w", encoding="utf-8"), indent=1, sort_keys=True)
     print(json.dumps(out["label_counts"], indent=1))
     for name, info in out["contrasts"].items():
-        print("== %s: %s  (n+ %d, n- %d)" % (name, info["contrast"], info["n_positive"], info["n_negative"]))
+        print("== %s: %s  (n+ %d, n- %d%s)" % (name, info["contrast"], info["n_positive"], info["n_negative"],
+                                              ", restricted to %s" % info["restricted_to"] if info["restricted_to"] else ""))
         if info.get("underpowered"):
             print("   UNDERPOWERED:", info["note"])
             continue
