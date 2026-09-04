@@ -167,7 +167,8 @@ def main(argv=None):
         return 2
     finally:
         judges.flush()
-        json.dump({"ledger_usd": judges.spent(), "user_span_misses": dict(R.USER_SPAN_MISSES), "escalation": {
+        json.dump({"ledger_usd": judges.spent(), "user_span_misses": dict(R.USER_SPAN_MISSES),
+                   "batching": dict(R.BATCH_STATS), "escalation": {
             "decided": escalator.decided, "would_escalate": escalator.would_have,
             "calls_made": escalator.calls, "enabled": escalator.enabled, "limit": escalator.call_limit,
             "model": escalator.model}}, open(out / "run_footer.json", "w"), indent=1)

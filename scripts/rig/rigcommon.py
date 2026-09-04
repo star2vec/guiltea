@@ -74,6 +74,61 @@ PROFILES = {
 MAX_NEW_REPLY = 300      # S4-design §2a
 MAX_NEW_UNRELATED = 300  # brief step 3(c)
 
+# Batching by token budget, not by row count (Phase 2 operational fix; see reports/S3-rig.md §3).
+# The brief fixes the *upper* bounds (<= 12 chain rows, 20 single-turn); on a 24 GiB card those bounds OOM at
+# the long distance-4 contexts, because a prefill of [rows, T] carries activations linear in rows x T (the
+# 14336-wide MLP intermediate at 12 x 7.5k tokens alone is > 3 GiB per tensor). Measured on this 4090 with the
+# base resident (14.96 GiB): generation peaked at 21.97 GiB for rows x T = 30k and OOMed at 45k; the readout
+# forward peaked at 22.44 GiB for 45k and 22.47 GiB for 30k (its lm_head logits are [rows, T, 128256]). The budgets below sit under those with ~2 GiB of headroom and are the
+# *only* thing that changes: the row bounds, the seeds, the caps and every measured quantity are untouched.
+GEN_TOKEN_BUDGET = int(os.environ.get("RIG_GEN_TOKEN_BUDGET", "28000"))
+READOUT_TOKEN_BUDGET = int(os.environ.get("RIG_READOUT_TOKEN_BUDGET", "26000"))
+BATCH_STATS = {"gen_calls": 0, "gen_chunks": 0, "gen_min_rows": None, "gen_max_ctx": 0,
+               "readout_calls": 0, "readout_chunks": 0, "readout_min_rows": None, "readout_max_ctx": 0,
+               "gen_token_budget": GEN_TOKEN_BUDGET, "readout_token_budget": READOUT_TOKEN_BUDGET}
+
+
+def chunk_by_budget(lengths: Sequence[int], budget: int, extra: int = 0, max_rows: int = 10 ** 9) -> List[List[int]]:
+    """Consecutive groups of row indices with rows x max(len + extra) <= budget (>= 1 row always). Order kept."""
+    groups: List[List[int]] = []
+    cur: List[int] = []
+    cur_max = 0
+    for i, n in enumerate(lengths):
+        m = max(cur_max, int(n) + extra)
+        if cur and ((len(cur) + 1) * m > budget or len(cur) + 1 > max_rows):
+            groups.append(cur)
+            cur, cur_max = [i], int(n) + extra
+        else:
+            cur.append(i)
+            cur_max = m
+    if cur:
+        groups.append(cur)
+    return groups
+
+
+def make_gen_batch(inner):
+    """Drop-in replacement for ``s1bcommon.gen_batch``: same call, chunked to fit the card.
+
+    A chunk is generated with ``seed_base + 1000 * chunk_index`` so two chunks of one call do not draw from the
+    same reseeded stream. Sampling was already per batch rather than per row (s1bcommon.gen_batch seeds once with
+    seed_base), so this changes which draw a row gets, exactly as any batch-size choice does; it is fixed before
+    the first cell and held constant across all five.
+    """
+    def gen_batch(model, tok, convs, seed_base: int, max_new: int = None):
+        cap = S.MAX_NEW if max_new is None else max_new
+        lens = [len(tok(S.render(tok, m, True), add_special_tokens=False)["input_ids"]) for m in convs]
+        groups = chunk_by_budget(lens, GEN_TOKEN_BUDGET, extra=cap)
+        BATCH_STATS["gen_calls"] += 1
+        BATCH_STATS["gen_chunks"] += len(groups)
+        BATCH_STATS["gen_max_ctx"] = max(BATCH_STATS["gen_max_ctx"], max(lens) if lens else 0)
+        out = []
+        for ci, idx in enumerate(groups):
+            n = len(idx)
+            BATCH_STATS["gen_min_rows"] = n if BATCH_STATS["gen_min_rows"] is None else min(BATCH_STATS["gen_min_rows"], n)
+            out += inner(model, tok, [convs[i] for i in idx], seed_base=int(seed_base) + 1000 * ci, max_new=cap)
+        return out
+    return gen_batch
+
 
 class Rig:
     """Everything that depends on the profile. Built once by ``configure``."""
@@ -273,8 +328,14 @@ def make_readout(rig: Rig):
         if per_token:
             raise NotImplementedError("S4 stores no per-token projections; S1b Task 10 owns that path")
         results: List[Optional[dict]] = [None] * len(convs)
-        for start in range(0, len(convs), max_rows):
-            chunk = list(range(start, min(len(convs), start + max_rows)))
+        lens = [len(tok(S.render(tok, c, False), add_special_tokens=False)["input_ids"]) for c in convs]
+        groups = chunk_by_budget(lens, READOUT_TOKEN_BUDGET, max_rows=max_rows)
+        BATCH_STATS["readout_calls"] += 1
+        BATCH_STATS["readout_chunks"] += len(groups)
+        BATCH_STATS["readout_max_ctx"] = max(BATCH_STATS["readout_max_ctx"], max(lens) if lens else 0)
+        for chunk in groups:
+            BATCH_STATS["readout_min_rows"] = (len(chunk) if BATCH_STATS["readout_min_rows"] is None
+                                               else min(BATCH_STATS["readout_min_rows"], len(chunk)))
             ids_list, spans_list, meta_list = [], [], []
             for c in chunk:
                 ids, sp = S._spans_for(tok, convs[c])
@@ -371,6 +432,8 @@ def configure(profile: str, out_root: Path, budget_usd: float) -> Rig:
     S.MAX_NEW = rig.spec["max_new_chain"]
     S.RAW = out_root
     S.readout_batch = make_readout(rig)
+    S.gen_batch = make_gen_batch(S.gen_batch) if not getattr(S.gen_batch, "_rig_wrapped", False) else S.gen_batch
+    S.gen_batch._rig_wrapped = True
     S.save_run = make_save_run(rig)
     S.C.DEVICE = rig.device
     # judges: the rig's own ledger, its own budget stop, its own raw-call log.
