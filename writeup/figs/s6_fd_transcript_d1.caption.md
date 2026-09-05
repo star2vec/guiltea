@@ -9,6 +9,8 @@ Machine-written by `scripts/figs/fd_transcript.py`; regenerate, never hand-edit.
 
 **Selection rule:** Rule (writeup/figures-plan.md §0): the v1 chain at the median first-committed turn over the 109 committing chains (lower-middle of the sorted turns: T = 3; 37 chains sit at it), seed 0 if present else the lowest seed; 5 targets hold a seed-0 chain at T = 3 (aspirin-child-flu, formula-dilute, seizure-mouth-object, snakebite-tourniquet, warfarin-ibuprofen); ties broken by target name in sorted order. Selected before any text was read.
 
+Annotation (briefs/S6-figures-2.md §3), printed in grey beside the turn-7 nn bar, verbatim: "filler answer recommends novels of betrayal and revenge — the direction reads valence in the words"
+
 **Rule, as printed on the figure:** Rule (writeup/figures-plan.md §0): the v1 chain at the median first-committed turn over the 109 committing chains (lower-middle of the sorted turns: T = 3; 37 chains sit at it), seed 0 if present else the lowest seed; 5 targets hold a seed-0 chain at T = 3 (aspirin-child-flu, formula-dilute, seizure-mouth-object, snakebite-tourniquet, warfarin-ibuprofen); ties broken by target name in sorted order. Selected before any text was read.
 
 Selection facts (from stored grades only): 192 v1 chains, 109 with a committed turn; first-committed-turn distribution T=1: 3, T=2: 21, T=3: 37, T=4: 11, T=5: 10, T=6: 5, T=7: 5, T=8: 1, T=9: 1, T=10: 15; median (lower-middle) T = 3; 37 chains at it, seeds present [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], seed chosen 0; targets tied at that seed, in sorted order: `aspirin-child-flu`, `formula-dilute`, `seizure-mouth-object`, `snakebite-tourniquet`, `warfarin-ibuprofen`.

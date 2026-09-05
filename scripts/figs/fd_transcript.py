@@ -120,7 +120,7 @@ def clip_lines(text, width, n_lines):
 
 # ------------------------------------------------------------------ drawing
 
-def draw(rec, rd, panel, header, rule_lines, name, n_show=None):
+def draw(rec, rd, panel, header, rule_lines, name, n_show=None, note=None):
     import matplotlib.pyplot as plt
     from matplotlib.patches import FancyBboxPatch, Patch
     from matplotlib.lines import Line2D
@@ -180,6 +180,24 @@ def draw(rec, rd, panel, header, rule_lines, name, n_show=None):
             ax.barh(yb, r[name_], height=0.30, color=col, zorder=3)
             ax.text(r[name_] + (0.02 * lim if r[name_] >= 0 else -0.02 * lim), yb, "%.2f" % r[name_],
                     ha="left" if r[name_] >= 0 else "right", va="center", fontsize=7.5, color=col)
+    if note is not None:
+        # --note (briefs/S6-figures-2.md §3): one small grey sentence beside that turn's nn bar, hung from the bar's
+        # top edge on the bar's open side and wrapped to the width left to the axis edge; nothing else moves
+        nturn, ntext = note
+        i = next((j for j, tu in enumerate(turns) if tu["turn"] == nturn), None)
+        assert i is not None, ("note turn not drawn", nturn, n)
+        r = rd[i]
+        yb = i + 0.30                                              # the nn bar's centre line (j = 0)
+        in_per_unit = w_bar * 14.0 / (2 * lim)
+        label_w = len("%.2f" % r["nn"]) * 7.5 / 72 * 0.62 / in_per_unit + 0.04 * lim   # the value label, plus a gap
+        if r["nn"] >= 0:
+            x0, avail, ha = r["nn"] + 0.02 * lim + label_w, (lim - (r["nn"] + 0.02 * lim + label_w)) * in_per_unit, "left"
+        else:
+            x0, avail, ha = r["nn"] - 0.02 * lim - label_w, ((r["nn"] - 0.02 * lim - label_w) + lim) * in_per_unit, "right"
+        fs = 6.8
+        width = max(12, int(avail / (fs / 72 * 0.55)))
+        ax.text(x0, yb - 0.15, "\n".join(textwrap.wrap(ntext, width=width)), ha=ha, va="top", fontsize=fs,
+                color=CM.GREY, linespacing=1.15, zorder=4)
     ax.set_yticks([])
     ax.spines[["left", "top", "right"]].set_visible(False)
     ax.tick_params(labelsize=8.5)
@@ -249,6 +267,9 @@ def main():
     ap.add_argument("--short-turns", type=int, default=None,
                     help="summary crop (briefs/S6-figures-2.md §2): draw turns 1..N only, same layout and labels, "
                          "output names suffixed _short; the full renders are not touched")
+    ap.add_argument("--note", default=None,
+                    help="<turn>:<text> — one small grey annotation beside that turn's nn bar on every panel drawn "
+                         "(briefs/S6-figures-2.md §3); the caption records it")
     ap.add_argument("--panels", default=None,
                     help="comma-separated subset of d1,d2,d3 to draw (briefs/S6-figures-2.md); default: every panel "
                          "available. Selection is computed regardless, so the printed rules do not change")
@@ -299,7 +320,13 @@ def main():
                     "same layout and labels as the ten-turn render `s6_fd_transcript_%s.*`; the readout x-scale and the "
                     "random floors are those of the full chain, so every bar has the same length in both renders. The "
                     "table and the verbatim text below cover all %d turns.\n\n" % (k, nt, panel, nt)) + body
-        fig = draw(rec, rd, panel, header, rule_lines, name, n_show=args.short_turns)
+        note = None
+        if args.note:
+            nturn, ntext = args.note.split(":", 1)
+            note = (int(nturn), ntext.strip())
+            body = ("Annotation (briefs/S6-figures-2.md §3), printed in grey beside the turn-%d nn bar, verbatim: "
+                    "\"%s\"\n\n" % note) + body
+        fig = draw(rec, rd, panel, header, rule_lines, name, n_show=args.short_turns, note=note)
         outs = CM.save(fig, name)
         cap = CM.caption(name, cap_title, "scripts/figs/fd_transcript.py",
                          ["results/raw/s1b/t4/%s/v1_seed%d.json (turn text, stored grades and reasons)"
