@@ -120,24 +120,29 @@ def clip_lines(text, width, n_lines):
 
 # ------------------------------------------------------------------ drawing
 
-def draw(rec, rd, panel, header, rule_lines, name):
+def draw(rec, rd, panel, header, rule_lines, name, n_show=None, note=None):
     import matplotlib.pyplot as plt
     from matplotlib.patches import FancyBboxPatch, Patch
     from matplotlib.lines import Line2D
     CM.style()
-    turns = rec["turns"]
+    turns = rec["turns"][:n_show] if n_show else rec["turns"]
     n = len(turns)
-    fig = plt.figure(figsize=(14.0, 14.6))
+    # vertical geometry: the ten-turn figure is 14.6 in tall; a shorter render (--short-turns, briefs/S6-figures-2.md
+    # §2) keeps every row, the title band and the footer band at the same height in inches, so only the figure
+    # shrinks. yf() maps a ten-turn-figure fraction to this figure's fraction of the same height in inches.
+    H = 14.6 * (0.145 + 0.075) + 14.6 * 0.078 * n
+    yf = lambda frac10: frac10 * 14.6 / H
+    fig = plt.figure(figsize=(14.0, H))
     # column geometry in figure coordinates
     x_turn, x_user, x_asst, x_grade, x_bar, w_bar = 0.015, 0.045, 0.285, 0.665, 0.745, 0.235
-    y_top, y_bot = 0.855, 0.075
-    h = (y_top - y_bot) / n
+    y_top, y_bot = 1 - yf(0.145), yf(0.075)
+    h = yf(0.078)
     T = rec["T_primary"]
     for i, tu in enumerate(turns):
         yc = y_top - (i + 0.5) * h
         first = (tu["turn"] == T)
         if first:
-            fig.patches.append(FancyBboxPatch((0.01, yc - h / 2 + 0.003), 0.975, h - 0.006,
+            fig.patches.append(FancyBboxPatch((0.01, yc - h / 2 + yf(0.003)), 0.975, h - yf(0.006),
                                               boxstyle="round,pad=0.002,rounding_size=0.004",
                                               transform=fig.transFigure, facecolor="#f4f4f4",
                                               edgecolor="#111111", lw=1.6, zorder=-2))
@@ -147,7 +152,7 @@ def draw(rec, rd, panel, header, rule_lines, name):
         utxt, _ = clip_lines(tu["user"], 42, 3)
         fig.text(x_user, yc, utxt, fontsize=8.6, va="center", ha="left", color=CM.TEXT, linespacing=1.15)
         if kind == "filler":
-            fig.text(x_user, yc - h / 2 + 0.006, "filler turn: the rig changed topic after the act",
+            fig.text(x_user, yc - h / 2 + yf(0.006), "filler turn: the rig changed topic after the act",
                      fontsize=7.5, va="bottom", ha="left", color=CM.GREY, style="italic")
         atxt, _ = clip_lines(tu["answer"], 78, 2)
         fig.text(x_asst, yc, atxt, fontsize=8.6, va="center", ha="left", color=CM.TEXT, linespacing=1.15)
@@ -157,17 +162,17 @@ def draw(rec, rd, panel, header, rule_lines, name):
                  color=st["textcolor"], bbox=dict(boxstyle="round,pad=0.35", facecolor=st["facecolor"],
                                                   edgecolor=st["edgecolor"], lw=1.2), zorder=3)
         if first:
-            fig.text(x_grade + 0.032, yc - 0.024, "first committed turn", fontsize=7.5, va="center", ha="center",
+            fig.text(x_grade + 0.032, yc - yf(0.024), "first committed turn", fontsize=7.5, va="center", ha="center",
                      color="#111111", fontweight="bold")
     # the readout column: one axes whose y runs over the turns
     ax = fig.add_axes([x_bar, y_bot, w_bar, y_top - y_bot])
     ax.patch.set_alpha(0)                      # the first-committed-turn highlight shows through
     ax.set_ylim(n, 0)
-    vals = [abs(r[a]) for r in rd for a, _ in AXES_DRAWN] + [r["floor"] for r in rd]
+    vals = [abs(r[a]) for r in rd for a, _ in AXES_DRAWN] + [r["floor"] for r in rd]   # every turn: same scale in a crop
     lim = 1.12 * max(vals)
     ax.set_xlim(-lim, lim)
     ax.axvline(0, color=CM.TEXT, lw=0.9, zorder=2)
-    for i, r in enumerate(rd):
+    for i, r in enumerate(rd[:n]):
         ax.axhspan(i + 0.06, i + 0.94, xmin=0.5 - r["floor"] / (2 * lim), xmax=0.5 + r["floor"] / (2 * lim),
                    color=CM.GREY_BAND, zorder=1)
         for j, (name_, col) in enumerate(AXES_DRAWN):
@@ -175,6 +180,24 @@ def draw(rec, rd, panel, header, rule_lines, name):
             ax.barh(yb, r[name_], height=0.30, color=col, zorder=3)
             ax.text(r[name_] + (0.02 * lim if r[name_] >= 0 else -0.02 * lim), yb, "%.2f" % r[name_],
                     ha="left" if r[name_] >= 0 else "right", va="center", fontsize=7.5, color=col)
+    if note is not None:
+        # --note (briefs/S6-figures-2.md §3): one small grey sentence beside that turn's nn bar, hung from the bar's
+        # top edge on the bar's open side and wrapped to the width left to the axis edge; nothing else moves
+        nturn, ntext = note
+        i = next((j for j, tu in enumerate(turns) if tu["turn"] == nturn), None)
+        assert i is not None, ("note turn not drawn", nturn, n)
+        r = rd[i]
+        yb = i + 0.30                                              # the nn bar's centre line (j = 0)
+        in_per_unit = w_bar * 14.0 / (2 * lim)
+        label_w = len("%.2f" % r["nn"]) * 7.5 / 72 * 0.62 / in_per_unit + 0.04 * lim   # the value label, plus a gap
+        if r["nn"] >= 0:
+            x0, avail, ha = r["nn"] + 0.02 * lim + label_w, (lim - (r["nn"] + 0.02 * lim + label_w)) * in_per_unit, "left"
+        else:
+            x0, avail, ha = r["nn"] - 0.02 * lim - label_w, ((r["nn"] - 0.02 * lim - label_w) + lim) * in_per_unit, "right"
+        fs = 6.8
+        width = max(12, int(avail / (fs / 72 * 0.55)))
+        ax.text(x0, yb - 0.15, "\n".join(textwrap.wrap(ntext, width=width)), ha=ha, va="top", fontsize=fs,
+                color=CM.GREY, linespacing=1.15, zorder=4)
     ax.set_yticks([])
     ax.spines[["left", "top", "right"]].set_visible(False)
     ax.tick_params(labelsize=8.5)
@@ -183,7 +206,7 @@ def draw(rec, rd, panel, header, rule_lines, name):
         fig.add_artist(Line2D([0.01, 0.985], [y_top - i * h] * 2, transform=fig.transFigure, color="#e6e6e6",
                               lw=0.8, zorder=0))
     # column headers
-    yh = y_top + 0.008
+    yh = y_top + yf(0.008)
     fig.text(x_user, yh, "user (the persuader)", fontsize=10.5, fontweight="bold", va="bottom", color=CM.TEXT)
     fig.text(x_asst, yh, "assistant's answer (first ~2 lines; full text in the caption file)", fontsize=10.5,
              fontweight="bold", va="bottom", color=CM.TEXT)
@@ -192,9 +215,9 @@ def draw(rec, rd, panel, header, rule_lines, name):
     fig.text(x_bar + w_bar / 2, yh, "internal readout", fontsize=10.5, fontweight="bold", va="bottom",
              ha="center", color=CM.TEXT)
     # titles and the printed rule
-    fig.suptitle(TITLE, fontsize=15.5, fontweight="bold", y=0.992)
-    fig.text(0.5, 0.962, header, ha="center", va="top", fontsize=11.5, color=CM.NAMED, fontweight="bold")
-    fig.text(0.5, 0.938, "\n".join(rule_lines), ha="center", va="top", fontsize=9.2, color=CM.TEXT,
+    fig.suptitle(TITLE, fontsize=15.5, fontweight="bold", y=1 - yf(0.008))
+    fig.text(0.5, 1 - yf(0.038), header, ha="center", va="top", fontsize=11.5, color=CM.NAMED, fontweight="bold")
+    fig.text(0.5, 1 - yf(0.062), "\n".join(rule_lines), ha="center", va="top", fontsize=9.2, color=CM.TEXT,
              linespacing=1.25)
     handles = [Patch(facecolor=GRADE_STYLE["held"]["facecolor"], edgecolor=GRADE_STYLE["held"]["edgecolor"], label="held"),
                Patch(facecolor="white", edgecolor="#444444", label="partial"),
@@ -202,7 +225,7 @@ def draw(rec, rd, panel, header, rule_lines, name):
                Patch(color=CM.NAMED, label="nn projection"), Patch(color=CM.SECOND, label="refusal projection"),
                Patch(color=CM.GREY_BAND, label="random floor: max |projection| over 10 random arrows, this turn")]
     fig.legend(handles=handles, loc="lower center", ncol=6, frameon=False, fontsize=9.2, bbox_to_anchor=(0.5, 0.0))
-    fig.text(0.5, 0.030, "Base Llama-3.1-8B-Instruct, deceived route, target `%s`, v1 chain, seed %d. Grades: the "
+    fig.text(0.5, yf(0.030), "Base Llama-3.1-8B-Instruct, deceived route, target `%s`, v1 chain, seed %d. Grades: the "
              "rig's stored act-judge grade (gpt-4o-mini) per turn.\nEXPLORATORY readouts: nn and refusal are "
              "mean-difference directions with no centred zero; which turn projects higher is the fact, not its sign."
              % (rec["target"], rec["seed"]), ha="center", va="bottom", fontsize=8.8, color=CM.TEXT)
@@ -238,6 +261,18 @@ def caption_body(rec, rd, panel, sel, rule_lines):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--d2", default=None, help="the researcher's hand-picked chain as <target>:<seed>; omitted if absent")
+    ap.add_argument("--d2-label", default=D2_LABEL,
+                    help="the label printed in one line under the title of the D2 panel (briefs/S6-figures-2.md §1 "
+                         "names the exact text); the caption records it")
+    ap.add_argument("--short-turns", type=int, default=None,
+                    help="summary crop (briefs/S6-figures-2.md §2): draw turns 1..N only, same layout and labels, "
+                         "output names suffixed _short; the full renders are not touched")
+    ap.add_argument("--note", default=None,
+                    help="<turn>:<text> — one small grey annotation beside that turn's nn bar on every panel drawn "
+                         "(briefs/S6-figures-2.md §3); the caption records it")
+    ap.add_argument("--panels", default=None,
+                    help="comma-separated subset of d1,d2,d3 to draw (briefs/S6-figures-2.md); default: every panel "
+                         "available. Selection is computed regardless, so the printed rules do not change")
     args = ap.parse_args()
     rows = grade_table()
     sel = select(rows)
@@ -260,20 +295,44 @@ def main():
     if args.d2:
         tg, sd = args.d2.split(":")
         r2 = next(r for r in rows if r["target"] == tg and r["seed"] == int(sd))
-        panels.insert(1, ("d2", r2, "Panel D2 — " + D2_LABEL + ": `%s`, seed %d, first committed turn %s"
-                          % (r2["target"], r2["seed"], r2["T"]),
-                          [D2_LABEL, "Named by the researcher; not selected by any rule."]))
+        # the label is the one line under the title; the chain's identity goes on the rule lines beneath it
+        panels.insert(1, ("d2", r2, "Panel D2 — " + args.d2_label,
+                          ["Target `%s`, seed %d, first committed turn %s. Named by the researcher; not selected by "
+                           "any rule." % (r2["target"], r2["seed"], r2["T"])]))
+    if args.panels:
+        want = [w.strip().lower() for w in args.panels.split(",")]
+        assert all(w in {"d1", "d2", "d3"} for w in want), args.panels
+        panels = [p for p in panels if p[0] in want]
+        assert [p[0] for p in panels] == [w for w in ("d1", "d2", "d3") if w in want], (args.panels, [p[0] for p in panels])
     for panel, r, header, rule_lines in panels:
+        printed = ([args.d2_label] if panel == "d2" else []) + rule_lines   # every rule line the figure prints
         rec = json.load(open(r["path"], encoding="utf-8"))
         rd = readout(proj, axes, positions, keys, r["target"], r["seed"])
         name = "s6_fd_transcript_%s" % panel
-        fig = draw(rec, rd, panel, header, rule_lines, name)
+        cap_title = TITLE + " — panel %s" % panel.upper()
+        body = caption_body(rec, rd, panel, sel, printed)
+        if args.short_turns:
+            k, nt = args.short_turns, len(rec["turns"])
+            assert 1 <= k <= nt, (k, nt)
+            name += "_short"
+            cap_title += ", turns 1–%d of %d" % (k, nt)
+            body = ("Summary crop (briefs/S6-figures-2.md §2): the figure shows turns 1–%d of the %d-turn chain, with the "
+                    "same layout and labels as the ten-turn render `s6_fd_transcript_%s.*`; the readout x-scale and the "
+                    "random floors are those of the full chain, so every bar has the same length in both renders. The "
+                    "table and the verbatim text below cover all %d turns.\n\n" % (k, nt, panel, nt)) + body
+        note = None
+        if args.note:
+            nturn, ntext = args.note.split(":", 1)
+            note = (int(nturn), ntext.strip())
+            body = ("Annotation (briefs/S6-figures-2.md §3), printed in grey beside the turn-%d nn bar, verbatim: "
+                    "\"%s\"\n\n" % note) + body
+        fig = draw(rec, rd, panel, header, rule_lines, name, n_show=args.short_turns, note=note)
         outs = CM.save(fig, name)
-        cap = CM.caption(name, TITLE + " — panel %s" % panel.upper(), "scripts/figs/fd_transcript.py",
+        cap = CM.caption(name, cap_title, "scripts/figs/fd_transcript.py",
                          ["results/raw/s1b/t4/%s/v1_seed%d.json (turn text, stored grades and reasons)"
                           % (r["target"], r["seed"]),
                           "results/raw/s1d/proj_t4v1.npz (projections at the answer position, built by scripts/s1d/proj.py)"],
-                         " ".join(rule_lines), caption_body(rec, rd, panel, sel, rule_lines))
+                         " ".join(printed), body)
         for p in outs + [cap]:
             print(p.relative_to(REPO), "%.0f kB" % (p.stat().st_size / 1e3))
         print("  %s: %s seed %d T=%s grades %s" % (panel, r["target"], r["seed"], r["T"],

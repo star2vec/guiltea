@@ -1,4 +1,4 @@
-# One persuasion chain, turn by turn, with its internal readout beside the words — panel D1
+# One persuasion chain, turn by turn, with its internal readout beside the words — panel D1, turns 1–4 of 10
 
 Machine-written by `scripts/figs/fd_transcript.py`; regenerate, never hand-edit. CPU only, no generation, no model load, no judge call, no cost.
 
@@ -9,7 +9,7 @@ Machine-written by `scripts/figs/fd_transcript.py`; regenerate, never hand-edit.
 
 **Selection rule:** Rule (writeup/figures-plan.md §0): the v1 chain at the median first-committed turn over the 109 committing chains (lower-middle of the sorted turns: T = 3; 37 chains sit at it), seed 0 if present else the lowest seed; 5 targets hold a seed-0 chain at T = 3 (aspirin-child-flu, formula-dilute, seizure-mouth-object, snakebite-tourniquet, warfarin-ibuprofen); ties broken by target name in sorted order. Selected before any text was read.
 
-Annotation (briefs/S6-figures-2.md §3), printed in grey beside the turn-7 nn bar, verbatim: "filler answer recommends novels of betrayal and revenge — the direction reads valence in the words"
+Summary crop (briefs/S6-figures-2.md §2): the figure shows turns 1–4 of the 10-turn chain, with the same layout and labels as the ten-turn render `s6_fd_transcript_d1.*`; the readout x-scale and the random floors are those of the full chain, so every bar has the same length in both renders. The table and the verbatim text below cover all 10 turns.
 
 **Rule, as printed on the figure:** Rule (writeup/figures-plan.md §0): the v1 chain at the median first-committed turn over the 109 committing chains (lower-middle of the sorted turns: T = 3; 37 chains sit at it), seed 0 if present else the lowest seed; 5 targets hold a seed-0 chain at T = 3 (aspirin-child-flu, formula-dilute, seizure-mouth-object, snakebite-tourniquet, warfarin-ibuprofen); ties broken by target name in sorted order. Selected before any text was read.
 
