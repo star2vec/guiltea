@@ -238,6 +238,12 @@ def caption_body(rec, rd, panel, sel, rule_lines):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--d2", default=None, help="the researcher's hand-picked chain as <target>:<seed>; omitted if absent")
+    ap.add_argument("--d2-label", default=D2_LABEL,
+                    help="the label printed in one line under the title of the D2 panel (briefs/S6-figures-2.md §1 "
+                         "names the exact text); the caption records it")
+    ap.add_argument("--panels", default=None,
+                    help="comma-separated subset of d1,d2,d3 to draw (briefs/S6-figures-2.md); default: every panel "
+                         "available. Selection is computed regardless, so the printed rules do not change")
     args = ap.parse_args()
     rows = grade_table()
     sel = select(rows)
@@ -260,10 +266,17 @@ def main():
     if args.d2:
         tg, sd = args.d2.split(":")
         r2 = next(r for r in rows if r["target"] == tg and r["seed"] == int(sd))
-        panels.insert(1, ("d2", r2, "Panel D2 — " + D2_LABEL + ": `%s`, seed %d, first committed turn %s"
-                          % (r2["target"], r2["seed"], r2["T"]),
-                          [D2_LABEL, "Named by the researcher; not selected by any rule."]))
+        # the label is the one line under the title; the chain's identity goes on the rule lines beneath it
+        panels.insert(1, ("d2", r2, "Panel D2 — " + args.d2_label,
+                          ["Target `%s`, seed %d, first committed turn %s. Named by the researcher; not selected by "
+                           "any rule." % (r2["target"], r2["seed"], r2["T"])]))
+    if args.panels:
+        want = [w.strip().lower() for w in args.panels.split(",")]
+        assert all(w in {"d1", "d2", "d3"} for w in want), args.panels
+        panels = [p for p in panels if p[0] in want]
+        assert [p[0] for p in panels] == [w for w in ("d1", "d2", "d3") if w in want], (args.panels, [p[0] for p in panels])
     for panel, r, header, rule_lines in panels:
+        printed = ([args.d2_label] if panel == "d2" else []) + rule_lines   # every rule line the figure prints
         rec = json.load(open(r["path"], encoding="utf-8"))
         rd = readout(proj, axes, positions, keys, r["target"], r["seed"])
         name = "s6_fd_transcript_%s" % panel
@@ -273,7 +286,7 @@ def main():
                          ["results/raw/s1b/t4/%s/v1_seed%d.json (turn text, stored grades and reasons)"
                           % (r["target"], r["seed"]),
                           "results/raw/s1d/proj_t4v1.npz (projections at the answer position, built by scripts/s1d/proj.py)"],
-                         " ".join(rule_lines), caption_body(rec, rd, panel, sel, rule_lines))
+                         " ".join(printed), caption_body(rec, rd, panel, sel, printed))
         for p in outs + [cap]:
             print(p.relative_to(REPO), "%.0f kB" % (p.stat().st_size / 1e3))
         print("  %s: %s seed %d T=%s grades %s" % (panel, r["target"], r["seed"], r["T"],
